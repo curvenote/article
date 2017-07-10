@@ -1,0 +1,65 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="ink-figure">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      :host img{
+        margin: 15px;
+        width: calc(100% - 30px);
+        max-width: 800px;
+      }
+      :host .caption{
+        color: #aaa;
+        font-family: 'Roboto', sans-serif;
+        text-align: center;
+        margin: 10px;
+        font-size: 0.9em;
+      }
+      :host .caption .label{
+        font-weight: bold;
+      }
+    </style>
+    <img src="[[ src ]]">
+    <div class="caption">
+      <template is="dom-if" if="[[ labeled ]]">
+        <span class="label">Figure [[ number ]]:</span>
+      </template>
+      <slot></slot>
+    </div>
+  </template>
+
+  <script>
+    /**
+     * `ink-figure`
+     * Figure for blog
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class InkFigure extends Polymer.Element {
+      static get is() { return 'ink-figure'; }
+      static get properties() {
+        return {
+          src: {
+            type: String,
+            value: 'one'
+          },
+          number: {
+            type: Number,
+            value: 1
+          },
+          labeled: {
+            type: Boolean,
+            value: false
+          }
+        };
+      }
+    }
+
+    window.customElements.define(InkFigure.is, InkFigure);
+  </script>
+</dom-module>

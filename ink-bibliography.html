@@ -1,0 +1,142 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../polymer/lib/elements/dom-repeat.html">
+
+
+<dom-module id="ink-bibliography">
+  <template>
+    <style>
+      .citation{
+        font-size: 12px;
+        margin:5px 0;
+      }
+      .citation .title{
+        font-size: 16px;
+        font-weight: bold
+      }
+      a {
+        color: #1E88E5;
+        text-decoration: none;
+        font-weight: 500;
+      }
+      a:hover{
+        text-decoration: underline;
+      }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+    <h2>References</h2>
+    <template is="dom-repeat" items="{{ bib }}">
+      <div class="citation">
+        <span class="title">[[ _title(item) ]]</span>
+        <a href="[[ _url(item) ]]" hidden$="[[!_hasurl(item)]]">[PDF]</a><br>
+        <span>[[ _author(item) ]],</span>
+        <span>[[ _year(item) ]].</span>
+        <span>[[ _journal(item) ]],</span>
+        <span>[[ _volume(item) ]]</span>
+        <span hidden$=[[!_hasdoi(item)]]>DOI: <a href="https://doi.org/[[ _doi(item) ]]">[[ _doi(item) ]]</a>.</span>
+      </div>
+    </template>
+  </template>
+
+  <script>
+    class InkBibliography extends Polymer.Element {
+      static get is() { return 'ink-bibliography'; }
+      static get properties() {
+        return {
+          refs: {
+            type: Object
+          },
+          bib: {
+            type: Object
+          },
+        };
+      }
+      connectedCallback() {
+        super.connectedCallback();
+        this.parseBibtex();
+      }
+      parseBibtex(){
+        var script = document.querySelector('script[type="text/bibliography"]');
+        if(script === null){return}
+        var biblio = bibtexParse.toJSON(script.textContent);
+        var refs = {};
+        var bib = [];
+        biblio.forEach(e => {
+          for (var k in e.entryTags){
+            var val = e.entryTags[k];
+            if(k === 'url'){
+              val = val.replace(/[\t\n ]+/g, "");
+            }else{
+              val = val.replace(/[\t\n ]+/g, " ");
+            }
+            val = val.replace('{\\&}', '&');
+            val = val.replace(/{\\["^`\.'acu~Hvs]( )?([a-zA-Z])}/g, (full, x, char) => char);
+            val = val.replace(/{\\([a-zA-Z])}/g, (full, char) => char);
+            if(val.startsWith('{')){val = val.slice(1);}
+            if(val.endsWith('}')){val = val.slice(0, -1);}
+            e.entryTags[k.toLowerCase()] = val;
+          }
+          refs[e.citationKey] = e.entryTags;
+          refs[e.citationKey].type = e.entryType;
+          bib.push(e);
+        });
+        this.bib = bib;
+        this.set('refs', refs);
+      }
+      _title(item){
+        return item.entryTags.title;
+      }
+      _author(item){
+        // https://github.com/distillpub/template/blob/master/components/citation.js
+        var names = item.entryTags.author.split(" and ");
+        var name_strings = names.map(name => {
+          name = name.trim();
+          if (name.indexOf(",") != -1){
+            var last = name.split(",")[0].trim();
+            var firsts = name.split(",")[1];
+          } else {
+            var last = name.split(" ").slice(-1)[0].trim();
+            var firsts = name.split(" ").slice(0,-1).join(" ");
+          }
+          var initials = "";
+          if (firsts != undefined) {
+            initials = firsts.trim().split(" ").map(s => s.trim()[0]);
+            initials = initials.join(".")+".";
+          }
+          return last + ', ' + initials;
+        });
+        if (names.length > 1) {
+          var str = name_strings.slice(0, names.length-1).join(', ');
+          str += ' and ' + name_strings[names.length-1];
+          return str;
+        } else {
+          return name_strings[0];
+        }
+      }
+      _hasurl(item){
+        return item.entryTags.url !== undefined;
+      }
+      _url(item){
+        return item.entryTags.url;
+      }
+      _year(item){
+        return item.entryTags.year;
+      }
+      _journal(item){
+        return item.entryTags.journal;
+      }
+      _hasdoi(item){
+        return item.entryTags.doi !== undefined;
+      }
+      _doi(item){
+        return item.entryTags.doi;
+      }
+      _volume(item){
+        if(!item.entryTags.volume){
+          return '';
+        }
+        return 'Vol ' + item.entryTags.volume + (item.entryTags.issue ? '(' + item.entryTags.issue +'),' : ',');
+      }
+    }
+    window.customElements.define(InkBibliography.is, InkBibliography);
+  </script>
+</dom-module>

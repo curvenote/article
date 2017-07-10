@@ -1,0 +1,84 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<style type="text/css">
+  a {
+    color: #1E88E5;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  a:hover{
+    text-decoration: underline;
+  }
+
+  h1, h2, h3, h4, h5{
+    font-family: 'Oswald', sans-serif;
+  }
+
+  code{
+    border-radius: 15px;
+    border: 1px solid #E4E4E4;
+    background-color: #FAFAFA;
+    padding: 0 5px;
+  }
+</style>
+
+<dom-module id="ink-article">
+  <template>
+    <style>
+      .content, ::slotted(p) {
+        display: block;
+        font-size: 17px;
+        line-height: 1.8;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        color: #4D4D4D;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 300;
+      }
+
+      ::slotted(p) {
+        text-align: justify;
+      }
+
+      ::slotted(hr) {
+        width: calc(100vw);
+        margin-top: 30px;
+        margin-bottom: 30px;
+        margin-left: calc(-50vw + 342px);
+        border-top: 1px solid #DDD;
+        border-left: transparent;
+      }
+
+      .content {
+        max-width: 700px;
+        margin-top: 90px;
+        margin-left: calc(50vw - 350px);
+      }
+
+      @media screen and (max-width: 710px) {
+        .content {
+          margin-left: 10px;
+        }
+        ::slotted(hr) {
+          width: calc(100vw);
+          margin-left: -18px;
+        }
+      }
+    </style>
+    <div class="content">
+      <slot></slot>
+    </div>
+  </template>
+
+  <script>
+    class InkArticle extends Polymer.Element {
+      static get is() { return 'ink-article'; }
+      static get properties() {
+        return {
+        };
+      }
+    }
+
+    window.customElements.define(InkArticle.is, InkArticle);
+  </script>
+</dom-module>

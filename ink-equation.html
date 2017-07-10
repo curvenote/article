@@ -1,0 +1,49 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../polymer/lib/utils/flattened-nodes-observer.html">
+
+
+<dom-module id="ink-equation">
+  <template>
+    <style>
+      :host .equation{
+      }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+    <div id="math"></div>
+  </template>
+
+  <script>
+    class InkEquation extends Polymer.Element {
+      static get is() { return 'ink-equation'; }
+      static get properties() {
+        return {
+          math: {
+            type: String,
+            value: '',
+            observer: 'renderMath'
+          }
+        };
+      }
+      connectedCallback() {
+        super.connectedCallback();
+        this.math = this.textContent;
+        this._observer = new Polymer.FlattenedNodesObserver(this, (info) => {
+          this.math = this.textContent;
+        });
+        this.renderMath();
+      }
+      renderMath(){
+        katex.render(this.math, this.$.math, {
+          displayMode: true,
+          macros: {
+            "\\boldsymbol": "\\mathbf"
+          }
+        });
+        if(this.textContent !== this.math && this.math){
+          this.textContent = this.math;
+        }
+      }
+    }
+    window.customElements.define(InkEquation.is, InkEquation);
+  </script>
+</dom-module>
