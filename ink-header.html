@@ -1,0 +1,40 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="ink-header">
+  <template>
+    <style>
+      .header{
+        position: fixed;
+        top:0;
+        left:0;
+        width: 100vw;
+        height: 60px;
+        background-color: rgba(255,255,255,0.9);
+        border-bottom: 1px solid #e4e4e4;
+        z-index: 100;
+      }
+      .logo{
+        height: 50px;
+        margin: 5px;
+      }
+    </style>
+    <div class='header'>
+      <a href="/" title="Take me home!"><img class="logo" src$="[[logo]]"></a>
+    </div>
+  </template>
+
+  <script>
+    class InkHeader extends Polymer.Element {
+      static get is() { return 'ink-header'; }
+      static get properties(){
+        return {
+          logo:{
+            type: String,
+            value: ''
+          }
+        };
+      }
+    }
+    window.customElements.define(InkHeader.is, InkHeader);
+  </script>
+</dom-module>

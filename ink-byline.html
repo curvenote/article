@@ -1,0 +1,90 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="ink-byline">
+  <template>
+    <style>
+      .byline{
+        margin-right: -10px;
+        margin-top: -20px;
+        color:#9A9A9A;
+      }
+      .date{
+        text-align: left;
+        float: left;
+        font-size: 15px;
+        font-style: italic;
+      }
+      .authors{
+        text-align: right;
+      }
+      .author{
+        width: 120px;
+        margin: 5px;
+        overflow: hidden;
+        display: inline-block;
+      }
+      .author > .name{
+        height: 25px;
+        margin-top: -5px;
+        font-size: 15px;
+        width: 110px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        text-align: right;
+      }
+      .author > .institution{
+        height: 20px;
+        font-size: 10px;
+        margin-right:10px;
+      }
+    </style>
+    <div class='byline'>
+      <div class="date">[[ date ]]</div>
+      <div class="authors">
+        <template is="dom-repeat" items="[[ authors ]]" as="author">
+          <div class="author">
+            <div class="name">
+              [[ author.name ]]
+            </div>
+            <div class="institution">
+              [[ author.institution ]]
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+    <div hidden>
+      <slot></slot>
+    </div>
+  </template>
+
+  <script>
+    class InkByline extends Polymer.Element {
+      static get is() { return 'ink-byline'; }
+      static get properties(){
+        return {
+          authors:{
+            type: Object,
+            value: [
+              {name:"Rowan Cockett", institution:"Aranz Geo"},
+              {name:"Lindsey Heagy", institution:"Univ. of British Columbia"},
+              {name:"Doug Oldenburg", institution:"Univ. of British Columbia"}
+            ]
+          },
+          date:{
+            type: String,
+            value: "May 15, 2016"
+          }
+        };
+      }
+      connectedCallback() {
+        super.connectedCallback();
+        this._observer = new Polymer.FlattenedNodesObserver(this, (info) => {
+          this.code = this.textContent;
+        });
+      }
+    }
+    window.customElements.define(InkByline.is, InkByline);
+  </script>
+</dom-module>
