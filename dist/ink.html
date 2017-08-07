@@ -8265,13 +8265,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     window.customElements.define(InkByline.is, InkByline);
   </script>
 </dom-module>
-<dom-module id="ink-cards">
+<dom-module id="ink-card">
   <template>
     <style>
-      #container{
-        position: relative;
-        margin: 60px 0;
-      }
       .card{
         display: inline-block;
         width: 200px;
@@ -8320,6 +8316,150 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         top: 104px;
         right: 0;
       }
+    </style>
+    <a class="card" title$="[[ title ]]" href="[[ url ]]">
+      <div class="image" style$="background-image: url('[[ image ]]')"></div>
+      <div class="date">[[ date ]]</div>
+      <div class="title">[[ title ]]</div>
+      <div class="description">[[ description ]]</div>
+    </a>
+  </template>
+
+  <script>
+    class InkCard extends Polymer.Element {
+      static get is() { return 'ink-card'; }
+      static get properties(){
+        return {
+          title:{
+            type: String,
+          },
+          description:{
+            type: String
+          },
+          image:{
+            type: String
+          },
+          url:{
+            type: String
+          },
+          date:{
+            type: String
+          }
+        };
+      }
+      hasUrl(url) {
+        return url.length > 0;
+      }
+    }
+    window.customElements.define(InkCard.is, InkCard);
+  </script>
+</dom-module>
+<dom-module id="ink-cards">
+  <template>
+    <style>
+      #container{
+        position: relative;
+        margin: 60px 0;
+      }
+    </style>
+    <div id="container">
+      <ink-h2-more url="[[ url ]]">[[ header ]]</ink-h2-more>
+      <div id="cards">
+        <template is="dom-repeat" items="[[ cards ]]" as="card">
+          <ink-card title$="[[ card.title ]]" description="[[ card.description ]]" image="[[ card.image ]]" url="[[ card.url ]]" date="[[ card.date ]]"></ink-card>
+        </template>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    class InkCards extends Polymer.Element {
+      static get is() { return 'ink-cards'; }
+      static get properties(){
+        return {
+          cards:{
+            type: Object,
+            notify: true,
+            value: function() { return []; }
+          },
+          header:{
+            type: String
+          },
+          url:{
+            type: String,
+            value: ''
+          },
+        };
+      }
+      hasUrl(url) {
+        return url.length > 0;
+      }
+    }
+    window.customElements.define(InkCards.is, InkCards);
+  </script>
+</dom-module>
+<dom-module id="ink-cv-award">
+  <template>
+    <style>
+      h3{
+        margin: 5px 0;
+        font-size: 18px;
+      }
+      #date{
+        float: right;
+        font-size: 13px;
+        margin-top: 8px;
+      }
+      p{
+        color: #333;
+        font-size: 12px;
+        margin: 0;
+        text-align: justify;
+      }
+    </style>
+    <span id="date">[[ date ]]</span>
+    <h3>[[ title ]]</h3>
+    <p>[[ description ]]
+      <span hidden$="[[ !declined ]]">(Declined)</span>
+      <span id="amount">[[ formatAmount(amount) ]]</span>
+    </p>
+  </template>
+
+  <script>
+    class InkCvAward extends Polymer.Element {
+      static get is() { return 'ink-cv-award'; }
+      static get properties() {
+        return {
+          title: {type: String},
+          description: {type: String},
+          level: {type: String},
+          date: {type: String},
+          declined: {type: Boolean, value: false},
+          amount: {type: Number, value: 0},
+        };
+      }
+      formatAmount(amount){
+        if(amount === 0){return '';}
+        var numberFormat = new Intl.NumberFormat(
+          'en-US',
+          {
+            style: 'currency',
+            currency: 'USD',
+            maximumFractionDigits:0
+          }
+        );
+        return '(' + numberFormat.format(amount) + ')';
+      }
+    }
+    window.customElements.define(InkCvAward.is, InkCvAward);
+  </script>
+</dom-module>
+<dom-module id="ink-h2-more">
+  <template>
+    <style>
+      div{
+        position: relative;
+      }
       h2{
         font-family: 'Roboto', sans-serif;
         margin: 0;
@@ -8349,46 +8489,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         border: 1px solid #1E88E5;
       }
     </style>
-    <div id="container">
-      <h2 hidden$="[[ !hasUrl(url) ]]"><a href="[[ url ]]"># [[ header ]]</a></h2>
-      <a href="[[ url ]]" class="button" hidden$="[[ !hasUrl(url) ]]">See More</a>
-      <div id="cards">
-        <template is="dom-repeat" items="[[ cards ]]" as="card">
-          <a class="card" title$="[[ card.title ]]" href="[[ card.url ]]">
-            <div class="image" style$="background-image: url('[[ card.image ]]')"></div>
-            <div class="date">[[ card.date ]]</div>
-            <div class="title">[[ card.title ]]</div>
-            <div class="description">[[ card.description ]]</div>
-          
-        </a></template>
-      </div>
+    <div>
+      <h2><a href="[[ url ]]"># <slot></slot></a></h2>
+      <a href="[[ url ]]" class="button">See More</a>
     </div>
   </template>
 
   <script>
-    class InkCards extends Polymer.Element {
-      static get is() { return 'ink-cards'; }
+    class InkH2More extends Polymer.Element {
+      static get is() { return 'ink-h2-more'; }
       static get properties(){
         return {
-          cards:{
-            type: Object,
-            notify: true,
-            value: function() { return []; }
-          },
-          header:{
-            type: String
-          },
           url:{
-            type: String,
-            value: ''
+            type: String
           },
         };
       }
-      hasUrl(url) {
-        return url.length > 0;
-      }
     }
-    window.customElements.define(InkCards.is, InkCards);
+    window.customElements.define(InkH2More.is, InkH2More);
   </script>
 </dom-module>
 </div>

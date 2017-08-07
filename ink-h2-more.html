@@ -1,0 +1,58 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+
+<dom-module id="ink-h2-more">
+  <template>
+    <style>
+      div{
+        position: relative;
+      }
+      h2{
+        font-family: 'Roboto', sans-serif;
+        margin: 0;
+      }
+      h2 a {
+        color: #333333;
+        text-decoration: none;
+        font-weight: 500;
+      }
+      h2 a:hover{
+        text-decoration: underline;
+      }
+      a.button{
+        font-family: "Roboto", sans-serif;
+        border: 1px solid #CCCCCC;
+        border-radius: 2px;
+        position: absolute;
+        padding: 0 8px;
+        top: 11px;
+        right: 15px;
+        font-size: 13px;
+        cursor: pointer;
+        color: #333333;
+      }
+      a.button:hover{
+        text-decoration: underline;
+        border: 1px solid #1E88E5;
+      }
+    </style>
+    <div>
+      <h2><a href="[[ url ]]"># <slot></slot></a></h2>
+      <a href="[[ url ]]" class="button">See More</a>
+    </div>
+  </template>
+
+  <script>
+    class InkH2More extends Polymer.Element {
+      static get is() { return 'ink-h2-more'; }
+      static get properties(){
+        return {
+          url:{
+            type: String
+          },
+        };
+      }
+    }
+    window.customElements.define(InkH2More.is, InkH2More);
+  </script>
+</dom-module>

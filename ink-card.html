@@ -1,0 +1,92 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+
+<dom-module id="ink-card">
+  <template>
+    <style>
+      .card{
+        display: inline-block;
+        width: 200px;
+        height: 150px;
+        margin: 15px;
+        position: relative;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .image{
+        background-size: cover;
+        height: 100px;
+        width: 200px;
+        border: 1px solid #CCCCCC;
+        border-radius: 2px;
+      }
+      .title{
+        font-family: 'Roboto', sans-serif;
+        color: #333333;
+        font-size: 14px;
+        width: 130px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .card:hover .image{
+        border: 1px solid #1E88E5;
+      }
+      .card:hover .title{
+        text-decoration: underline;
+      }
+      .description{
+        font-family: 'Roboto', sans-serif;
+        font-size: 10px;
+        height: 18px;
+        color: #333;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      .date{
+        font-size: 12px;
+        color: #aaa;
+        font-family: 'Roboto', sans-serif;
+        position: absolute;
+        top: 104px;
+        right: 0;
+      }
+    </style>
+    <a class="card" title$="[[ title ]]" href="[[ url ]]">
+      <div class="image" style$="background-image: url('[[ image ]]')"></div>
+      <div class="date">[[ date ]]</div>
+      <div class="title">[[ title ]]</div>
+      <div class="description">[[ description ]]</div>
+    </a>
+  </template>
+
+  <script>
+    class InkCard extends Polymer.Element {
+      static get is() { return 'ink-card'; }
+      static get properties(){
+        return {
+          title:{
+            type: String,
+          },
+          description:{
+            type: String
+          },
+          image:{
+            type: String
+          },
+          url:{
+            type: String
+          },
+          date:{
+            type: String
+          }
+        };
+      }
+      hasUrl(url) {
+        return url.length > 0;
+      }
+    }
+    window.customElements.define(InkCard.is, InkCard);
+  </script>
+</dom-module>
