@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../polymer/lib/utils/flattened-nodes-observer.html">
 
 <style type="text/css">
   a {
@@ -113,7 +114,9 @@
     </style>
     <div class="content">
       <slot></slot>
+      <ink-bibliography id="bibliography"></ink-bibliography>
     </div>
+
   </template>
 
   <script>
@@ -121,6 +124,18 @@
       static get is() { return 'ink-article'; }
       static get properties() {
         return {
+        };
+      }
+      connectedCallback() {
+        super.connectedCallback();
+        this._observer = new Polymer.FlattenedNodesObserver(this, (info) => {
+          this.renderCitations();
+        });
+      }
+      renderCitations() {
+        var citations = this.querySelectorAll('ink-cite');
+        for (var i = 0; i < citations.length; i++) {
+          this.$.bibliography.processCitation(citations[i]);
         };
       }
     }

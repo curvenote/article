@@ -115,7 +115,7 @@
       <ink-byline>Rowan Cockett, Lindsey Heagy, & Doug Oldenburg</ink-byline>
 
       <p>
-        In this tutorial we take you on the journey from continuous equations to their discrete matrix representations using the finite volume method for the Direct Current (DC) resistivity problem. These techniques are widely applicable across geophysical simulation types and have their parallels in finite element and finite difference. We show derivations visually, as you would on a whiteboard, and have provided an accompanying notebook to explore the numerical results using <a href="http://simpeg.xyz">SimPEG</a> (Cockett et al. 2015).
+        In this tutorial we take you on the journey from continuous equations to their discrete matrix representations using the finite volume method for the Direct Current (DC) resistivity problem. These techniques are widely applicable across geophysical simulation types and have their parallels in finite element and finite difference. We show derivations visually, as you would on a whiteboard, and have provided an accompanying notebook to explore the numerical results using <a href="http://simpeg.xyz">SimPEG</a> <ink-cite key="simpeg2015"></ink-cite>.
       </p>
 
       <ink-callout>
@@ -144,7 +144,7 @@
       </p>
 
       <p>
-        In this tutorial, we walk through setting up these first order equations in finite volume in three steps: (1) defining where the variables live on the mesh; (2) looking at a single cell to define the discrete divergence and the weak formulation; and (3) moving from a cell based view to  the entire mesh to construct and solve the resulting matrix system. The notebooks included with this tutorial leverage the SimPEG package (http://simpeg.xyz, Cockett et al. 2015), which extends the methods discussed here to various mesh types.
+        In this tutorial, we walk through setting up these first order equations in finite volume in three steps: (1) defining where the variables live on the mesh; (2) looking at a single cell to define the discrete divergence and the weak formulation; and (3) moving from a cell based view to  the entire mesh to construct and solve the resulting matrix system. The notebooks included with this tutorial leverage the SimPEG package (http://simpeg.xyz, <ink-cite key="simpeg2015"></ink-cite>), which extends the methods discussed here to various mesh types.
       </p>
 
       <hr>
@@ -251,9 +251,6 @@
       <p>
         Moving from continuous equations to their discrete analogues is fundamental in geophysical simulations. In this tutorial, we have started from a continuous description of the governing equations for the DC resistivity problem, selected locations on the mesh to discretize the continuous functions, constructed differential operators by considering one cell at a time, assembled and solved the discrete DC equations. Composing the finite volume system in this way allows us to move to different meshes and incorporate various types of boundary conditions that are often necessary when solving these equations in practice.
       </p>
-
-      <ink-bibliography></ink-bibliography>
-
     </ink-article>
 
     <script>

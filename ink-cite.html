@@ -1,0 +1,45 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+
+<dom-module id="ink-cite">
+  <template>
+    <style>
+    </style>
+    <span>([[ citation(key, item) ]])</span></template>
+  <script>
+    class InkCite extends Polymer.Element {
+      static get is() { return 'ink-cite'; }
+      static get properties() {
+        return {
+          key: {
+            type: String
+          },
+          item: {
+            type: Object
+          }
+        };
+      }
+      citation(key, item){
+        if(!item){return key;}
+        var names = item.entryTags.author.split(" and ");
+        var name_strings = names.map(name => {
+          name = name.trim();
+          if (name.indexOf(",") != -1){
+            var last = name.split(",")[0].trim();
+          } else {
+            var last = name.split(" ").slice(-1)[0].trim();
+          }
+          return last;
+        });
+        if (names.length > 2) {
+          return name_strings[0] + ' et al., ' + item.entryTags.year;
+        }
+        if (names.length == 2) {
+          return name_strings[0] + ' and ' + name_strings[1] + ', ' + item.entryTags.year;
+        }
+        return name_strings[0] + ', ' + item.entryTags.year;
+      }
+    }
+    window.customElements.define(InkCite.is, InkCite);
+  </script>
+</dom-module>
