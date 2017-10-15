@@ -10,14 +10,8 @@
       h2{
         font-family: 'Roboto', sans-serif;
         margin: 0;
-      }
-      h2 a {
         color: #333333;
-        text-decoration: none;
         font-weight: 500;
-      }
-      h2 a:hover{
-        text-decoration: underline;
       }
       a.button{
         font-family: "Roboto", sans-serif;
@@ -26,7 +20,7 @@
         position: absolute;
         padding: 0 8px;
         top: 11px;
-        right: 15px;
+        right: 0px;
         font-size: 13px;
         cursor: pointer;
         color: #333333;
@@ -37,8 +31,8 @@
       }
     </style>
     <div>
-      <h2><a href="[[ url ]]"># <slot></slot></a></h2>
-      <a href="[[ url ]]" class="button">See More</a>
+        <h2><slot></slot></h2>
+        <a hidden$="[[ !has_url(url) ]]" href="[[ url ]]" class="button">See More</a>
     </div>
   </template>
 
@@ -48,10 +42,12 @@
       static get properties(){
         return {
           url:{
-            type: String
+            type: String,
+            value: ''
           },
         };
       }
+      has_url() {return this.url.length > 0;}
     }
     window.customElements.define(InkH2More.is, InkH2More);
   </script>

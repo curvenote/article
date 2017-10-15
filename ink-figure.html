@@ -24,9 +24,7 @@
     </style>
     <img src="[[ src ]]">
     <div class="caption">
-      <template is="dom-if" if="[[ labeled ]]">
-        <span class="label">Figure [[ number ]]:</span>
-      </template>
+      <span hidden$="[[ !labeled ]]" class="label">Figure [[ number ]]:</span>
       <slot></slot>
     </div>
   </template>

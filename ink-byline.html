@@ -7,6 +7,7 @@
         margin-right: -10px;
         margin-top: -20px;
         color:#9A9A9A;
+        min-height: 50px;
       }
       .date{
         text-align: left;
@@ -33,11 +34,11 @@
         white-space: nowrap;
         text-align: right;
       }
-      .author > .institution{
+      /*.author > .institution{
         height: 20px;
         font-size: 10px;
         margin-right:10px;
-      }
+      }*/
     </style>
     <div class='byline'>
       <div class="date">[[ date ]]</div>
@@ -47,9 +48,9 @@
             <div class="name">
               [[ author.name ]]
             </div>
-            <div class="institution">
+            <!-- <div class="institution">
               [[ author.institution ]]
-            </div>
+            </div> -->
           </div>
         </template>
       </div>
@@ -66,9 +67,7 @@
         return {
           authors:{
             type: Object,
-            value: [
-              {name:"Rowan Cockett"}
-            ]
+            value: []
           },
           date:{
             type: String
