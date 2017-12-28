@@ -6326,6 +6326,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       connectedCallback() {
         super.connectedCallback();
         this._observer = new Polymer.FlattenedNodesObserver(this, (info) => {
+          this.$.bibliography.parseBibtex();
           this.renderCitations();
         });
       }
@@ -6541,8 +6542,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <dom-module id="ink-cite">
   <template>
     <style>
+      .etal{
+        font-style: italic;
+      }
     </style>
-    <span>([[ citation(key, item) ]])</span></template>
+    <span>([[ people(key, item) ]] <span class="etal">[[ etal ]]</span>, [[ year ]]) </span></template>
   <script>
     class InkCite extends Polymer.Element {
       static get is() { return 'ink-cite'; }
@@ -6553,10 +6557,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           },
           item: {
             type: Object
+          },
+          etal: {
+            type: String
+          },
+          year: {
+            type: Number
           }
         };
       }
-      citation(key, item){
+      people(key, item){
         if(!item){return key;}
         var names = item.entryTags.author.split(" and ");
         var name_strings = names.map(name => {
@@ -6568,13 +6578,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
           return last;
         });
+        this.etal = '';
         if (names.length > 2) {
-          return name_strings[0] + ' et al., ' + item.entryTags.year;
+          this.etal = 'et al.';
+          this.year = item.entryTags.year;
+          return name_strings[0];
         }
         if (names.length == 2) {
-          return name_strings[0] + ' and ' + name_strings[1] + ', ' + item.entryTags.year;
+          this.year = item.entryTags.year;
+          return name_strings[0] + ' and ' + name_strings[1];
         }
-        return name_strings[0] + ', ' + item.entryTags.year;
+        this.year = item.entryTags.year;
+        return name_strings[0];
       }
     }
     window.customElements.define(InkCite.is, InkCite);
@@ -8114,7 +8129,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         text-decoration: underline;
       }
     </style>
-    <h2>References</h2>
+    <h3 hidden$="[[!hasReferences]]">References</h3>
     <template is="dom-repeat" items="{{ bib }}">
       <div class="citation">
         <span class="title">[[ _title(item) ]]</span>
@@ -8123,7 +8138,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <span>[[ _year(item) ]].</span>
         <span>[[ _journal(item) ]],</span>
         <span>[[ _volume(item) ]]</span>
-        <span hidden$="[[!_hasdoi(item)]]">DOI: <a href="https://doi.org/[[ _doi(item) ]]">[[ _doi(item) ]]</a>.</span>
+        <span>[[ _publisher(item) ]]</span>
+        <span hidden$="[[!_hasdoi(item)]]">DOI: <a href="https://doi.org/[[ _doi(item) ]]" target="_blank">[[ _doi(item) ]]</a></span>.
       </div>
     </template>
   </template>
@@ -8139,6 +8155,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           bib: {
             type: Object
           },
+          hasReferences: {
+            type: Boolean,
+            value: false
+          }
         };
       }
       connectedCallback() {
@@ -8170,9 +8190,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           bib.push(e);
         });
         this.bib = bib;
-        this.refs = refs
+        this.refs = refs;
+        this.hasReferences = this.bib.length > 0;
       }
       processCitation(inkCite){
+        if(this.refs === undefined){return;}
         inkCite.item = this.refs[inkCite.key];
       }
       _title(item){
@@ -8229,6 +8251,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           return '';
         }
         return 'Vol ' + item.entryTags.volume + (item.entryTags.issue ? '(' + item.entryTags.issue +'),' : ',');
+      }
+      _publisher(item){
+        if(!item.entryTags.publisher){
+          return '';
+        }
+        return item.entryTags.publisher;
       }
     }
     window.customElements.define(InkBibliography.is, InkBibliography);
@@ -8509,12 +8537,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         margin: 0;
         text-align: justify;
       }
+      a{
+        color: #1E88E5;
+        text-decoration: none;
+      }
+      a:hover{
+        text-decoration: underline;
+      }
     </style>
     <span id="date">[[ date ]]</span>
     <h3>[[ title ]]</h3>
     <p>[[ description ]]
       <span hidden$="[[ !declined ]]">(Declined)</span>
       <span id="amount">[[ formatAmount(amount) ]]</span>
+      <a hidden$="[[ !has_url(url) ]]" href="[[ url ]]">(See More)</a>
     </p>
   </template>
 
@@ -8529,6 +8565,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           date: {type: String},
           declined: {type: Boolean, value: false},
           amount: {type: Number, value: 0},
+          url:{type: String, value: ''},
         };
       }
       formatAmount(amount){
@@ -8544,6 +8581,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         );
         return '(' + numberFormat.format(amount) + ')';
       }
+      has_url() {return this.url.length > 0;}
     }
     window.customElements.define(InkCvAward.is, InkCvAward);
   </script>
