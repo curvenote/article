@@ -22,7 +22,7 @@
         text-decoration: underline;
       }
     </style>
-    <h2>References</h2>
+    <h3 hidden$="[[!hasReferences]]">References</h3>
     <template is="dom-repeat" items="{{ bib }}">
       <div class="citation">
         <span class="title">[[ _title(item) ]]</span>
@@ -31,7 +31,8 @@
         <span>[[ _year(item) ]].</span>
         <span>[[ _journal(item) ]],</span>
         <span>[[ _volume(item) ]]</span>
-        <span hidden$=[[!_hasdoi(item)]]>DOI: <a href="https://doi.org/[[ _doi(item) ]]">[[ _doi(item) ]]</a>.</span>
+        <span>[[ _publisher(item) ]]</span>
+        <span hidden$=[[!_hasdoi(item)]]>DOI: <a href="https://doi.org/[[ _doi(item) ]]" target="_blank">[[ _doi(item) ]]</a></span>.
       </div>
     </template>
   </template>
@@ -47,6 +48,10 @@
           bib: {
             type: Object
           },
+          hasReferences: {
+            type: Boolean,
+            value: false
+          }
         };
       }
       connectedCallback() {
@@ -78,9 +83,11 @@
           bib.push(e);
         });
         this.bib = bib;
-        this.refs = refs
+        this.refs = refs;
+        this.hasReferences = this.bib.length > 0;
       }
       processCitation(inkCite){
+        if(this.refs === undefined){return;}
         inkCite.item = this.refs[inkCite.key];
       }
       _title(item){
@@ -137,6 +144,12 @@
           return '';
         }
         return 'Vol ' + item.entryTags.volume + (item.entryTags.issue ? '(' + item.entryTags.issue +'),' : ',');
+      }
+      _publisher(item){
+        if(!item.entryTags.publisher){
+          return '';
+        }
+        return item.entryTags.publisher;
       }
     }
     window.customElements.define(InkBibliography.is, InkBibliography);

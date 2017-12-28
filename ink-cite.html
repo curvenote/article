@@ -4,8 +4,11 @@
 <dom-module id="ink-cite">
   <template>
     <style>
+      .etal{
+        font-style: italic;
+      }
     </style>
-    <span>([[ citation(key, item) ]])</span></template>
+    <span>([[ people(key, item) ]]<span class="etal">[[ etal ]]</span>, [[ year ]])</span></template>
   <script>
     class InkCite extends Polymer.Element {
       static get is() { return 'ink-cite'; }
@@ -16,10 +19,16 @@
           },
           item: {
             type: Object
+          },
+          etal: {
+            type: String
+          },
+          year: {
+            type: Number
           }
         };
       }
-      citation(key, item){
+      people(key, item){
         if(!item){return key;}
         var names = item.entryTags.author.split(" and ");
         var name_strings = names.map(name => {
@@ -31,13 +40,18 @@
           }
           return last;
         });
+        this.etal = '';
         if (names.length > 2) {
-          return name_strings[0] + ' et al., ' + item.entryTags.year;
+          this.etal = ' et al.';
+          this.year = item.entryTags.year;
+          return name_strings[0];
         }
         if (names.length == 2) {
-          return name_strings[0] + ' and ' + name_strings[1] + ', ' + item.entryTags.year;
+          this.year = item.entryTags.year;
+          return name_strings[0] + ' and ' + name_strings[1];
         }
-        return name_strings[0] + ', ' + item.entryTags.year;
+        this.year = item.entryTags.year;
+        return name_strings[0];
       }
     }
     window.customElements.define(InkCite.is, InkCite);

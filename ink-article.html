@@ -129,6 +129,7 @@
       connectedCallback() {
         super.connectedCallback();
         this._observer = new Polymer.FlattenedNodesObserver(this, (info) => {
+          this.$.bibliography.parseBibtex();
           this.renderCitations();
         });
       }
