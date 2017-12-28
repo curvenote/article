@@ -19,12 +19,20 @@
         margin: 0;
         text-align: justify;
       }
+      a{
+        color: #1E88E5;
+        text-decoration: none;
+      }
+      a:hover{
+        text-decoration: underline;
+      }
     </style>
     <span id="date">[[ date ]]</span>
     <h3>[[ title ]]</h3>
     <p>[[ description ]]
       <span hidden$="[[ !declined ]]">(Declined)</span>
       <span id="amount">[[ formatAmount(amount) ]]</span>
+      <a hidden$="[[ !has_url(url) ]]" href="[[ url ]]">(See More)</a>
     </p>
   </template>
 
@@ -39,6 +47,7 @@
           date: {type: String},
           declined: {type: Boolean, value: false},
           amount: {type: Number, value: 0},
+          url:{type: String, value: ''},
         };
       }
       formatAmount(amount){
@@ -54,6 +63,7 @@
         );
         return '(' + numberFormat.format(amount) + ')';
       }
+      has_url() {return this.url.length > 0;}
     }
     window.customElements.define(InkCvAward.is, InkCvAward);
   </script>
