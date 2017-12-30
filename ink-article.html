@@ -71,6 +71,9 @@
   p {
     text-align: justify;
   }
+  emph {
+    font-style: italic;
+  }
 </style>
 
 <dom-module id="ink-article">
@@ -111,10 +114,16 @@
           margin-left: -18px;
         }
       }
+      @media screen and (max-width: 1000px) {
+        #outline{
+          display: none;
+        }
+      }
     </style>
     <div class="content">
       <slot></slot>
       <ink-bibliography id="bibliography"></ink-bibliography>
+      <ink-outline id="outline"></ink-outline>
     </div>
 
   </template>
@@ -131,6 +140,7 @@
         this._observer = new Polymer.FlattenedNodesObserver(this, (info) => {
           this.$.bibliography.parseBibtex();
           this.renderCitations();
+          this.renderOutline();
         });
       }
       renderCitations() {
@@ -138,6 +148,25 @@
         for (var i = 0; i < citations.length; i++) {
           this.$.bibliography.processCitation(citations[i]);
         };
+      }
+      renderOutline() {
+        var headers = this.querySelectorAll('H1, H2, H3, H4, H5, H6');
+        if(headers.length < 3){
+          // No need for an outline!
+          this.$.outline.headers = [];
+          return;
+        }
+        var data = [];
+        for (var i = 0; i < headers.length; i++) {
+          var id = headers[i].tagName.toLowerCase() + '--' + headers[i].textContent.toLowerCase().replace(/ /g, '-').replace(/\W-/g, '');
+          headers[i].id = id;
+          data.push({
+            id: id,
+            level: parseInt(headers[i].tagName[1])-1,
+            title: headers[i].textContent,
+          });
+        };
+        this.$.outline.headers = data;
       }
     }
 
