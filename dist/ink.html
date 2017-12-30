@@ -5586,7 +5586,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
       }
       :host img{
-        margin: 15px;
+        margin: 15px 15px 0px 15px;
         width: calc(100% - 30px);
         max-width: 800px;
       }
@@ -5594,7 +5594,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         color: #aaa;
         font-family: 'Roboto', sans-serif;
         text-align: center;
-        margin: 10px;
+        margin: 0px 10px 10px 10px;
         font-size: 0.9em;
       }
       :host .caption .label{
@@ -6268,6 +6268,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   p {
     text-align: justify;
   }
+  emph {
+    font-style: italic;
+  }
 </style>
 
 <dom-module id="ink-article">
@@ -6308,10 +6311,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           margin-left: -18px;
         }
       }
+      @media screen and (max-width: 1000px) {
+        #outline{
+          display: none;
+        }
+      }
     </style>
     <div class="content">
       <slot></slot>
       <ink-bibliography id="bibliography"></ink-bibliography>
+      <ink-outline id="outline"></ink-outline>
     </div>
 
   </template>
@@ -6328,6 +6337,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this._observer = new Polymer.FlattenedNodesObserver(this, (info) => {
           this.$.bibliography.parseBibtex();
           this.renderCitations();
+          this.renderOutline();
         });
       }
       renderCitations() {
@@ -6336,9 +6346,117 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.$.bibliography.processCitation(citations[i]);
         };
       }
+      renderOutline() {
+        var headers = this.querySelectorAll('H1, H2, H3, H4, H5, H6');
+        if(headers.length < 3){
+          // No need for an outline!
+          this.$.outline.headers = [];
+          return;
+        }
+        var data = [];
+        for (var i = 0; i < headers.length; i++) {
+          var id = headers[i].tagName.toLowerCase() + '--' + headers[i].textContent.toLowerCase().replace(/ /g, '-').replace(/\W-/g, '');
+          headers[i].id = id;
+          data.push({
+            id: id,
+            level: parseInt(headers[i].tagName[1])-1,
+            title: headers[i].textContent,
+          });
+        };
+        this.$.outline.headers = data;
+      }
     }
 
     window.customElements.define(InkArticle.is, InkArticle);
+  </script>
+</dom-module>
+<dom-module id="ink-outline">
+  <template>
+    <style>
+      #outline{
+        position: fixed;
+        top:50vh;
+        left:0;
+        width: 30px;
+        z-index: 100;
+        transform: translateY(-50%);
+        overflow: hidden;
+        transition: all 200ms;
+      }
+      .header{
+        position: relative;
+      }
+      .text{
+        font-size: 12px;
+        line-height: 2em;
+        width: 150px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        opacity: 0;
+        transition: all 200ms;
+        transition-timing-function: cubic-bezier(0, 0.58, 0.55, 1.36);
+      }
+      .tick{
+        position: absolute;
+        left: 0px;
+        top: 9px;
+        border-bottom: 1px solid #AAA;
+        height: 1px;
+        transition: all 200ms;
+      }
+      .header:hover .tick{
+        border-bottom: 2px solid #F49B32;
+      }
+      .header:first-of-type{
+        text-decoration: underline;
+        font-size: 13px;
+      }
+      .header:hover{
+        color: #F49B32;
+        cursor: pointer;
+      }
+      #outline:hover{
+        width: 200px;
+        background: linear-gradient(to right, white, transparent);
+      }
+      #outline:hover .text{
+        opacity: 1;
+        margin-left: -23px;
+      }
+      #outline:hover .tick{
+        left: -30px;
+      }
+    </style>
+    <div id="outline">
+      <template is="dom-repeat" items="[[ headers ]]" as="header">
+          <div class="header" on-click="handleClick" style="
+                      padding-left:calc(28px + {{ header.level }}px*5);
+                      font-weight: calc(700 - {{ header.level }}*100);
+               " title="{{ header.title }}">
+            <div class="tick" style="width:calc(25px - {{ header.level }}px*5);">&nbsp;</div>
+            <div class="text">{{ header.title }}</div>
+          </div>
+        </template>
+    </div>
+  </template>
+
+  <script>
+    class InkOutline extends Polymer.Element {
+      static get is() { return 'ink-outline'; }
+      static get properties(){
+        return {
+          headers:{
+            type: Object,
+            value: []
+          }
+        };
+      }
+      handleClick(e){
+        document.getElementById(e.model.header.id).scrollIntoView({behavior:'smooth', block: "start", inline: "nearest"});
+      }
+    }
+    window.customElements.define(InkOutline.is, InkOutline);
   </script>
 </dom-module>
 <dom-module id="ink-aside">
@@ -6546,7 +6664,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         font-style: italic;
       }
     </style>
-    <span>([[ people(key, item) ]] <span class="etal">[[ etal ]]</span>, [[ year ]]) </span></template>
+    <span>([[ people(key, item) ]]<span class="etal">[[ etal ]]</span>, [[ year ]])</span></template>
   <script>
     class InkCite extends Polymer.Element {
       static get is() { return 'ink-cite'; }
@@ -6580,7 +6698,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
         this.etal = '';
         if (names.length > 2) {
-          this.etal = 'et al.';
+          this.etal = ' et al.';
           this.year = item.entryTags.year;
           return name_strings[0];
         }

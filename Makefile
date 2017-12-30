@@ -13,9 +13,9 @@ publish: dist # right now to my other folder..
 	cp bower_components/webcomponentsjs/webcomponents-lite.js ../row1ca/website/static/js/webcomponents-lite.js
 	cp node_modules/bibtex-parse-js/bibtexParse.js ../row1ca/website/static/js/bibtexParse.js
 
-watch: dist
-	watchman-make -p '*.html' -t dist \
-		-p 'bundle.html' -t dist
+watch: publish
+	watchman-make -p '*.html' -t publish \
+		-p 'bundle.html' -t publish
 
 serve: dist
 	python -m http.server 8082
