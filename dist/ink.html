@@ -6347,7 +6347,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         };
       }
       renderOutline() {
-        var headers = this.querySelectorAll('H1, H2, H3, H4, H5, H6');
+        var headers = this.querySelectorAll('H1, H2, H3, H4, H5, H6, H2-MORE');
         if(headers.length < 3){
           // No need for an outline!
           this.$.outline.headers = [];
@@ -8602,7 +8602,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
     <div id="container">
-      <ink-h2-more url="[[ url ]]">[[ header ]]</ink-h2-more>
+      <h2-more url="[[ url ]]">[[ header ]]</h2-more>
       <div id="cards">
         <template is="dom-repeat" items="[[ cards ]]" as="card">
           <ink-card title$="[[ card.title ]]" description="[[ card.description ]]" image="[[ card.image ]]" url="[[ card.url ]]" date="[[ card.date ]]"></ink-card>
@@ -8637,7 +8637,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     window.customElements.define(InkCards.is, InkCards);
   </script>
 </dom-module>
-<dom-module id="ink-cv-award">
+<dom-module id="cv-award">
   <template>
     <style>
       h3{
@@ -8673,8 +8673,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
 
   <script>
-    class InkCvAward extends Polymer.Element {
-      static get is() { return 'ink-cv-award'; }
+    class CvAward extends Polymer.Element {
+      static get is() { return 'cv-award'; }
       static get properties() {
         return {
           title: {type: String},
@@ -8701,10 +8701,63 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
       has_url() {return this.url.length > 0;}
     }
-    window.customElements.define(InkCvAward.is, InkCvAward);
+    window.customElements.define(CvAward.is, CvAward);
   </script>
 </dom-module>
-<dom-module id="ink-h2-more">
+<dom-module id="cv-item">
+  <template>
+    <style>
+      h3{
+        margin: 5px 0;
+        font-size: 18px;
+      }
+      #date{
+        float: right;
+        font-size: 13px;
+        margin-top: 8px;
+      }
+      p{
+        color: #333;
+        font-size: 12px;
+        margin: 0;
+        text-align: justify;
+      }
+      a{
+        color: #1E88E5;
+        text-decoration: none;
+      }
+      a:hover{
+        text-decoration: underline;
+      }
+    </style>
+    <span id="date">[[ date ]]</span>
+    <h3>[[ title ]]</h3>
+    <p>
+      [[ description ]]
+      <a hidden$="[[ !has_url(url) ]]" href="[[ url ]]">(See More)</a>
+    </p>
+    <p>
+      <slot></slot>
+    </p>
+  </template>
+
+  <script>
+    class CvItem extends Polymer.Element {
+      static get is() { return 'cv-item'; }
+      static get properties() {
+        return {
+          title: {type: String},
+          description: {type: String},
+          date: {type: String},
+          url:{type: String, value: ''},
+        };
+      }
+      has_url() {return this.url.length > 0;}
+    }
+    window.customElements.define(CvItem.is, CvItem);
+  </script>
+</dom-module>
+<dom-module id="h2-more">
   <template>
     <style>
       div{
@@ -8740,8 +8793,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
 
   <script>
-    class InkH2More extends Polymer.Element {
-      static get is() { return 'ink-h2-more'; }
+    class H2More extends Polymer.Element {
+      static get is() { return 'h2-more'; }
       static get properties(){
         return {
           url:{
@@ -8752,7 +8805,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
       has_url() {return this.url.length > 0;}
     }
-    window.customElements.define(InkH2More.is, InkH2More);
+    window.customElements.define(H2More.is, H2More);
   </script>
 </dom-module>
 </div>

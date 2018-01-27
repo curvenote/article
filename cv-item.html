@@ -1,7 +1,7 @@
 <link rel="import" href="../polymer/polymer-element.html">
 
 
-<dom-module id="ink-cv-award">
+<dom-module id="cv-item">
   <template>
     <style>
       h3{
@@ -29,42 +29,28 @@
     </style>
     <span id="date">[[ date ]]</span>
     <h3>[[ title ]]</h3>
-    <p>[[ description ]]
-      <span hidden$="[[ !declined ]]">(Declined)</span>
-      <span id="amount">[[ formatAmount(amount) ]]</span>
+    <p>
+      [[ description ]]
       <a hidden$="[[ !has_url(url) ]]" href="[[ url ]]">(See More)</a>
+    </p>
+    <p>
+      <slot></slot>
     </p>
   </template>
 
   <script>
-    class InkCvAward extends Polymer.Element {
-      static get is() { return 'ink-cv-award'; }
+    class CvItem extends Polymer.Element {
+      static get is() { return 'cv-item'; }
       static get properties() {
         return {
           title: {type: String},
           description: {type: String},
-          level: {type: String},
           date: {type: String},
-          declined: {type: Boolean, value: false},
-          amount: {type: Number, value: 0},
           url:{type: String, value: ''},
         };
       }
-      formatAmount(amount){
-        if(amount === 0){return '';}
-        var numberFormat = new Intl.NumberFormat(
-          'en-US',
-          {
-            style: 'currency',
-            currency: 'USD',
-            maximumFractionDigits:0,
-            minimumFractionDigits:0,
-          }
-        );
-        return '(' + numberFormat.format(amount) + ')';
-      }
       has_url() {return this.url.length > 0;}
     }
-    window.customElements.define(InkCvAward.is, InkCvAward);
+    window.customElements.define(CvItem.is, CvItem);
   </script>
 </dom-module>

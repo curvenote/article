@@ -1,7 +1,7 @@
 <link rel="import" href="../polymer/polymer-element.html">
 
 
-<dom-module id="ink-h2-more">
+<dom-module id="h2-more">
   <template>
     <style>
       div{
@@ -37,8 +37,8 @@
   </template>
 
   <script>
-    class InkH2More extends Polymer.Element {
-      static get is() { return 'ink-h2-more'; }
+    class H2More extends Polymer.Element {
+      static get is() { return 'h2-more'; }
       static get properties(){
         return {
           url:{
@@ -49,6 +49,6 @@
       }
       has_url() {return this.url.length > 0;}
     }
-    window.customElements.define(InkH2More.is, InkH2More);
+    window.customElements.define(H2More.is, H2More);
   </script>
 </dom-module>
