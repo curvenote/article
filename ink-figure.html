@@ -1,5 +1,3 @@
-<link rel="import" href="../polymer/polymer-element.html">
-
 <dom-module id="ink-figure">
   <template>
     <style>
@@ -32,24 +30,26 @@
   <script>
     /**
      * `ink-figure`
-     * Figure for blog
+     *
+     * This is an ink-figure
      *
      * @customElement
      * @polymer
-     * @demo demo/index.html
+     * @demo demo/ink-figure.html
      */
     class InkFigure extends Polymer.Element {
       static get is() { return 'ink-figure'; }
       static get properties() {
         return {
+          /** Source of the figure image */
           src: {
-            type: String,
-            value: 'one'
+            type: String
           },
+          /** Number of the figure, typically added by an enclosing article */
           number: {
-            type: Number,
-            value: 1
+            type: Number
           },
+          /** If the figure is labeled or not*/
           labeled: {
             type: Boolean,
             value: false
