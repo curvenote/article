@@ -1,0 +1,120 @@
+<link rel="import" href="../polymer/lib/utils/flattened-nodes-observer.html">
+
+<dom-module id="ink-demo">
+  <template>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+    <style>
+      :host{
+        display: block;
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+        margin-bottom: 40px;
+      }
+      pre {
+        margin: 10px;
+      }
+      code {
+        line-height: 1.2;
+      }
+      #demo{
+        padding: 25px 0;
+        border-bottom: 1px solid #e0e0e0;
+      }
+      button{
+        float: right;
+        text-transform: uppercase;
+        border: none;
+        cursor: pointer;
+        background: #e0e0e0;
+        outline: none;
+      }
+    </style>
+    <div id="demo"><slot></slot></div>
+    <button id="copyButton" title="copy to clipboard" on-click="_copyToClipboard">Copy</button>
+    <pre><code class$="[[ language ]]" id="code"></code></pre>
+  </template>
+
+  <script>
+    class InkDemo extends Polymer.Element {
+      static get is() { return 'ink-demo'; }
+      static get properties() {
+        return {
+          language: {
+            type: String,
+            value: 'renderCode'
+          },
+          code: {
+            type: String,
+            value: '',
+            observer: 'renderCode'
+          }
+        };
+      }
+      _trim(content){
+        var line, leading;
+        var out = [];
+        var left = Infinity;
+        var lines = content.split('\n');
+        for (var i = 0; i < lines.length; i++) {
+          line = lines[i];
+          if(line.trim().length === 0){
+            continue;
+          }
+          leading = line.search(/\S/);
+          if(leading < left){
+            left = leading;
+          }
+        }
+        for (var i = 0; i < lines.length; i++) {
+          line = lines[i];
+          if(line.trim().length === 0){
+            continue;
+          }
+          out.push(line.slice(left));
+        }
+        return out.join('\n');
+      }
+      connectedCallback() {
+        super.connectedCallback();
+        this.code = this._trim(this.innerHTML);
+        this._observer = new Polymer.FlattenedNodesObserver(this, (info) => {
+          this.code = this._trim(this.innerHTML);
+        });
+        this.renderCode();
+      }
+      renderCode(){
+        this.$.code.textContent = this.code;
+        if(this.code){
+          hljs.highlightBlock(this.$.code);
+        }
+      }
+      _copyToClipboard() {
+        // From https://github.com/google/material-design-lite/blob/master/docs/_assets/snippets.js
+        var snipRange = document.createRange();
+        snipRange.selectNodeContents(this.$.code);
+        var selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(snipRange);
+        var result = false;
+        try {
+          result = document.execCommand('copy');
+          this.$.copyButton.textContent = 'done';
+        } catch (err) {
+          // Copy command is not available
+          console.error(err);
+          this.$.copyButton.textContent = 'error';
+        }
+
+        // Return to the copy button after a second.
+        setTimeout(this._resetCopyButtonState.bind(this), 1000);
+
+        selection.removeAllRanges();
+        return result;
+      }
+
+      _resetCopyButtonState() {
+        this.$.copyButton.textContent = 'copy';
+      }
+    }
+    window.customElements.define(InkDemo.is, InkDemo);
+  </script>
+</dom-module>
