@@ -1,21 +1,18 @@
-# \<ink-figure\>
+# Ink - Scientific web components
 
-Figure for blog
+Ink is a collection of web-components for scientific publishing - the standard equations, figures, and code. The idea of `ink` is to provide an easy to use article layout that lays a foundation for interactive documents.
 
-## Install the Polymer-CLI
+For example, the `ink-equation` class provides a `eqn.math` property that can easily be set when things change:
 
-First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) installed. Then run `polymer serve` to serve your element locally.
+![Taylor Series](/images/taylor-series.gif)
 
-## Viewing Your Element
+## Installing from source
 
-```
-$ polymer serve
-```
-
-## Running Tests
+Ink uses [Polymer 2.0](https://www.polymer-project.org/) so if you are more familiar with the `polymer-cli` you can use that, if not, take a look at the `Makefile`.
 
 ```
-$ polymer test
+$ git clone git@github.com:rowanc1/ink.git
+$ cd ink
+$ make install
+$ make serve
 ```
-
-Your application is already set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester). Run `polymer test` to run your application's test suite locally.
