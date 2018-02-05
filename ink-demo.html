@@ -9,18 +9,21 @@
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
         margin-bottom: 40px;
       }
-      pre {
-        margin: 10px;
-      }
       code {
         line-height: 1.2;
       }
+      #code-wrapper{
+        position: relative;
+        padding: 10px;
+      }
       #demo{
-        padding: 25px 0;
+        padding: 25px;
         border-bottom: 1px solid #e0e0e0;
       }
       button{
-        float: right;
+        position: absolute;
+        top: 0;
+        right: 0;
         text-transform: uppercase;
         border: none;
         cursor: pointer;
@@ -29,8 +32,10 @@
       }
     </style>
     <div id="demo"><slot></slot></div>
-    <button id="copyButton" title="copy to clipboard" on-click="_copyToClipboard">Copy</button>
-    <pre><code class$="[[ language ]]" id="code"></code></pre>
+    <div id="code-wrapper">
+      <button id="copyButton" title="copy to clipboard" on-click="_copyToClipboard">Copy</button>
+      <pre><code class$="[[ language ]]" id="code"></code></pre>
+    </div>
   </template>
 
   <script>
@@ -40,7 +45,7 @@
         return {
           language: {
             type: String,
-            value: 'renderCode'
+            value: 'html'
           },
           code: {
             type: String,

@@ -31,9 +31,9 @@
         }
       }
     </style>
-    <hr>
+    <hr hidden$="[[_hideRules()]]">
     <pre><code class$="[[ language ]]" id="code"></code></pre>
-    <hr>
+    <hr hidden$="[[_hideRules()]]">
     <div hidden><slot></slot></div>
   </template>
 
@@ -53,11 +53,35 @@
           }
         };
       }
+      _trim(content){
+        var line, leading;
+        var out = [];
+        var left = Infinity;
+        var lines = content.split('\n');
+        for (var i = 0; i < lines.length; i++) {
+          line = lines[i];
+          if(line.trim().length === 0){
+            continue;
+          }
+          leading = line.search(/\S/);
+          if(leading < left){
+            left = leading;
+          }
+        }
+        for (var i = 0; i < lines.length; i++) {
+          line = lines[i];
+          if(line.trim().length === 0){
+            continue;
+          }
+          out.push(line.slice(left));
+        }
+        return out.join('\n');
+      }
       connectedCallback() {
         super.connectedCallback();
-        this.code = this.textContent.trim();
+        this.code = this._trim(this.textContent);
         this._observer = new Polymer.FlattenedNodesObserver(this, (info) => {
-          this.code = this.textContent.trim();
+          this.code = this._trim(this.textContent);
         });
         this.renderCode();
       }
@@ -66,6 +90,9 @@
         if(this.code){
           hljs.highlightBlock(this.$.code);
         }
+      }
+      _hideRules(){
+        return !(this.parentElement.nodeName === 'INK-ARTICLE');
       }
     }
     window.customElements.define(InkCode.is, InkCode);
