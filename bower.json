@@ -2,6 +2,7 @@
   "name": "ink",
   "description": "Scientific web components",
   "main": "index.html",
+  "license": "MIT",
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0"
   },

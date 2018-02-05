@@ -11,9 +11,6 @@
       hljs.registerLanguage("r",function(e){var r="([a-zA-Z]|\\.[a-zA-Z.])[a-zA-Z0-9._]*";return{c:[e.HCM,{b:r,l:r,k:{keyword:"function if in break next repeat else for return switch while try tryCatch stop warning require library attach detach source setMethod setGeneric setGroupGeneric setClass ...",literal:"NULL NA TRUE FALSE T F Inf NaN NA_integer_|10 NA_real_|10 NA_character_|10 NA_complex_|10"},r:0},{cN:"number",b:"0[xX][0-9a-fA-F]+[Li]?\\b",r:0},{cN:"number",b:"\\d+(?:[eE][+\\-]?\\d*)?L\\b",r:0},{cN:"number",b:"\\d+\\.(?!\\d)(?:i\\b)?",r:0},{cN:"number",b:"\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",r:0},{b:"`",e:"`",r:0},{cN:"string",c:[e.BE],v:[{b:'"',e:'"'},{b:"'",e:"'"}]}]}});
     </script>
     <style>
-      pre {
-        margin: 0 -10px;
-      }
       code {
         line-height: 1.2;
       }
@@ -31,9 +28,26 @@
           margin-left: -18px;
         }
       }
+      #code-wrapper{
+        position: relative;
+        padding: 10px;
+      }
+      button{
+        position: absolute;
+        top: 0;
+        right: 0;
+        text-transform: uppercase;
+        border: none;
+        cursor: pointer;
+        background: #e0e0e0;
+        outline: none;
+      }
     </style>
     <hr hidden$="[[_hideRules()]]">
-    <pre><code class$="[[ language ]]" id="code"></code></pre>
+    <div id="code-wrapper">
+      <button id="copyButton" hidden$="[[ !copy ]]" title="copy to clipboard" on-click="_copyToClipboard">Copy</button>
+      <pre><code class$="[[ language ]]" id="code"></code></pre>
+    </div>
     <hr hidden$="[[_hideRules()]]">
     <div hidden><slot></slot></div>
   </template>
@@ -51,10 +65,15 @@
             type: String,
             value: '',
             observer: 'renderCode'
+          },
+          copy: {
+            type: Boolean,
+            value: false
           }
         };
       }
-      _trim(content){
+
+      trim(content){
         var line, leading;
         var out = [];
         var left = Infinity;
@@ -71,29 +90,60 @@
         }
         for (var i = 0; i < lines.length; i++) {
           line = lines[i];
-          if(line.trim().length === 0){
+          if(i == 0 && line.trim().length === 0){
             continue;
           }
           out.push(line.slice(left));
         }
         return out.join('\n');
       }
+
       connectedCallback() {
         super.connectedCallback();
-        this.code = this._trim(this.textContent);
+        this.code = this.trim(this.textContent);
         this._observer = new Polymer.FlattenedNodesObserver(this, (info) => {
-          this.code = this._trim(this.textContent);
+          this.code = this.trim(this.textContent);
         });
         this.renderCode();
       }
+
       renderCode(){
         this.$.code.textContent = this.code;
         if(this.code){
           hljs.highlightBlock(this.$.code);
         }
       }
+
       _hideRules(){
-        return !(this.parentElement.nodeName === 'INK-ARTICLE');
+        return !(this.parentElement && this.parentElement.nodeName === 'INK-ARTICLE');
+      }
+
+      _copyToClipboard() {
+        // From https://github.com/google/material-design-lite/blob/master/docs/_assets/snippets.js
+        var snipRange = document.createRange();
+        snipRange.selectNodeContents(this.$.code);
+        var selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(snipRange);
+        var result = false;
+        try {
+          result = document.execCommand('copy');
+          this.$.copyButton.textContent = 'done';
+        } catch (err) {
+          // Copy command is not available
+          console.error(err);
+          this.$.copyButton.textContent = 'error';
+        }
+
+        // Return to the copy button after a second.
+        setTimeout(this._resetCopyButtonState.bind(this), 1000);
+
+        selection.removeAllRanges();
+        return result;
+      }
+
+      _resetCopyButtonState() {
+        this.$.copyButton.textContent = 'copy';
       }
     }
     window.customElements.define(InkCode.is, InkCode);
