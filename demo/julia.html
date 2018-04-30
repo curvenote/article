@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>{{ title }} | Rowan Cockett</title>
+
+    <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/contrib/auto-render.min.js" integrity="sha384-dq1/gEHSxPZQ7DdrM82ID4YVol9BYyU7GbWlIwnwyPzotpoc57wDw/guX8EaYGPx" crossorigin="anonymous"></script>
+
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald">
+
+    <link rel="import" href="dist/ink.html">
+    <script src="node_modules/bibtex-parse-js/bibtexParse.js"></script>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+</head>
+  <body>
+    <ink-article>
+        <h1>Exploring Julia with SimPEG</h1>
+        <ink-byline date="January 27, 2015">Rowan Cockett, Lindsey Heagy, Doug Oldenburg</ink-byline>
+
+        <h2-more url="/hi">hi</h2-more>
+        <h2-more>No link here</h2-more>
+
+        <ink-cards header="dreams" url="asdf" cards='[
+            {"title": "3point Science", "date": "2013 - 2016", "description": "Hi", "image": "https://raw.githubusercontent.com/simpeg/tle-finitevolume/master/images/DCEquations.png"},
+            {"title": "Visible Geology Something Else", "date": "2001 - 2006", "image": "https://raw.githubusercontent.com/simpeg/tle-finitevolume/master/images/FiniteVolume.png"},
+            {"title": "3point Science", "date": "2013 - 2016", "description": "Hi", "image": "https://raw.githubusercontent.com/simpeg/tle-finitevolume/master/images/DCEquations.png"},
+            {"title": "Visible Geology Something Else", "date": "2001 - 2006", "image": "https://raw.githubusercontent.com/simpeg/tle-finitevolume/master/images/FiniteVolume.png"},
+            {"title": "Steno3D", "date": "2016 - now", "description": "Scientific visualization in the web browser. Scientific visualization in the web browser. Scientific visualization in the web browser.", "image": "https://raw.githubusercontent.com/simpeg/tle-finitevolume/master/images/DCSurvey.png"}
+        ]'></ink-cards>
+
+        <cv-award
+            title="Vanier Scholarship"
+            description="Vanier Scholars demonstrate leadership skills and a high standard of scholarly achievement in the social sciences and humanities, natural sciences and engineering, and health-related fields."
+            amount=150000
+            level="national"
+            date="2014/04/25"
+            declined
+        ></cv-award>
+
+        <blockquote>
+          Hello to the world
+        </blockquote>
+
+    </ink-article>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(
+          document.body,
+          {
+              delimiters: [
+                  {left: "$$", right: "$$", display: true},
+                  {left: "\\[", right: "\\]", display: true},
+                  {left: "$", right: "$", display: false},
+                  {left: "\\(", right: "\\)", display: false}
+              ]
+          }
+      );
+    });
+    </script>
+  </body>
+</html>
