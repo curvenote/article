@@ -155,6 +155,16 @@
      * @polymer
      * @demo demo/ink-article.html
      */
+
+    var MATH_RENDER_OPTIONS = {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "\\[", right: "\\]", display: true},
+            {left: "$", right: "$", display: false},
+            {left: "\\(", right: "\\)", display: false}
+        ]
+    };
+
     class InkArticle extends Polymer.Element {
       static get is() { return 'ink-article'; }
       static get properties() {
@@ -166,6 +176,7 @@
         this._observer = new Polymer.FlattenedNodesObserver(this, (info) => {
           this.renderCitations();
           this.renderOutline();
+          this.renderMath();
         });
       }
       renderCitations() {
@@ -194,6 +205,22 @@
         };
         this.$.outline.headers = data;
       }
+      renderMath() {
+        // This is necessary to render inline math for firefox.
+        // <slot>s are treated differently.
+        var element = this;
+        setTimeout(
+          function(){
+            if(element._mathRendered){return}
+            renderMathInElement(
+                element,
+                MATH_RENDER_OPTIONS
+            );
+            element._mathRendered = true;
+          },
+          1000
+        )
+      }
     }
 
     window.customElements.define(InkArticle.is, InkArticle);
@@ -202,14 +229,7 @@
     document.addEventListener("DOMContentLoaded", function() {
       renderMathInElement(
           document.body,
-          {
-              delimiters: [
-                  {left: "$$", right: "$$", display: true},
-                  {left: "\\[", right: "\\]", display: true},
-                  {left: "$", right: "$", display: false},
-                  {left: "\\(", right: "\\)", display: false}
-              ]
-          }
+          MATH_RENDER_OPTIONS
       );
     });
   </script>

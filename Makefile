@@ -1,4 +1,4 @@
-.PHONY: install build
+.PHONY: install build publish watch serve
 
 install:
 	npm install -g polymer-cli
