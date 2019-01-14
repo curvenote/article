@@ -36,16 +36,6 @@ var bricksTheme = html`
     line-height: 1.25;
     text-align: justify;
   }
-  blockquote small{
-    display: block;
-    line-height: 1.428571429;
-    color: #999;
-    font-size: 75%;
-    text-align: right;
-  }
-  blockquote small:before {
-    content: '\2014 \00A0';
-  }
 
   dl dt{
     float: left;
@@ -66,6 +56,6 @@ var bricksTheme = html`
     font-style: italic;
   }
 </style>
-`
+`;
 
 export { katexCSS, bricksTheme };
