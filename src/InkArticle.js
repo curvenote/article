@@ -2,7 +2,7 @@ import { render } from 'lit-html';
 import { LitElement, html } from '@polymer/lit-element';
 import katex from 'katex';
 import renderMathInElement from 'katex/contrib/auto-render/auto-render.js';
-import { katexCSS } from './styles.js';
+import { katexCSS, bricksTheme } from './styles.js';
 
 
 var MATH_RENDER_OPTIONS = {
@@ -28,9 +28,12 @@ class InkArticle extends LitElement {
         this.headers = [];
 
         // This injects the css link into the head
-        var extraCSS = document.createDocumentFragment();
-        render(katexCSS, extraCSS);
-        document.head.appendChild(extraCSS);
+        var katexFragment = document.createDocumentFragment();
+        render(katexCSS, katexFragment);
+        document.head.appendChild(katexFragment);
+        var bricksFragment = document.createDocumentFragment();
+        render(bricksTheme, bricksFragment);
+        document.head.appendChild(bricksFragment);
     }
     firstUpdated() {
         setTimeout( () =>{

@@ -3,529 +3,30 @@
 <head>
     <title><%= htmlWebpackPlugin.options.title %></title>
 </head>
-<style type="text/css">
-  a {
-    color: #1E88E5;
-    text-decoration: none;
-    font-weight: 500;
-  }
-  a:hover{
-    text-decoration: underline;
-  }
-
-  h1, h2, h3, h4, h5{
-    font-family: 'Oswald', sans-serif;
-  }
-
-  code{
-    border-radius: 15px;
-    border: 1px solid #E4E4E4;
-    background-color: #FAFAFA;
-    padding: 0 5px;
-  }
-  h1:first-of-type{
-    border-bottom: 1px solid #333;
-  }
-  /*h1:first-of-type::after{
-    content: " ";
-    display: block;
-    position: relative;
-    width: 7px;
-    margin-top: -7px;
-    height: 7px;
-    background-color: #F69C1E;
-    top: 0px;
-    left: calc(100% - 7px);
-  }*/
-  blockquote{
-    padding: 10px 20px;
-    margin: 20px 0;
-    border-left: 5px solid #eee;
-    color: #31708f;
-    font-size: 17.5px;
-    font-weight: 300;
-    line-height: 1.25;
-    text-align: justify;
-  }
-  blockquote small{
-    display: block;
-    line-height: 1.428571429;
-    color: #999;
-    font-size: 75%;
-    text-align: right;
-  }
-  blockquote small:before {
-    content: '\2014 \00A0';
-  }
-
-  dl dt{
-    float: left;
-    width: 160px;
-    overflow: hidden;
-    clear: left;
-    text-align: right;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  dl dd{
-    margin-left: 180px;
-  }
-  p {
-    text-align: justify;
-  }
-  emph {
-    font-style: italic;
-  }
-</style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald">
 <body>
 
 <ink-article>
 
-
-    <h1>Website Redesign</h1>
-
-<h2>Motivation</h2>
-
-<p>
-    While working on my PhD and some related activities in <a href="/geosci">geoscience education</a> I explored ideas around scientific communication, the current publication process, interactive reproducible figures, collaboration, and combining computation and context. I have recently finished my PhD, and have devoted some time to redesigning my website. I want this to be an experiment to explore some of these ideas in more detail than I was able to during my PhD. The context for this is to look at the <a href="https://www.theguardian.com/science/2017/jun/27/profitable-business-scientific-publishing-bad-for-science" target="_blank">very broken publication machine</a> that has entangled itself with scientists, and has put their work behind pay-walls. <ink-aside>Unless you are <a href="https://www.nature.com/articles/d41586-018-00093-7" target="_blank"> Germany</a> and just refuse to pay? Interesting!</ink-aside> We pay for the privileged of buying our own work - and if you want to <emph>own</emph> your work or let citizens read it, that costs more. And by we pay, I mean you dear citizen - three times over (1) the scientists salary, (2) for the "volunteers" checking the work, and (3) for the final published product. It just <a href="https://www.force11.org/group/fairgroup/fairprinciples" target="_blank">isn't fair</a>. <ink-aside>FAIR: Findable, Accessible, Interoperable, Re-usable. The current system maybe gets a $1.2/4$.</ink-aside> So. I am going to make a website, and in a weird convoluted way try to make a point.
-</p>
-
-<ink-quote src="/api/bricks/rowan/quote-publishers"></ink-quote>
-
-<p>You need a <a href="https://www.force11.org/" target="_blank">force</a> of people coming at this from many different perspectives.</p>
-
-<h2>Dreams</h2>
-
-<p>
-    I think it would be totally cool to have a website that is an interactive visualization of all of your work. For the context of this article, your scientific contributions. Currently, your scientific resume is determined by your <emph>h-index</emph>, and not only is mine terrible, getting boiled down to <a href="https://scholar.google.ca/citations?user=k8DpDMMAAAAJ&hl=en" target=_blank>a number</a> is both terrifying and <strong>really boring</strong>.
-    <ink-aside>
-        <ink-figure img-src="/images/website/github-contributions.png">
-            GitHub contributions, but only the ones they determine worthy.
-        </ink-figure>
-    </ink-aside>
-    There are some projects out there (e.g. <a href="https://profiles.impactstory.org/u/0000-0002-7859-8394" target="_blank">impact story</a>) that do a slightly better job of this though alt-metrics. GitHub shows you a dashboard of your coding contributions. However, these <a href="https://www.growkudos.com/" target="_blank">examples</a> still have the problem that <a href="https://help.github.com/articles/why-are-my-contributions-not-showing-up-on-my-profile/">other people dictate your story</a>. I have worked on a bunch of different things and have threads of ideas that intermittently surface over the years and come together in unique ways - they certainly aren't all on GitHub and about zero are on Facebook if you round up. It would be totally cool to <emph>see</emph> this story - and communicate a slightly richer picture of my influences, ideas, thoughts and projects. <strong>My scholarship</strong>. I really have no idea what this would look like, but to get to anything sensible, you will need to start by getting data.
-</p>
-
-<ink-figure img-src="/images/website/life.png">
-    Not quite sure what good looks like. Maybe a <a href="https://bl.ocks.org/mbostock/4060954" target="_blank">stream graph</a> showing <a href="/projects">all projects</a>, contributions, broken up into categories and scaled by its AIF (arbitrary importance factor). Whatever it is, it has to be <a href="http://www.thebookoflife.org/the-need-for-eloquence/" target="_blank">eloquent</a> and <a href="https://informationisbeautiful.net/" target="_blank">beautiful</a>.
-</ink-figure>
-
-
-<h2>Start with data</h2>
-
-<ink-callout>
-    The next bit is going to show a bit of code, however, the only thing I am trying to show is different representations of small, modular ideas. Stick with me.
-</ink-callout>
-<p>
-    So I have a goal, my website should really show all sorts of things that I am up to, in various streams that has a sense of time, grouping, magnitude. You can zoom into things, drill down, explore. It should obviously be connected to github, slideshare, orcid, twitter, linkedin. A rich visualization needs rich data - and most of the data I actually want to show is hidden away in documents and is not accessible to visualize in other ways. My CV is a perfect example of this, it is written in <code>latex</code>, which at least allows me to comment things out and re-render it without loosing data. <ink-aside>Did you know that the PDF only really became a <a href="https://en.wikipedia.org/wiki/History_of_the_Portable_Document_Format_(PDF)" target="_blank">truly open standard</a> in July 2017?</ink-aside> However, a PDF is not as interactive as the web, so it is a poor target environment to render to (who prints things anyways...?!). I am going to start with pulling apart the idea of a CV, specifically <a href="/innovative-dissemination-award-simpeg">an award</a> we received for <a href="/simpeg">SimPEG</a>, because it makes sense that this might be a node in the visualization above and should be interacted with as a distinct <emph>thing</emph>. <ink-aside>Eventually this will probably look more like <a href="https://en.wikipedia.org/wiki/Linked_data" target="_blank">Linked Data</a> to give it <code>@context</code>.</ink-aside> I am going to represent this as <code>JSON</code> and throw a few things inside an object.
-</p>
+<h2>Getting started</h2>
+<p>These should be done in the head of your page.</p>
 
 <ink-code>
-{
-    "__class__": "CvAward",
-    "uid": "scholarship-ubc-simpeg",
-    "title": "UBC Library Innovative Dissemination of Research Award",
-    "description": "Awarded for the SimPEG framework and community development",
-    "amount": 1000,
-    "level": "institutional",
-    "date": "2016/04/08",
-    "declined": false,
-    "url_more": "/innovative-dissemination-award-simpeg"
-}
+    &lt;script src="/path/to/ink.js"&gt;&lt;/script&gt;
 </ink-code>
 
-<p>
-    This needs to be parsed or loaded up by something to transform it into a rendered form. In this case, I have chosen Python to parse the <code>JSON</code> and the <a href="http://propertiespy.readthedocs.io/en/latest/">properties</a> library to add structure, type-checking and validation. As you can see in the <code>JSON</code> above, there is a <code>__class__</code> that will determine which python class to load into, which is shown below. Here <code>CvItem</code> inherits from a base class which has the shared pieces like <code>uid</code>, <code>title</code> and <code>description</code>. I am using the properties library to do things like limit the choices of the <code>level</code> of the award to a typo-free subset.
-</p>
+<h2>Equations</h2>
 
-<ink-code>
-class CvAward(CvItem):
-
-    style_item = 'cv-award'
-
-    amount = properties.Float('amount of the award')
-    declined = properties.Bool('Award declined?', default=False)
-
-    level = properties.StringChoice(
-        'level of the award',
-        choices={
-            'institutional', 'regional',
-            'national', 'international'
-        }
-    )
-</ink-code>
-
-<p>
-    It is easy to deserialize the <code>JSON</code> to create an instance of this <code>CvAward</code> class:
-    <br><code>instance = CvAward.deserialize(data)</code><br>
-    This is important because now this data is in an <emph>executable</emph> form. For example, other methods can be added to the python class to <code>render</code> this to something more beautiful and readable than <code>JSON</code>!
-    <ink-aside>
-        I am using <a href="https://github.com/3ptscience/jinja2-registry" target="_blank">Jinja2 Registry</a> to do my rendering, which adds some nice things to Jinja2.
-    </ink-aside>
-    We can choose <code>html</code> as a render target language or perhaps even <code>latex</code> for that mater if you are making a PDF! Here I have chosen to focus mostly on the <code>html</code> side of things and am using the web components standard and <a href="https://www.polymer-project.org/">Polymer 2.0</a> to modularize these classes into custom DOM elements. The <a href="https://github.com/rowanc1/ink/blob/4fd19fcaabd86d9254482913c5709db2ba957669/cv-award.html" target="_blank"><code>CvAward</code></a> code is on GitHub, in a repository called <a href="https://github.com/rowanc1/ink" target="_blank"><code>Ink</code></a>. <ink-aside>The repository needs a bit of love before it is that usable by other people, but feel free to help out.</ink-aside> At the end of the day (after a bit of css and javascript) this award can be included in the page:
-</p>
-
-<ink-code>
-&lt;cv-award
-    title="UBC Library Innovative Dissemination of Research Award"
-    description="Awarded for the SimPEG framework and community development"
-    amount=1000.0
-    level="institutional"
-    date="2016"
-    url="/innovative-dissemination-award-simpeg"
-&gt;&lt;/cv-award&gt;
-</ink-code>
-
-
-<h2>Components are bricks!</h2>
-<p>When we render this component in <code>html</code>, it looks like:</p>
-<center>~~~~</center>
-<cv-award
-    title="UBC Library Innovative Dissemination of Research Award"
-    description="Awarded for the SimPEG framework and community development"
-    amount=1000.0
-    level="institutional"
-    date="2016"
-    url="/innovative-dissemination-award-simpeg"
-></cv-award>
-<center>~~~~</center>
-
-<p>
-    This is a <code>brick</code>. It is a <emph>thing</emph> that I can build with. <ink-aside>I am calling these components <code>bricks</code>, because there is <a href="http://science.sciencemag.org/content/142/3590/339.1.long" target="_blank">Chaos in the Brickyard</a>.</ink-aside>Each <code>brick</code> (component, artifact, thing) is completely stand-alone, so I can have a rather <a href="/scholarship-ubc-simpeg">boring page</a> that shows that <code>CvItem</code> all by itself. I should also eventually add a REST or GraphQL API so that you can load these up client side or query them from somewhere else. This would ultimately allow for the visualization at the start of this post - or much more importantly <strong>imports</strong> of content into a page. By that I mean:
-    <br><code>&lt;brick-import src="/api/v1/scholarship-ubc-simpeg"&gt;&lt;/brick-import&gt;</code><br>
-    Which could be added to an existing article, this is of course where things get really interesting. However, before we get there I want to explore a bit more about how you can combine these into various different pages.
-</p>
-
-
-<h2>Composing pages</h2>
-
-<p>
-    These <code>brick</code>s are stand-alone contributions, however, to give them context they need to be embedded in other pages, which means you need to find them programmatically. Each <code>brick</code> should have a persistent unique identifier (<code>uid</code>) so I can query it either directly or search for similar content - currently I am using a human readable <emph>slug</emph>. Also, right now my "database" is the file system and my caching layer is a python dictionary - the height of sophistication, and ready for production use (clearly).
-</p>
-
-<h3>Query</h3>
-
-<p>
-    I should probably look more into <a href="http://graphql.org/learn/" target="_blank">GraphQL</a> here, because that community has actually given some thought on how to structure queries - regardless of your database implementation. <ink-aside>GraphQL is <a href="https://github.com/graphql/graphql-js/issues/271" target="_blank">similar</a> in principle to <a href="https://en.wikipedia.org/wiki/Linked_data" target="_blank">Linked Data</a> as it defines a standard way to transfer data, and hosts its own schema/ontology in a discoverable way - but GraphQL is more approachable (e.g. <a href="https://www.w3.org/TR/2014/REC-rdf-schema-20140225/" target="_blank">than RDF</a>) and seems to have slightly <a href="http://graphene-python.org/" target="_blank">better tooling</a> and documentation.</ink-aside>
-    For example, I would like to query by <code>CvItems</code> that are featured and tagged as education to go in my CV. Similar to my stellar database implementation, this requires a lot more work and integration with current standards.
-    However, to get up and running, I rolled my own <emph>Query Language-ish</emph> (really?!) that allows you to query by <code>kind</code>, <code>tag</code> or <code>uid</code> or a combination of these. This I have exposed as a series of collection classes.
-</p>
-
-<ink-code>
-{
-    "__class__": "CollectionItems",
-    "title": "Awards",
-    "description": "Collection of awards",
-    "license": "CC-BY-4.0",
-    "query_type": ["kind"],
-    "query_kind": "CvAward",
-    "uid": "collection-awards"
-}
-</ink-code>
-
-<p>
-    Similar to before, this <code>brick</code> can be <a href="/collection-awards">exposed independently</a> and in this case is a collection of all of my awards.
-</p>
-
-<h3>List</h3>
-
-<p>
-    Most pages will be slightly more specific about exactly how they should act - importing specific bricks (probably at specific <a href="https://cloudplatform.googleblog.com/2016/08/building-immutable-entities-into-Google-Cloud-Datastore.html" target="_blank">immutable versions</a>). In this case, the page that provides context is <a href="curriculum-vitae">my CV</a>, which has a whole list of awards, education, experience and skills.
-</p>
-
-<ink-code>
-{
-    "__class__": "Collection",
-    "uid": "curriculum-vitae",
-    "title": "Curriculum Vitae",
-    "description": "Rowan Cockett's Curriculum Vitae",
-    "license": "CC-BY-4.0",
-    "query_type": ["uid"],
-    "thumbnail": "/images/rowan/requesting-to-join.png",
-    "query_uids": [
-        "cv-intro",
-        "collection-education",
-        "hr",
-        "collection-experience",
-        "hr",
-        "collection-awards"
-    ]
-}
-</ink-code>
-
-<p>
-    The link to my CV can be included on my <a href="/">home page</a>, which in turn is a query into this data source - featured thoughts, ideas, and contributions.
-    In this example, I got sick of writing some of the very simple pieces, like a horizontal-rule <code>&lt;hr&gt;</code>, so I just made this into a reusable component. This is probably the silliest, most over-designed infrastructure to put four characters into an html page ever invented. Thankfully, this has other uses like <emph>importing ideas</emph>.
-</p>
-
-<hr>
-
-<h2>Importing ideas</h2>
-
-<p>
-    In the CV example, I have shown that you can break your document into a database and represent each line (almost) as an entry that can be queried or exposed in multiple ways (json, executable code, latex or html). These rather simple ideas lead to creating pages through composition of data sources rather than composition in the solely artistic sense. Above, there were commonly used bricks that emerged as I was writing. Some of these were solely for layout, however, some of these - especially when I was writing my phd - were more useful: figures, equations, sections of text.
-</p>
-
-<h3>Equation bank</h3>
-
-<p>
-    I have experimented with <a href="https://github.com/simpeg/equations">reusable equations</a> and the same idea for <a href="https://github.com/simpeg/figures">figures</a> in my thesis. This is difficult to actually do in practice, and my thesis git repository had to have complex pointers to all of the dependencies. A paper I wrote that referenced these equations inevitably ends up on a different version of the equation, it is a bit intricate to stay organized - very possible - but easier to copy and paste.
-    <ink-aside>I used <a href="https://github.com/aranzgeo/git-project">Git Project</a> to keep track of specific links to commit hashes and repositories.</ink-aside>
-    I intended to have these equations used by the <a href="/simpeg">SimPEG community</a>, but the uptake was ~0, although  enthusiasm was notoriously high (<a href="https://twitter.com/leouieda/status/824316659779469312">7 likes, wooo!</a> ha). In the <a href="/geosci">GeoSci community</a>, however, the development of ideas is necessarily more collaborative and for consistency of equations across the entire resource of interconnected pages, it was worth the time to invest in an <a href="https://em.geosci.xyz/content/equation_bank.html">equation bank</a>. This allows us to debate and invest time in notation, which <a href="/on-breakthroughs">is important</a>. The equation bank is a list of equations with correct notation, and expose these to the entire GeoSci not-a-textbook textbook.
-    For example, pulling from the article on <a href="https://em.geosci.xyz/content/maxwell1_fundamentals/formative_laws/lenz.html" target="_blank">Lenz's Law</a> we can see that the equations are dynamically <code>.. include::</code>-ed - the <a href="http://docutils.sourceforge.net/rst.html" target="_blank">restructured text</a> equivalent of an import statement.
-</p>
-
-<ink-code language="text">
-A convenient way to quantify the strength of the magnetic field in a
-particular region is the magnetic flux (:math:`\Phi_{\mathbf{B}}`),
-
-.. include:: ../../equation_bank/magnetic_flux_time.rst
-
-which provides a measure of the magnetic flux density over a given area.
-
-Faraday's Law of induction,
-
-.. include:: ../../equation_bank/faraday_lenz_time.rst
-</ink-code>
-
-<p>
-    I also used the idea of an equation bank in <a href="/phd-thesis">my thesis</a> written in <code>latex</code>, this allowed me to import equations:
-    <br><code>\input{equations/something-horrendous}</code><br>
-    which magically creates a
-    <a href="https://github.com/simpeg/equations/blob/f0b65615b64a06df8093a0893f01424b489fb249/richards/richards-timestep-deriv-blocks.tex" target="_blank">block matrix equation</a> for the <a href="/richards-paper">Richards equation derivative</a>.
-</p>
-<ink-equation style="zoom:0.7">
-\begin{aligned}
-\overbrace{
-    \left[
-        \frac{1}{\Delta t}
-        \frac{\partial \boldsymbol{\theta}^{n+1}}{\partial\boldsymbol{\psi}^{n+1}}
-        -\mathbf{D}
-        \text{ diag}\left( \mathbf{G} \boldsymbol{\psi}^{n+1} \right)
-        \frac{\partial \mathbf{k}_{Av}}{\partial\boldsymbol{\psi}^{n+1}}
-        -\mathbf{D}
-        \text{ diag}\left( \mathbf{k}_{Av}(\boldsymbol{\psi}^{n+1},\mathbf{m}) \right)
-        \mathbf{G}
-        - \mathbf{G}_{z}
-        \frac{\partial \mathbf{k}_{Av}}{\partial\boldsymbol{\psi}^{n+1}}
-    \right]
-}^{\mathbf{A}_0(\boldsymbol{\psi}^{n+1})}
-\frac{\partial \boldsymbol{\psi}^{n+1}}{\partial\mathbf{m}}
-\\
-+
-\underbrace{
-    \left[
-        -\frac{1}{\Delta t}
-        \frac{\partial \boldsymbol{\theta}^n}{\partial\boldsymbol{\psi}^n}
-    \right]
-}_{\mathbf{A}_{-1}(\boldsymbol{\psi}^n)}
-\frac{\partial \boldsymbol{\psi}^n}{\partial\mathbf{m}}
-=
-\underbrace{
-\left[
-    -\mathbf{D}
-    \text{ diag}\left( \mathbf{G} \boldsymbol{\psi}^{n+1} \right)
-    \frac{\partial \mathbf{k}_{Av}}{\partial\mathbf{m}}
-    -\mathbf{G}_{z}
-    \frac{\partial \mathbf{k}_{Av}}{\partial\mathbf{m}}
-\right]
-}_{\mathbf{B}(\psi^{n+1})}&
-\end{aligned}
-</ink-equation>
-
-<p>
-    I can use this equation in <a href="/phd-thesis">my thesis</a>, <a href="/richards-paper">my paper</a>, and <a href="/static/richards-equation/index.html#/9">presentations</a> - and know that it is correct! Which it never is, so you can just <a href="https://github.com/simpeg/equations/commit/f0b65615b64a06df8093a0893f01424b489fb249#diff-ae1889936116cd0a2e12974f31ba3665" target="_blank">release a new version</a> - and update things, because you didn't copy and paste. By using an equation bank, we can discuss syntax and <a href="https://em.geosci.xyz/content/maxwell1_fundamentals/quick_guide_maxwell.html#variables-and-units" target="_blank">define the meaning of the variables</a> and <a href="https://github.com/csdms/standard_names/blob/master/standard_names/data/names-0.8.5.txt" target="_blank">standardize our naming</a> of variables.
-    <ink-aside>
-        These common resources are referred to as the <a href="https://www.force11.org/group/scholarly-commons-working-group" target="_blank">Scholarly Commons</a>, which has <a href="https://www.force11.org/group/scholarly-commons-working-group-wp2principles/principles-scholarly-commons-open-comments" target=_blank>principles</a> and sketches at <a href="https://youtu.be/o4nUe-6Ln-8?t=8m19s" target="_blank">infrastructure</a>.
-    </ink-aside>
-    However, if we copy and paste, it isn't worth putting any effort into making an equation any good if you are only going to use it once. If we build it up as common resource, you can invest in them.
-</p>
-
-<h3>It's all just math...</h3>
-<p>
-    For example, if we had a true equation bank - maybe we could invest more in showing our readers the derivation of an equation. We could have a <a href="https://em.geosci.xyz/content/maxwell1_fundamentals/quick_guide_maxwell.html#variables-and-units" target="_blank">look up table</a> for our variables with links to more work. Or see where this equation is used throughout our work.
-</p>
-
-<ink-callout>
-    Try clicking the DC resistivity equation below to see a <a href="/pixels-and-their-neighbors">full derivation</a>. Can't do that in a pdf.
-</ink-callout>
-
-<div id="dc-equation" style="cursor: pointer;" onclick="document.getElementById('dc-equation').setAttribute('hidden', true);document.getElementById('dc-figure').removeAttribute('hidden');" title="Click to see derivation.">
-    <ink-equation>
-        \nabla \cdot \sigma \left( - \nabla \phi \right) = q
-    </ink-equation>
-</div>
-<div id="dc-figure" hidden style="cursor: pointer;" onclick="document.getElementById('dc-figure').setAttribute('hidden', true);document.getElementById('dc-equation').removeAttribute('hidden');">
-    <ink-figure img-src="/images/finite-volume/dc-equations.png">
-        The derivation of the DC resistivity equations.
-    </ink-figure>
-</div>
-
-<p>
-    When actually writing, the annoying part is that you never just copy the equation in directly, it has to be changed via notation and isolation of variables. But heck, because we invested in an equation bank this is trivial right?!
-</p>
-
-<ink-code>
-&lt;ink-equation
-    src="/api/v1/dc-resistivity-eqn"
-    substitute='{"sigma": "\frac{1}{\rho}"}'
-    isolate="phi"
-&gt;&lt;/ink-equation&gt;
-</ink-code>
-
-<p>
-    This would obviously substitute out variables and use <a href="http://www.sympy.org/" target="_blank">SymPy</a> to isolate the variable $\phi$ dynamically - and <a href="http://discretize.simpeg.xyz/en/latest/" target="_blank">solve the PDE</a> in the process. Some of this work is ... not quite done yet. Stay tuned! However, I have wrapped up <a href="https://khan.github.io/KaTeX/" target="_blank">Katex</a> in a web component, because MathJax is slooooow (<a href="https://www.intmath.com/cg5/katex-mathjax-comparison.php" target=_blank>63ms vs 1048ms</a>).
-</p>
-
-<ink-figure img-src="/images/website/ink-math.gif">
-    I am linking the <code>brick.math</code> property to rendering in KaTex - which is super fast!
-</ink-figure>
-
-<h2>On collaboration</h2>
-<ink-aside>
-    <ink-figure img-src="/images/website/lindsey-refactoring.png">
-        <a href="https://www.youtube.com/watch?v=IW2LDsevvDk" target="_blank">Refactoring Geoscience Education</a>
-    </ink-figure>
-</ink-aside>
-
-<p>
-    One of my favorite talks is one that Lindsey Heagy gave at SciPy 2016 on <a href="https://www.youtube.com/watch?v=IW2LDsevvDk" target="_blank">Refactoring Geoscience Education</a> where she presented some of these ideas using the analogy of programming and open source.
-    How do we go from copy-paste, serial, scientific writing to something that is a bit more ... modern and inspired. We gave a follow up at <a href="/jupytercon2017">JupyterCon in 2017</a>. There are a lot of ideas in here, and I will unpack them later. The important piece is that these <code>bricks</code> (components, equations, CvItems, and figures) should be able to be imported through some sort of Distributed Idea Registry <ink-aside>The <emph>Distributed Idea Registry</emph>, kinda like <a href="https://www.windows-commandline.com/dir-command-line-options/" target="_blank"><code>dir</code></a>, but for all the ideas.</ink-aside> system. Why? The hard ideas require collaboration.
-</p>
-
-<ink-quote src="/api/bricks/rowan/quote-collaboration"></ink-quote>
-
-<p>
-    I wrote my whole thesis and most of my papers in Google Docs mostly because the collaboration that Docs offers is better than anything else. In these documents, we can strip out most of the latex to produce equations and figures into small, targeted files that are tracked independently. This allows us to use a collaborative document editor to do what it is good at.
-</p>
-<ink-figure img-src="/images/website/collaboration.png">
-    Each sentence is edited by multiple people. All of this is lost when we compile to Latex.
-</ink-figure>
-<p>
-    The real-time editing means that most sentences are written by multiple people, and the commenting system allows us to sidestep the formal scientific prose and have a more human conversation on the side while we figure out what we are trying to say.
-</p>
-<ink-figure img-src="/images/website/comments.png">
-    The comment stream on choosing a single word is long and collaborative as we try to articulate what we actually mean. I still don't know <a href="https://english.stackexchange.com/questions/121775/what-is-the-difference-between-everywhere-and-anywhere" target="_blank">any<del>every</del>thing</a>.
-</ink-figure>
-
-<h3>Attribution over plagiarism</h3>
-
-<p>
-    It is really hard to communicate complex ideas, this is the main reason (beyond vanity) that <a href="/on-ideas-and-pencils">ideas need attribution</a>. These ideas, comments, nuances, references, citations are important to record, however, the final published version of a <del>blog post</del> scientific article are supposed to show you just the final articulation, and a handful of potentially unresolvable citations to previous works. However, maybe it would be nice if we didn't loose all this context and discussion?
-    Traditional citations are big and clunky. By <emph>big</emph> I mean they can't point to a paragraph, figure, or character. These citations can't tell you, dear reader, <emph>why</emph> I cited that silly paper - maybe the <a href="/on-research"><code>{"reason": "Just to please Reviewer #2"}</code></a>. By <emph>clunky</emph> I mean by the time I have flipped to the bibliography, Googled the citation, logged in to my university VPN, remembered my password, got past the publishers pay wall, and downloaded the PDF - I have completely forgotten why this paper was even important. It probably wasn't?
-</p>
-
-<ink-quote src="/api/bricks/rowan/quote-tufte-excellence"></ink-quote>
-
-<ink-figure img-src="/images/website/ink-cite.gif">
-    We still need the traditional citations, but these are clumsy. Why do I have to cite a whole paper, <a href="https://twitter.com/worrydream/status/534807749029142529" target="_blank">instead of a single paragraph</a>?
-</ink-figure>
-
-<p>
-    There is lots to explore here, and lots of people are exploring how to <a href="https://web.hypothes.is/" target="_blank">annotate</a> articles and <a href="https://www.youtube.com/watch?v=o4nUe-6Ln-8&feature=youtu.be&t=8m19s" target="_blank">where and how</a> to store that data. The ideas of citations should allow researchers to point to a figure, an equation, or a <a href="https://www.force11.org/datacitationprinciples" target="_blank">subset of a dataset</a>. Again, I am just <a href="/on-breakthroughs">poking at ideas</a> and skimming the surface with some experimentation. However, I do think that we may be able to re-evaluate how we display a reference. A portrait-only-rectangle of paper can't have overlays, pop-ups, hyperlinks, so instead we sacrifice space at the end of a sentence to provide a look-up key (People <emph>et al.</emph>, <a href="https://en.wikipedia.org/wiki/Philosophical_Transactions_of_the_Royal_Society" target="_blank">1776</a>) to another lookup table kept at the end of your stack of yellowing papyrus. With all our fancy technology these days - maybe we can dream our way past 250 years of indoctrination.
-</p>
-
-<h3>Support the chaos</h3>
-
-<ink-aside>
-    <ink-figure img-src="/images/website/idea-brick.png">
-        Ideas are small, and should be captured and expanded in the Commons. It is more about the <a href="https://pentandra.com/blog/putting-the-pieces-together-technology/" target="_blank">Act of Commoning</a> than the product. Learn from evolution. Learn from science. Process over product.
-    </ink-figure>
-</ink-aside>
-<p>
-    By breaking these ideas up into their component pieces - the <code>brick</code> like building blocks - we can cite the pieces, version independently, pull in other peoples work. The <a href="https://www.force11.org/group/scholarly-commons-working-group/wg4enabling-technologies-and-infrastructures" target="_blank">infrastructure</a> that supports this process - working openly, researching, thinking - can fundamentally change how we view scholarship. When we get to this stage, attribution is built into the fabric of the system - so as long as you use appropriate tools - plagiarism isn't possible. The <a href="https://omictools.com/bio-entity-identification-category" target="_blank">tools</a> to assist in the act of <a href="https://pentandra.com/blog/putting-the-pieces-together-technology/" target="_blank">scholarly commoning</a> will necessarily be diverse, tailored to the task at hand - yet follow some <a href="https://www.force11.org/group/scholarly-commons-working-group-wp2principles/principles-scholarly-commons-open-comments" target=_blank>principles</a> and <a href="https://json-ld.org/" target="_blank">standards</a>. We currently worry about silly things with scorn from our towers high atop the status quo, like the <a href="https://en.wikipedia.org/wiki/Least_publishable_unit" target="_blank">Least Publishable Unit</a> or <a href="https://en.wikipedia.org/wiki/Plagiarism#Self-plagiarism" target="_blank">self plagiarism and recycling fraud</a>. If you have the tiniest of ideas, publish it - if you want to reuse your work, just <a href="https://creativecommons.org/" target="_blank">creatively license</a> it to yourself. You shouldn't have to ask permission to work on ideas. You shouldn't be criticized for making your work accessible through re-publication. There is no one-true-way to explain something - if you are working on something hard, messy, nuanced, or vague - it will require all the <a href="https://distill.pub/2017/research-debt/" target="_blank">distillation</a> and <a href="/on-breakthroughs">curation</a> you can throw at it.
-</p>
-
-<hr>
-<h2>Do you really care?</h2>
-<p>
-    <a href="https://trends.google.com/trends/explore?date=all&q=%2Fm%2F0cs9q,%2Fm%2F0d063v,%2Fm%2F0990h,%2Fm%2F06mmr" target="_blank">You don't</a>. You have no time to dig into all the details. You want the high level overview. The executive summary. <a href="/probability-of-a-spill">The picture</a>. The easy. Right up until the point where you actually have to <emph>understand it</emph>, to dig into the details, and dive into the reasons, explanations, proof, references and related ideas. Wouldn't it be nice if we broke through our ingrained habits of thinking about static paper rectangles as the only way to render something - as if the ability to print is synonymous with archiving. This is an <a href="https://vimeo.com/115154289" target="_blank">inhumane representation of thought</a>. Ideas are rarely linear.
-</p>
-<ink-figure img-src="/images/website/icare.gif">
-    <a href="/weakform-dc">Expand an idea</a> to drill down into what is really going on.
-</ink-figure>
-
-<p>
-    The writer, or at least the environment, should have some empathy for the reader: don't waste my time.
-    <ink-aside>Have <a href="https://edwardtufte.github.io/tufte-css/" target="_blank">Tufte style sidenotes</a> to add sarcastic or poignant insights.</ink-aside>
-    Allow me to drill down, navigate quickly to an idea, jump, skip, skim, collapse, star, fork, loot, think, and most importantly - interact.
-</p>
-
-<ink-figure img-src="/images/website/ink-outline.gif">
-    Don't get lost, keep the outline close. Jump to the important stuff.
-</ink-figure>
-
-<hr>
-
-<h2>Interactive figures</h2>
-<p>
-    If you haven't yet seen <emph>all</emph> of <a href="http://worrydream.com/" target="_blank">Bret Victor</a>'s <a href="https://vimeo.com/worrydream" target="_blank">videos</a> and <a href="http://worrydream.com/#!2/LadderOfAbstraction" target="_blank">essays</a> - I should have probably redirected you at the beginning of my undirected rant. My apologies. This will wait.
-</p>
-
-<ink-figure img-src="/images/website/tangle.gif">
-    Linked text and visualization to reason about <a href="/probability-of-a-spill">probability of oil spills</a> using government data.
-</ink-figure>
-
-<p>
-    Also. <a href="https://bost.ocks.org/mike/algorithms/" target="_blank">Mike Bostock</a> on visualizing algorithms and on his new project <a href="http://observablehq.com" target="_blank">Observable</a>. <a href="http://www.dougengelbart.org/pubs/augment-3906.html" target="_blank">Douglas Engelbart</a> on augmenting human intellect. And <a href="https://www.edwardtufte.com/tufte/" target="_blank">many</a>, <a href="https://acko.net/" target="_blank">many</a> <a href="http://jupyter.org/" target="_blank">others</a>.
-    Again, I am only skimming the surface here, playing with things like <a href="http://explorabl.es/" target="_blank">explorable explanations</a> and <a href="http://worrydream.com/Tangle/" target="_blank"><code>tangle.js</code></a>.<ink-aside>Apparently Tangle is only in <a href="http://worrydream.com/" target="_blank">Chapter 2</a> of 4 (so far). So we all have some work to do to catch up...</ink-aside>
-    Experimenting with ideas of how to link computation, visualization, (con)text, and presentations. The <a href="/probability-of-a-spill">example</a> above does all of the computation in the web browser, which can do a lot - but javascript often isn't the language of choice for the <a href="http://jupyter.org/" target="_blank">scientific conversation</a>, which invariably has some computation sprinkled in.
-</p>
-
-<p>
-    In <a href="/geosci">GeoSci</a> many of the figures in the content are generated dynamically in Python using <a href="/simpeg">SimPEG</a> when the entire resource is compiled. This is a big step forward from <a href="https://www.youtube.com/watch?v=IW2LDsevvDk&feature=youtu.be&t=3m7s" target="_blank">loosing the numerical instructions</a> to create the figure in the first place. Distributing the source code allows you to jump into the instructions and check for bugs, or change and <a href="/jupytercon2017">extend the resource</a> to your own experimentation. However, as it stands now we are recompiling the entire resource and making the plots every time - not only is this wasteful of computational resources, it means that we can't use the figures easily in other contexts, textbooks, and presentations. <ink-aside>Again, these common, standards-based, invested-in <code>bricks</code> are what I see as elements of the <a href="https://www.force11.org/group/scholarly-commons-working-group" target="_blank">Scholarly Commons</a>.</ink-aside> It also means that investing in the <code>FigureBrick</code> is hampered or non-existent. The figure doesn't have an interactive button that spins up a <a href="http://jupyterhub.readthedocs.io/en/latest/" target="_blank">JupyterHub</a> instance and interactively creates your pictures/data on the fly. It should. Heck, it probably <a href="https://research.google.com/colaboratory" target="_blank">will even be "free"</a>.
-</p>
-<ink-figure img-src="/images/website/sphinx-figures.png">
-    These <a href="https://em.geosci.xyz/content/maxwell2_static/fields_from_grounded_sources_dcr/electrostatic_sphere.html" target="_blank">figures</a> are generated from source every time the not-a-textbook textbook is recompiled. The source code is a click away, but the figure is still static.
-</ink-figure>
-
-<hr>
-
-<h2>Summary</h2>
-
-
-<p>
-    If you are just making a simple website for yourself - this is probably the worst idea. You should look to your favorite <a href="https://blog.getpelican.com/" target="_blank">static site generator</a> and host it on <a href="https://pages.github.com/" target="_blank">GitHub Pages</a> or similar. However, if you are trying to think about how to coordinate the collaborative development of ideas, <a href="/geosci">scientific textbooks</a>, or <a href="/probability-of-a-spill">interactive articles</a> and you want to capture attribution of the development and inspiration of the ideas in a more sophisticated way than an unresolvable text-only citation that is non-specific as to why you even are citing it - maybe you should <a href="https://www.force11.org/group/scholarly-commons-working-group" target="_blank">join the conversation</a>.
-</p>
-<ink-aside><ink-figure img-src="/images/website/chalk-talk.png">
-    The future is exciting. We won't be waiting for these ideas to hit the printed page. We will be interacting with them out in the world. See <a href="https://vimeo.com/232230096" target="_blank">Chalk Talk</a> by <a href="http://mrl.nyu.edu/~perlin/" target="_blank">Ken Perlin</a>.
-</ink-figure></ink-aside>
-<p>
-    I think there are some interesting ideas to explore when you start thinking about your scholarly contributions as data. By <a href="http://schema.org/CreativeWork" target="_blank">rigorously defining</a> the component pieces - the figures, equations, methods sections, abstracts, and layouts - we can start to <a href="https://vimeo.com/232230096" target="_blank">creatively compose</a> all sorts of things that we can't do by ourselves alone. I wish to work on big things. Those things that are not possible to do by yourself. I wish to work on the things that I cannot. To work on the things that are not possible. A big part of this is not just <emph>what</emph> we work on, but <emph>how</emph> we work. The action, the verb is so much more important than the noun. It is not the current scientific theory that we are proud of - it is the scientific <emph>process</emph> we use to show the theory can be improved or is totally wrong.
-</p>
-<ink-quote src="/api/bricks/rowan/quote-hamming-important-work"></ink-quote>
-<p>
-    The commoning and the commons.<ink-aside>And the <a href="https://www.force11.org/community/members-directory" target="_blank">commoners</a>, I suppose...</ink-aside>
-</p>
-<p>
-    This will require the schemas, the data, the tools, and a diversity of opinions. Also, it won't be locked away in a PDF, or even on a computer screen or in virtual reality - it will be out in the world. Anyways, that is what <a href="https://dynamicland.org/" target="_blank">Chapter 4</a> is about.
-</p>
-
-<h3>Why this matters?</h3>
-<p>
-    I started out this article talking about taking control of your own story. The publishing companies know that if they control how you "<a href="https://www.mendeley.com/guides/web/04-complete-profile" target="_blank">communicate who you are and what you've done as a researcher</a>", and they keep the <emph>h-index</emph> close at hand, they control the whole system. How we judge ourselves and our peers. How we promote, tenure-ify.
-</p>
-<p>
-    The thing is, you are more interesting than a handful of numbers - and ultimately it is you who should be in control of telling your story.
-</p>
-<p>
-    So. I made a website.
-</p>
-
-<hr>
-
-<h2>Acknowledgments</h2>
-<p>
-    Thanks to <a href="https://lindseyjh.ca/" target="_blank">Lindsey Heagy</a> for refining these ideas with me for the past few years. <a href="https://pentandra.com" target="_blank">Chris Chapman</a> for his welcoming, editing and work on the <a href="https://www.force11.org/group/scholarly-commons-working-group/wg4enabling-technologies-and-infrastructures" target="_blank">enabling technologies and infrastructures</a> working group. <ink-aside>Does this count as peer review?</ink-aside><a href="https://twitter.com/EvanBianco" target="_blank">Evan Bianco</a> for editing, adding thoughts and pointers. And many others who are constructively working past the status quo for how we conduct, capture and judge scholarly outputs.
-</p>
-
-
-
+<ink-demo>
     <ink-equation>
         x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}
     </ink-equation>
+</ink-demo>
+
+<p>Use the <code>eqn.math</code> property to change the math dynamically:</p>
+
+<ink-demo>
     Drag me to expand the Taylor Series: <input type="range" min="1" max="4" value="1" id="taylor-slider">
     <script type="text/javascript">
         document.addEventListener("DOMContentLoaded", function(event) {
@@ -545,22 +46,75 @@ Faraday's Law of induction,
     <ink-equation id="taylor">
         f(x) \approx f(a) \cdots
     </ink-equation>
+</ink-demo>
 
-    <ink-range bind="x"></ink-range>
-    <ink-range bind="x"></ink-range>
+<h2>Figures</h2>
+
+<ink-demo>
+    <ink-figure img-src="https://raw.githubusercontent.com/simpeg/tle-finitevolume/master/images/FiniteVolume.png">
+      Setup of a DC resistivity survey.
+    </ink-figure>
+</ink-demo>
+
+
+<h2>Code and demos</h2>
+
+<ink-demo>
+    <ink-code language="python">
+        &gt;&gt;&gt; import numpy as np
+        &gt;&gt;&gt; a = np.arange(15).reshape(3, 5)
+        &gt;&gt;&gt; a
+        array([[ 0,  1,  2,  3,  4],
+               [ 5,  6,  7,  8,  9],
+               [10, 11, 12, 13, 14]])
+    </ink-code>
+</ink-demo>
+
+<p>Most of the content on this page uses the <code>&lt;ink-demo&gt;</code> component:</p>
+
+<ink-demo>
+    <ink-demo>
+        <p>This is a demo of a demo!!</p>
+    </ink-demo>
+</ink-demo>
+
+
+<hr>
+<h2>Text content</h2>
+
+<p>
+    Ink has <a href="https://edwardtufte.github.io/tufte-css/" target="_blank">Tufte style sidenotes</a> to add sarcastic or poignant insights.
+    These sidenotes can include figures and equations.
+</p>
+
+<ink-demo>
+    <p>
+        Sometimes you need to say things on the side.
+        <ink-aside>
+            Which is over here!
+        </ink-aside>
+    </p>
+</ink-demo>
+
+
+<ink-demo>
+    <ink-callout class="danger">
+        <strong>Warning</strong>: This may get peoples attention.
+    </ink-callout>
+</ink-demo>
+
+
+
+    Ranges:<br>
+    <ink-range bind="x"></ink-range><br>
+    <ink-range bind="x"></ink-range><br>
     <ink-range bind="y"></ink-range>
     <br>
 
-    <ink-derived name="x2" value="x * x"></ink-derived>
+    <!-- <ink-derived name="x2" value="x * x"></ink-derived> -->
 
     This is <ink-display bind="x"></ink-display> and <ink-display bind="y"></ink-display>.
 
-
-    <ink-demo>
-        <ink-equation>
-            x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}
-        </ink-equation>
-    </ink-demo>
 
     <ink-card title="Website Redesign" description="Some ideas about the scholarly commons." img-src="http://localhost:8080/images/website/life.png" url="/on-my-website-2018" date="2018"></ink-card>
 
