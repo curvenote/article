@@ -39,7 +39,7 @@
     </style>
     <blockquote>
         <slot></slot>
-        <div>- <a href="[[ src ]]" target="_blank">[[ author ]]</a> [[ date ]]</div>
+        <div>- <a href="[[ url ]]" target="_blank">[[ author ]]</a> [[ date ]]</div>
     </blockquote>
   </template>
 
@@ -48,16 +48,45 @@
       static get is() { return 'ink-quote'; }
       static get properties(){
         return {
-          src:{
-            type: String,
+          url:{
+            type: String
           },
           author:{
-            type: String,
+            type: String
           },
           date:{
             type: String
+          },
+          src:{
+            type: String,
+            observer: 'src_changed'
           }
         };
+      }
+      src_changed() {
+        if(!this.src.startsWith('/api/bricks')){console.log('ink-quote src parameter could not be used.');return;}
+        if(this.src === "" | this.src == this._last_src){return;}
+        this._last_src = this.src;
+        var self = this;
+        function httpGetAsync(src, callback){
+          var xmlHttp = new XMLHttpRequest();
+          xmlHttp.onreadystatechange = function() {
+              if(xmlHttp.readyState == 4 & xmlHttp.status == 200){
+                  try{
+                    var data = JSON.parse(xmlHttp.responseText);
+                  }catch(err){
+                    return;
+                  }
+                  self.url = data.url_more;
+                  self.author = data.author;
+                  self.date = data.date.start;
+                  self.textContent = data.quote;
+              }
+          }
+          xmlHttp.open("GET", src, true); // true for asynchronous
+          xmlHttp.send();
+        }
+        httpGetAsync(this.src);
       }
     }
     window.customElements.define(InkQuote.is, InkQuote);
