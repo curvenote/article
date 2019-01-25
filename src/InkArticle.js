@@ -55,7 +55,7 @@ class InkArticle extends LitElement {
         }
         var data = [];
         for (var i = 0; i < headers.length; i++) {
-            var id = headers[i].tagName.toLowerCase() + '--' + headers[i].textContent.toLowerCase().replace(/ /g, '-').replace(/\W-/g, '');
+            var id = headers[i].textContent.toLowerCase().replace(/ /g, '-').replace(/\W-/g, '');
             headers[i].id = id;
             data.push({
                 id: id,

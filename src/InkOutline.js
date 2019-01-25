@@ -20,6 +20,11 @@ class InkOutline extends LitElement {
         if(!element){
           return;
         }
+        if(history.pushState) {
+          history.pushState(null, null, '#' + header.id);
+        }else {
+          location.hash = '#' + header.id;
+        }
         // TODO: Put this in the fragment in the URL.
         element.scrollIntoView({behavior:'smooth', block: "start", inline: "nearest"});
     }
