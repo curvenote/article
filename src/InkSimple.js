@@ -220,7 +220,6 @@ class InkCard extends LitElement {
                 display: inline-block;
                 width: ${ this.width || '200px'};
                 height: 0;
-                padding-bottom: 75%;
                 margin: 15px;
                 position: relative;
                 cursor: pointer;

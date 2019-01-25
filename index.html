@@ -9,10 +9,16 @@
 
 <ink-article>
 
+<h1>Ink Components</h1>
+<p>
+    The goal of <code>ink.js</code> is to provide a number of web-components for interactive scientific writing.
+    This includes:
+    <ink-outline inline></ink-outline>
+</p>
 <h2>Getting started</h2>
 <p>These should be done in the head of your page.</p>
 
-<ink-code>
+<ink-code copy>
     &lt;script src="/path/to/ink.js"&gt;&lt;/script&gt;
 </ink-code>
 
@@ -104,20 +110,27 @@
 </ink-demo>
 
 
+<h2>Dynamic Content</h2>
 
-    Ranges:<br>
-    <ink-range bind="x"></ink-range><br>
-    <ink-range bind="x"></ink-range><br>
-    <ink-range bind="y"></ink-range>
-    <br>
+
+<ink-demo>
+    If we have two ranges:<br>
+    X: <ink-range bind="x" value="1"></ink-range><br>
+    X: <ink-range bind="x" value="1"></ink-range><br>
+    Y: <ink-range bind="y" value="2"></ink-range><br>
+    Then we can see them in plain text X is <ink-display bind="x"></ink-display> and Y is <ink-display bind="y"></ink-display>.<br>
+    Or you can set the value directly in the text for X <ink-dynamic bind="x"></ink-dynamic> and Y <ink-dynamic bind="y"></ink-dynamic> .
+</ink-demo>
 
     <!-- <ink-derived name="x2" value="x * x"></ink-derived> -->
 
-    This is <ink-display bind="x"></ink-display> and <ink-display bind="y"></ink-display>.
 
 
-    <ink-card title="Website Redesign" description="Some ideas about the scholarly commons." img-src="http://localhost:8080/images/website/life.png" url="/on-my-website-2018" date="2018"></ink-card>
+    <h2-more url="#temp">Tiles</h2-more>
 
+    <ink-card title="Website Redesign or a Really Long Title" description="Some ideas about the scholarly commons." img-src="http://localhost:8080/images/website/life.png" url="/on-my-website-2018" date="2018"></ink-card>
+
+    And this is just text.
 </ink-article>
 </body>
 </html>
