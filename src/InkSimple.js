@@ -187,6 +187,7 @@ class InkCard extends LitElement {
             imgSrc: {type:String, attribute:'img-src'},
             url: String,
             date: String,
+            width: String,
         };
     }
     constructor() {
@@ -195,6 +196,7 @@ class InkCard extends LitElement {
         this.author = '';
         this.date = '';
         this.src = '';
+        this.width = null;
     }
     // setFromSrc(){
     //     fetch(this.src).then(data =>{
@@ -216,8 +218,9 @@ class InkCard extends LitElement {
             <style>
               .card{
                 display: inline-block;
-                width: 200px;
-                height: 150px;
+                width: ${ this.width || '200px'};
+                height: 0;
+                padding-bottom: 75%;
                 margin: 15px;
                 position: relative;
                 cursor: pointer;
@@ -227,8 +230,9 @@ class InkCard extends LitElement {
                 background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;
-                height: 100px;
-                width: 200px;
+                width: 100%;
+                height: 0;
+                padding-bottom: 50%;
                 border: 1px solid #CCCCCC;
                 border-radius: 2px;
               }
@@ -236,7 +240,7 @@ class InkCard extends LitElement {
                 font-family: 'Roboto', sans-serif;
                 color: #333333;
                 font-size: 14px;
-                width: 130px;
+                width: calc(100% - 50px);
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
@@ -258,11 +262,10 @@ class InkCard extends LitElement {
               }
               .date{
                 font-size: 12px;
+                line-height: 24px;
                 color: #aaa;
                 font-family: 'Roboto', sans-serif;
-                position: absolute;
-                top: 104px;
-                right: 0;
+                float: right;
               }
             </style>
             <a class="card" title="${ this.title }" href="${ this.url }">
