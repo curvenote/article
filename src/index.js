@@ -5,7 +5,7 @@ import { InkCode } from './InkCode.js';
 import { InkEquation } from './InkEquation.js';
 import { InkAside, InkCallout, InkQuote, InkCard, H2More, InkByline } from './InkSimple.js';
 import { CvItem, CvAward } from './InkCV.js';
-import { InkRange, InkDisplay, InkDynamic, InkDerived } from './InkDynamic.js';
+import { InkRange, InkDisplay, InkDynamic, InkDerived, InkVar } from './InkDynamic.js';
 
 
 export {
@@ -26,4 +26,5 @@ export {
     InkDisplay,
     InkDynamic,
     InkDerived,
+    InkVar,
 }

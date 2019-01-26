@@ -10,26 +10,34 @@ var HORIZONTAL_SCROLL_CLASS = 'ink-drag-horz';
 function variables(state, action) {
   switch (action.type) {
     case 'UPDATE_VARIABLE':
-      var newState = {
-          ...state
-      };
-      newState[action.variable] = {value: action.value, derived: action.derived };
-      return newState;
+        var newState = {
+            ...state
+        };
+        newState[action.name] = Object.assign({}, action);
+        return newState;
+    case 'CREATE_VARIABLE':
+        var newState = {
+            ...state
+        };
+        newState[action.name] = Object.assign({}, action);
+        return newState;
     default:
-      return {};
+        return {};
   }
 }
 
 // These should be added inside of a container element
 const reducer = combineReducers({ variables });
 const store = createStore(reducer);
+store.dispatch({type: 'INITIALIZE'});
 
 window.store = store;
 
 class BaseDynamic extends LitElement{
     static get properties() {
         return {
-            bind: { type: String, reflect: false },
+            name: { type: String, reflect: false },
+            description: { type: String, reflect: false },
             value: { type: Number, reflect: false },
             format: { type: String, reflect: false },
         };
@@ -42,16 +50,17 @@ class BaseDynamic extends LitElement{
         this.setDefaults();
     }
     setDefaults(){
-        this.bind = null;
+        this.name = null;
         this.value = 0;
         this.format = ".1f";
+        this.description = "";
     }
     subscribe() {
         if(this.unsubscribe){
             this.unsubscribe();
         }
         this.unsubscribe = store.subscribe(() => {
-            var variable = store.getState().variables[this.bind];
+            var variable = store.getState().variables[this.name];
             if(variable === undefined || this.value == variable.value){
                 return;
             }
@@ -62,7 +71,7 @@ class BaseDynamic extends LitElement{
         return Format.format(this.format)(value);
     }
     firstUpdated() {
-        this.value = store.getState().variables[this.bind];
+        this.value = store.getState().variables[this.name];
         this.subscribe();
     }
     disconnectedCallback(){
@@ -77,14 +86,15 @@ class BaseDynamic extends LitElement{
                     }
                     return store.dispatch({
                         type: 'UPDATE_VARIABLE',
-                        variable: this.bind,
+                        name: this.name,
                         value: this.value,
+                        description: this.description,
                         derived: false,
                     });
-                case 'bind':
+                case 'name':
                     // Check if the bound variable is legit
                     this.subscribe();
-                    this.value = store.getState().variables[this.bind];
+                    this.value = store.getState().variables[this.name];
                     return;
                 default:
                   return;
@@ -235,7 +245,7 @@ class InkDerived extends BaseDynamic {
     }
     setDefaults() {
         super.setDefaults();
-        this.function = 'x * x'
+        this.function = 'undefined'
     }
     render() {
         return html`<span>${this.formatter(this.value)}</span>`;
@@ -254,17 +264,18 @@ class InkDerived extends BaseDynamic {
         }
         this.unsubscribe = store.subscribe(() => {
             this.value = this.evalFunction();
-            iframe.contentWindow[this.bind] = this.value;
+            iframe.contentWindow[this.name] = this.value;
             if(Number.isNaN(this.value)){
                 return;
             }
-            if(store.getState().variables[this.bind] && store.getState().variables[this.bind].value == this.value){
+            if(store.getState().variables[this.name] && store.getState().variables[this.name].value == this.value){
                 return;
             }
             store.dispatch({
                 type: 'UPDATE_VARIABLE',
-                variable: this.bind,
+                name: this.name,
                 value: this.value,
+                description: this.description,
                 derived: true,
             });
         });
@@ -276,7 +287,7 @@ class InkDerived extends BaseDynamic {
                     this.func = iframe.contentWindow.Function('"use strict";return ' + this.function + '');
                     this.value = this.evalFunction();
                     return;
-                case 'bind':
+                case 'name':
                     this.subscribe();
                 default:
                   return;
@@ -287,4 +298,141 @@ class InkDerived extends BaseDynamic {
 
 customElements.define('ink-derived', InkDerived);
 
-export { InkRange, InkDisplay, InkDynamic, InkDerived };
+
+class InkVarList extends LitElement{
+    static get properties() {
+        return {
+            variables: { type: Object, reflect: false }
+        };
+    }
+    constructor(){
+        super();
+        this.variables = {};
+        this.format = ".1f";
+    }
+    subscribe() {
+        if(this.unsubscribe){
+            this.unsubscribe();
+        }
+        this.unsubscribe = store.subscribe(() => {
+            this.variables = store.getState().variables;
+        });
+    }
+    formatter(value){
+        return Format.format(this.format)(value);
+    }
+    firstUpdated() {
+        this.variables = store.getState().variables;
+        this.subscribe();
+    }
+    disconnectedCallback(){
+        this.unsubscribe();
+    }
+    render() {
+        const vars = this.variables || {};
+
+        return html`
+            <style>
+                dl dt{
+                    float: left;
+                    width: 70px;
+                    overflow: hidden;
+                    clear: left;
+                    text-align: right;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+                dl dd{
+                    margin-left: 80px;
+                }
+                code{
+                    border-radius: 15px;
+                    border: 1px solid #E4E4E4;
+                    background-color: #FAFAFA;
+                    padding: 0 5px;
+                }
+                .value{
+                    text-decoration: underline;
+                }
+            </style>
+            <dl>
+              ${Object.keys(vars).map(key => html`
+                      <dt title=${ vars[key].name }><code>${ vars[key].name }</code></dt><dd><span class="value">${ this.formatter(vars[key].value) }</span> ${ vars[key].description || '' }</dd>
+              `)}
+            </div>`;
+    }
+}
+
+customElements.define('ink-var-list', InkVarList);
+
+
+
+// TODO: This needs to be combined with ink-derived. `value="{{ x * x }}""`  or something?
+
+class InkVar extends BaseDynamic {
+    render() {
+        return html`<span hidden>${this.formatter(this.value)}</span>`;
+    }
+    evalFunction(){
+        try{
+            return this.func();
+        }catch(err){
+            console.log('Could not evaluate the function', err)
+            return;
+        }
+    }
+    firstUpdated() {
+        // if value
+        const action = {
+            type: 'CREATE_VARIABLE',
+            name: this.name,
+            value: this.value,
+            description: this.description,
+            // TODO: Default formating
+            derived: true,
+        }
+        store.dispatch(action);
+        console.log('created var', action)
+        this.subscribe();
+    }
+    // subscribe() {
+    //     if(this.unsubscribe){
+    //         this.unsubscribe();
+    //     }
+    //     this.unsubscribe = store.subscribe(() => {
+    //         this.value = this.evalFunction();
+    //         iframe.contentWindow[this.name] = this.value;
+    //         if(Number.isNaN(this.value)){
+    //             return;
+    //         }
+    //         if(store.getState().variables[this.name] && store.getState().variables[this.name].value == this.value){
+    //             return;
+    //         }
+    //         store.dispatch({
+    //             type: 'UPDATE_VARIABLE',
+    //             name: this.name,
+    //             value: this.value,
+    //             description: this.description,
+    //             derived: true,
+    //         });
+    //     });
+    // }
+    updated(changedProperties) {
+        changedProperties.forEach((oldValue, propName) => {
+            switch (propName) {
+                case 'function':
+                    this.func = iframe.contentWindow.Function('"use strict";return ' + this.function + '');
+                    this.value = this.evalFunction();
+                    return;
+                case 'name':
+                    this.subscribe();
+                default:
+                  return;
+            }
+        });
+    }
+}
+
+customElements.define('ink-var', InkVar);
+
+export { InkRange, InkDisplay, InkDynamic, InkDerived, InkVar, InkVarList };

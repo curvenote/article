@@ -9,12 +9,22 @@
 
 <ink-article>
 
+    <ink-var name="x" value="0"></ink-var>
+    <ink-var name="y" value="5"></ink-var>
+
 <h1>Ink Components</h1>
 <p>
     The goal of <code>ink.js</code> is to provide a number of web-components for interactive scientific writing.
     This includes:
-    <ink-outline inline></ink-outline>
+
+    <dl>
+      <dt><a href="#dynamic-content">Dynamic Content</a></dt><dd>Variables (e.g. $x=$ <ink-display name="x"></ink-display>) and ways to change them using inline components (e.g. <ink-range name="x"></ink-range> or <ink-dynamic name="x"></ink-dynamic>).</dd>
+      <dt></dt><dd>A d3-format string. See the <a href="https://github.com/d3/d3-format" target="_blank">documentation</a>.</dd>
+    </dl>
 </p>
+
+
+
 <h2>Getting started</h2>
 <p>These should be done in the head of your page.</p>
 
@@ -22,7 +32,110 @@
     &lt;script src="/path/to/ink.js"&gt;&lt;/script&gt;
 </ink-code>
 
-<h2>Equations</h2>
+
+
+<hr>
+<h2>Dynamic Content</h2>
+
+<h3>Variables</h3>
+
+<ink-code language="html" compact>&lt;ink-var name="x" value="0"&gt;&lt;/ink-var&gt;</ink-code>
+
+<p>You can also create derived variables which get executed in an <code>iframe</code> with access to all other variables.</p>
+
+<ink-code language="html" compact>&lt;ink-derived name="xSquared" function="x * x"&gt;&lt;/ink-derived&gt;</ink-code>
+
+<ink-callout class="danger">
+    <strong>Note:</strong> This should probably be completed through a special way, maybe with <code>Jinja</code> like templating?
+    <ink-code language="html" compact>&lt;ink-var name="xSquared" value="{{ x * x }}"&gt;&lt;/ink-var&gt;</ink-code>
+</ink-callout>
+<ink-callout class="info"><strong>TODO:</strong> These should be scoped under an <code>ink-scope</code></ink-callout>
+
+
+<ink-aside>
+    This documentation has variables:
+    <ink-var-list></ink-var-list>
+</ink-aside>
+<ink-callout class="info"><strong>Note:</strong> These variables are hidden in the <code>DOM</code>, you can use a <code>ink-var-list</code> to see them. This is displayed in the aside to the right.</ink-callout>
+
+<h3>Display Variables</h3>
+
+<p>To display an element create an <code>ink-display</code>, which will just render the bound variable as text.</p>
+
+<ink-code language="html" compact>&lt;ink-display name="x"&gt;&lt;/ink-display&gt;</ink-code>
+
+<p>
+    This is a number that is dynamic: <ink-display name="x"></ink-display>.<br>
+    Try setting the range: <ink-range name="x" max="5"></ink-range>
+</p>
+
+<ink-callout class="info">
+    <strong>Properties:</strong>
+    <dl>
+      <dt><code>name</code></dt><dd>The variable to name to in the state.</dd>
+      <dt><code>format</code></dt><dd>A d3-format string. See the <a href="https://github.com/d3/d3-format" target="_blank">documentation</a>.</dd>
+    </dl>
+</ink-callout>
+
+<hr>
+<h3>Update Variables</h3>
+
+<p>What gets slightly more exciting is when you can bring these together with inputs that can be ranges or dynamic text elements that you can drag.</p>
+
+<ink-code language="html" compact>&lt;ink-dynamic name="x"&gt;&lt;/ink-dynamic&gt;</ink-code>
+
+<p>
+    This allows you to set the value of $x$ inline: <ink-dynamic name="x"></ink-dynamic> or $y=$<ink-dynamic name="y"></ink-dynamic>.<br>Notice how it is linked to the above <code>ink-range</code> and <code>ink-display</code>.
+</p>
+<p>
+    You can also create ranges, as see above, notice that we can create a lot of these and name to different values.
+</p>
+
+<ink-code language="html" compact>&lt;ink-range name="x"&gt;&lt;/ink-range&gt;</ink-code>
+<p>
+    $x_{1.00}:$ <ink-range name="x"></ink-range><br>
+    $x_{0.01}:$ <ink-range name="x" step="0.01"></ink-range><br>
+    $y_{1.00}:$ <ink-range name="y"></ink-range><br>
+</p>
+
+
+<ink-callout class="info">
+    <strong>Properties:</strong>
+    <dl>
+      <dt><code>name</code></dt><dd>The variable to name to in the state.</dd>
+      <dt><code>format</code></dt><dd>A d3-format string. See the <a href="https://github.com/d3/d3-format" target="_blank">documentation</a>.</dd>
+      <dt><code>min</code></dt><dd>Minimum of the range.</dd>
+      <dt><code>max</code></dt><dd>Maximum of the range.</dd>
+      <dt><code>step</code></dt><dd>Step size.</dd>
+      <dt><code>sensitivity</code></dt><dd>Multiplier on pixels dragged for the <code>dynamic</code> text input.</dd>
+    </dl>
+</ink-callout>
+
+<ink-demo>
+    If we have two ranges:<br>
+    X: <ink-range name="x"></ink-range><br>
+    X: <ink-range name="x" step="0.01"></ink-range><br>
+    Y: <ink-range name="y"></ink-range><br>
+    Then we can see them in plain text X is <ink-display name="x"></ink-display> and Y is <ink-display name="y"></ink-display>.<br>
+    Or you can set the value directly in the text for X <ink-dynamic name="x"></ink-dynamic> and Y <ink-dynamic name="y"></ink-dynamic>.<br>
+    Hi: <ink-derived name="xSquared" function="x * x" description="The square of x."></ink-derived><br>
+    Can you see it? <ink-display name="xSquared"></ink-display>.
+</ink-demo>
+
+    <!-- <ink-derived name="x2" value="x * x"></ink-derived> -->
+
+
+
+
+<hr>
+<h2>Text content</h2>
+
+<p>
+    Ink has <a href="https://edwardtufte.github.io/tufte-css/" target="_blank">Tufte style sidenotes</a> to add sarcastic or poignant insights.
+    These sidenotes can include figures and equations.
+</p>
+
+<h3>Equations</h3>
 
 <ink-demo>
     <ink-equation>
@@ -54,16 +167,9 @@
     </ink-equation>
 </ink-demo>
 
-<h2>Figures</h2>
-
-<ink-demo>
-    <ink-figure img-src="https://raw.githubusercontent.com/simpeg/tle-finitevolume/master/images/FiniteVolume.png">
-      Setup of a DC resistivity survey.
-    </ink-figure>
-</ink-demo>
 
 
-<h2>Code and demos</h2>
+<h3>Code and demos</h3>
 
 <ink-demo>
     <ink-code language="python">
@@ -85,102 +191,14 @@
 </ink-demo>
 
 
-<hr>
-<h2>Dynamic Content</h2>
 
-<h3>Variables</h3>
-
-<ink-code language="html" compact>&lt;ink-variable bind="x" value="1"&gt;&lt;/ink-variable&gt;</ink-code>
-
-<ink-callout class="warning"><strong>Note:</strong> This is not yet implemented, variables just sort of get created, and are not checked.</ink-callout>
-
-<p>You can also create derived variables which get executed in an <code>iframe</code> with access to all other variables.</p>
-
-<ink-code language="html" compact>&lt;ink-derived bind="xSquared" function="x * x"&gt;&lt;/ink-derived&gt;</ink-code>
-
-<ink-callout class="danger">
-    <strong>Note:</strong> This should probably be completed through a special way, maybe with <code>Jinja</code> like templating?
-    <ink-code language="html" compact>&lt;ink-variable bind="xSquared" value="{{ x * x }}"&gt;&lt;/ink-variable&gt;</ink-code>
-</ink-callout>
-<ink-callout class="info"><strong>TODO:</strong> These should be scoped under an <code>ink-scope</code></ink-callout>
-
-<hr>
-<h3>Display Variables</h3>
-
-<p>To display an element create an <code>ink-display</code>, which will just render the bound variable as text.</p>
-
-<ink-code language="html" compact>&lt;ink-display bind="x"&gt;&lt;/ink-display&gt;</ink-code>
-
-<p>
-    This is a number that is dynamic: <ink-display bind="x"></ink-display>.<br>
-    Try setting the range: <ink-range bind="x" max="5"></ink-range>
-</p>
-
-<ink-callout class="info">
-    <strong>Properties:</strong>
-    <dl>
-      <dt><code>bind</code></dt><dd>The variable to bind to in the state.</dd>
-      <dt><code>format</code></dt><dd>A d3-format string. See the <a href="https://github.com/d3/d3-format" target="_blank">documentation</a>.</dd>
-    </dl>
-</ink-callout>
-
-<hr>
-<h3>Update Variables</h3>
-
-<p>What gets slightly more exciting is when you can bring these together with inputs that can be ranges or dynamic text elements that you can drag.</p>
-
-<ink-code language="html" compact>&lt;ink-dynamic bind="x"&gt;&lt;/ink-dynamic&gt;</ink-code>
-
-<p>
-    This allows you to set the value of $x$ inline: <ink-dynamic bind="x"></ink-dynamic> or $y=$<ink-dynamic bind="y"></ink-dynamic>.<br>Notice how it is linked to the above <code>ink-range</code> and <code>ink-display</code>.
-</p>
-<p>
-    You can also create ranges, as see above, notice that we can create a lot of these and bind to different values.
-</p>
-
-<ink-code language="html" compact>&lt;ink-range bind="x"&gt;&lt;/ink-range&gt;</ink-code>
-<p>
-    $x_{1.00}:$ <ink-range bind="x"></ink-range><br>
-    $x_{0.01}:$ <ink-range bind="x" step="0.01"></ink-range><br>
-    $y_{1.00}:$ <ink-range bind="y"></ink-range><br>
-</p>
-
-
-<ink-callout class="info">
-    <strong>Properties:</strong>
-    <dl>
-      <dt><code>bind</code></dt><dd>The variable to bind to in the state.</dd>
-      <dt><code>format</code></dt><dd>A d3-format string. See the <a href="https://github.com/d3/d3-format" target="_blank">documentation</a>.</dd>
-      <dt><code>min</code></dt><dd>Minimum of the range.</dd>
-      <dt><code>max</code></dt><dd>Maximum of the range.</dd>
-      <dt><code>step</code></dt><dd>Step size.</dd>
-      <dt><code>sensitivity</code></dt><dd>Multiplier on pixels dragged for the <code>dynamic</code> text input.</dd>
-    </dl>
-</ink-callout>
+<h3>Figures</h3>
 
 <ink-demo>
-    If we have two ranges:<br>
-    X: <ink-range bind="x"></ink-range><br>
-    X: <ink-range bind="x" step="0.01"></ink-range><br>
-    Y: <ink-range bind="y"></ink-range><br>
-    Then we can see them in plain text X is <ink-display bind="x"></ink-display> and Y is <ink-display bind="y"></ink-display>.<br>
-    Or you can set the value directly in the text for X <ink-dynamic bind="x"></ink-dynamic> and Y <ink-dynamic bind="y"></ink-dynamic>.<br>
-    Hi: <ink-derived bind="xSquared" function="x * x"></ink-derived><br>
-    Can you see it? <ink-display bind="xSquared"></ink-display>.
+    <ink-figure img-src="https://raw.githubusercontent.com/simpeg/tle-finitevolume/master/images/FiniteVolume.png">
+      Setup of a DC resistivity survey.
+    </ink-figure>
 </ink-demo>
-
-    <!-- <ink-derived name="x2" value="x * x"></ink-derived> -->
-
-
-
-
-<hr>
-<h2>Text content</h2>
-
-<p>
-    Ink has <a href="https://edwardtufte.github.io/tufte-css/" target="_blank">Tufte style sidenotes</a> to add sarcastic or poignant insights.
-    These sidenotes can include figures and equations.
-</p>
 
 <ink-demo>
     <p>
