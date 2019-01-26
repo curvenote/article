@@ -13,7 +13,7 @@ function variables(state, action) {
       var newState = {
           ...state
       };
-      newState[action.variable] = action.value;
+      newState[action.variable] = {value: action.value, derived: action.derived };
       return newState;
     default:
       return {};
@@ -31,19 +31,19 @@ class BaseDynamic extends LitElement{
         return {
             bind: { type: String, reflect: false },
             value: { type: Number, reflect: false },
-            step: { type: Number, reflect: false },
-            min: { type: Number, reflect: false },
-            max: { type: Number, reflect: false },
             format: { type: String, reflect: false },
         };
     }
+    get setValue(){
+        return true;
+    }
     constructor() {
         super();
+        this.setDefaults();
+    }
+    setDefaults(){
         this.bind = null;
         this.value = 0;
-        this.step = 1;
-        this.min = 0;
-        this.max = 10;
         this.format = ".1f";
     }
     subscribe() {
@@ -51,7 +51,11 @@ class BaseDynamic extends LitElement{
             this.unsubscribe();
         }
         this.unsubscribe = store.subscribe(() => {
-          this.value = store.getState().variables[this.bind];
+            var variable = store.getState().variables[this.bind];
+            if(variable === undefined || this.value == variable.value){
+                return;
+            }
+            this.value = variable.value;
         });
     }
     formatter(value){
@@ -68,10 +72,14 @@ class BaseDynamic extends LitElement{
         changedProperties.forEach((oldValue, propName) => {
             switch (propName) {
                 case 'value':
+                    if(!this.setValue){
+                        return
+                    }
                     return store.dispatch({
                         type: 'UPDATE_VARIABLE',
                         variable: this.bind,
                         value: this.value,
+                        derived: false,
                     });
                 case 'bind':
                     // Check if the bound variable is legit
@@ -86,7 +94,37 @@ class BaseDynamic extends LitElement{
 }
 
 
-class InkRange extends BaseDynamic {
+class InkDisplay extends BaseDynamic {
+    get setValue(){
+        return false;
+    }
+    render() {
+        return html`<span>${this.formatter(this.value)}</span>`;
+    }
+}
+
+customElements.define('ink-display', InkDisplay);
+
+
+class BaseRange extends BaseDynamic {
+    static get properties() {
+        return {
+            step: { type: Number, reflect: false },
+            min: { type: Number, reflect: false },
+            max: { type: Number, reflect: false },
+            ...super.properties
+        };
+    }
+    setDefaults(){
+        super.setDefaults();
+        this.step = 1;
+        this.min = 0;
+        this.max = 10;
+    }
+}
+
+
+class InkRange extends BaseRange {
     render() {
         return html`<input type="range" min="${this.min}" step="${this.step}" max="${this.max}" .value="${this.value}" @input="${this._changeHandler}">`;
     }
@@ -98,16 +136,8 @@ customElements.define('ink-range', InkRange);
 
 
 
-class InkDisplay extends BaseDynamic {
-    render() {
-        return html`<span>${this.formatter(this.value)}</span>`;
-    }
-}
 
-customElements.define('ink-display', InkDisplay);
-
-
-class InkDynamic extends BaseDynamic {
+class InkDynamic extends BaseRange {
     static get properties() {
         return {
             senstivity: Number,
@@ -118,6 +148,7 @@ class InkDynamic extends BaseDynamic {
     constructor(){
         super();
         this.senstivity = 10;
+        this.dragging = false;
     }
     render() {
         return html`
@@ -151,9 +182,10 @@ class InkDynamic extends BaseDynamic {
     }
     firstUpdated() {
         super.firstUpdated();
+
         const node = this.shadowRoot.children[1].children[0];
         const bodyClassList = document.getElementsByTagName("BODY")[0].classList
-        console.log(node)
+
         this.drag = Drag.drag().on('start', () => {
             Selection.event.sourceEvent.preventDefault();
             this.dragging = true; // Hides the "drag" tool-tip
@@ -170,34 +202,89 @@ class InkDynamic extends BaseDynamic {
             this._prevValue = newValue; // Store the actual value so the drag is smooth
             this.value = Math.round(newValue/step)*step; // Then round with the step size
         });
+
         this.drag(Selection.select(node));
     }
 }
 customElements.define('ink-dynamic', InkDynamic);
 
 
-// class InkDerived extends LitElement {
-//     static get properties() {
-//         return {
-//             name: String,
-//             value: Number,
-//         };
-//     }
-//     constructor() {
-//         super();
-//         this.name = 'temp';
-//         this.value = 0;
-//     }
-//     render() {
-//         return html`<span>${this.value}</span>`;
-//     }
-//     firstUpdated() {
-//         store.subscribe(() => {
-//           this.value = store.getState().variables[this.bind];
-//         });
-//     }
-// }
 
-// customElements.define('ink-derived', InkDerived);
+// This is a hack-y way to create a place to execute javascript with globals.
+var iframe = document.createElement('iframe');
+iframe.setAttribute('hidden', '');
+// iframe.setAttribute('sandbox', '');
+document.body.appendChild(iframe);
 
-export { InkRange, InkDisplay, InkDynamic };
+window.iframe = iframe;
+
+store.subscribe(() =>{
+    const variables = store.getState().variables;
+    for(var variable in variables){
+        iframe.contentWindow[variable] = variables[variable].value;
+    }
+});
+
+
+class InkDerived extends BaseDynamic {
+    static get properties() {
+        return {
+            function: String,
+            ...super.properties
+        };
+    }
+    setDefaults() {
+        super.setDefaults();
+        this.function = 'x * x'
+    }
+    render() {
+        return html`<span>${this.formatter(this.value)}</span>`;
+    }
+    evalFunction(){
+        try{
+            return this.func();
+        }catch(err){
+            console.log('Could not evaluate the function', err)
+            return;
+        }
+    }
+    subscribe() {
+        if(this.unsubscribe){
+            this.unsubscribe();
+        }
+        this.unsubscribe = store.subscribe(() => {
+            this.value = this.evalFunction();
+            iframe.contentWindow[this.bind] = this.value;
+            if(Number.isNaN(this.value)){
+                return;
+            }
+            if(store.getState().variables[this.bind] && store.getState().variables[this.bind].value == this.value){
+                return;
+            }
+            store.dispatch({
+                type: 'UPDATE_VARIABLE',
+                variable: this.bind,
+                value: this.value,
+                derived: true,
+            });
+        });
+    }
+    updated(changedProperties) {
+        changedProperties.forEach((oldValue, propName) => {
+            switch (propName) {
+                case 'function':
+                    this.func = iframe.contentWindow.Function('"use strict";return ' + this.function + '');
+                    this.value = this.evalFunction();
+                    return;
+                case 'bind':
+                    this.subscribe();
+                default:
+                  return;
+            }
+        });
+    }
+}
+
+customElements.define('ink-derived', InkDerived);
+
+export { InkRange, InkDisplay, InkDynamic, InkDerived };

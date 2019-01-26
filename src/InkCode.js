@@ -53,6 +53,7 @@ class InkCode extends LitElement {
             code: String,
             language: String,
             copy: {type: Boolean, reflect:true},
+            compact: {type: Boolean, reflect:true},
             _copyText: String,
         };
     }
@@ -61,6 +62,7 @@ class InkCode extends LitElement {
         this.code = this.textContent;
         this.language = '';
         this.copy = false;
+        this.compact = false;
         this._copyText = 'copy';
     }
     firstUpdated() {
@@ -122,8 +124,6 @@ class InkCode extends LitElement {
               }
               hr {
                 width: calc(100vw);
-                margin-top: 30px;
-                margin-bottom: 30px;
                 margin-left: calc(-50vw + 342px);
                 border-top: 1px solid #DDD;
                 border-left: transparent;
@@ -136,7 +136,7 @@ class InkCode extends LitElement {
               }
               #code-wrapper{
                 position: relative;
-                padding: 10px;
+                padding: ${this.compact? '0px' : '10px'};
               }
               button{
                 position: absolute;
@@ -149,12 +149,12 @@ class InkCode extends LitElement {
                 outline: none;
               }
             </style>
-            <hr ?hidden="${ this._hideRules() }">
+            <hr ?hidden="${ this.compact || this._hideRules() }">
             <div id="code-wrapper">
               <button ?hidden="${ !this.copy }" title="copy to clipboard" @click="${ this._copyToClipboard }">${ this._copyText}</button>
               <pre><code class="hljs ${ this.language }">${ unsafeHTML(codeDom.innerHTML) }</code></pre>
             </div>
-            <hr ?hidden="${ this._hideRules() }">
+            <hr ?hidden="${ this.compact || this._hideRules() }">
             <slot hidden></slot>
         `;
     }
