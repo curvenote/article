@@ -80,12 +80,19 @@ class InkArticle extends LitElement {
               }
 
               ::slotted(hr) {
-                width: calc(100vw);
+                width: 100vw;
                 margin-top: 30px;
                 margin-bottom: 30px;
                 margin-left: calc(-50vw + 342px);
-                border-top: 1px solid #DDD;
-                border-left: transparent;
+                border-top: 1px solid #B2B2B2;
+                border-bottom: none;
+                border-left: none;
+                border-right: none;
+              }
+
+              ::slotted(hr.small) {
+                width: 200px;
+                margin-left: calc(50% - 100px);
               }
 
               .content {
@@ -101,6 +108,10 @@ class InkArticle extends LitElement {
                 ::slotted(hr) {
                   width: calc(100vw);
                   margin-left: -18px;
+                }
+                ::slotted(hr.small) {
+                  width: 200px;
+                  margin-left: calc(50% - 100px);
                 }
               }
               @media screen and (max-width: 1000px) {
