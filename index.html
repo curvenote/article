@@ -49,22 +49,53 @@
 <hr>
 <h2>Dynamic Content</h2>
 
-<h3>Variables</h3>
-
-<ink-code language="html" compact>&lt;ink-var name="x" value="0"&gt;&lt;/ink-var&gt;</ink-code>
-
-<p>You can also create derived variables which get executed in an <code>iframe</code> with access to all other variables.</p>
-
-<ink-code language="html" compact>&lt;ink-var name="xSquared" :value="x * x"&gt;&lt;/ink-var&gt;</ink-code>
-
-<ink-callout class="info"><strong>TODO:</strong> These should be scoped under an <code>ink-scope</code></ink-callout>
-
-
 <ink-aside>
     This document has variables:
     <ink-var-list></ink-var-list>
 </ink-aside>
-<ink-callout class="info"><strong>Note:</strong> These variables are hidden in the <code>DOM</code>, you can use a <code>ink-var-list</code> to see them. This is displayed in the aside to the right.</ink-callout>
+<ink-demo>
+    If we have ranges for two variables:<br>
+    X: <ink-range name="x"></ink-range>, which is <ink-display name="x"></ink-display><br>
+    Y: <ink-range name="y"></ink-range>, which is <ink-display name="y"></ink-display><br>
+    Or you can set the value directly in the text for X <ink-dynamic name="x"></ink-dynamic> and Y <ink-dynamic name="y"></ink-dynamic>.<br>
+</ink-demo>
+
+
+<h3>Variables</h3>
+<ink-callout class="danger"><strong>TODO:</strong> These should be scoped under an <code>ink-scope</code></ink-callout>
+<ink-callout class="danger"><strong>TODO:</strong> Format should be a default and pulled through to other variables.</ink-callout>
+
+
+<p>
+    Variables need to be defined to drive your dynamic document, the <code>ink-var</code> web component can specify a name, description and a value.
+</p>
+
+<ink-code language="html" compact>&lt;ink-var name="x" value="1"&gt;&lt;/ink-var&gt;</ink-code>
+
+<p>
+    These variables are hidden in the <code>DOM</code>, you can use a <code>ink-var-list</code> to see them all.
+</p>
+
+<h3>Reactive Variables</h3>
+
+<p>
+    You can also create reactive variables which get execute a user-inputed string in an <code>iframe</code> with access to all other variables. Note here that the <code>:value</code> has a <emph>semi-colon</emph> to show that this should be executed to define the value.
+</p>
+
+<ink-code language="html" compact>&lt;ink-var name="xSquared" :value="x * x"&gt;&lt;/ink-var&gt;</ink-code>
+
+<ink-callout class="info">
+    Properties of <code>ink-var</code>:
+    <dl>
+      <dt><code>name</code></dt><dd>The variable to name to in the state, must follow javascript naming conventions for variables.</dd>
+      <dt><code>description</code></dt><dd>The variable description, useful for alt-text.</dd>
+      <dt><code>value</code></dt><dd>The value of the variable.</dd>
+      <dt><code>:value</code></dt><dd>Function to evaluate to update the value. If present, this will update the value anytime the state is changed.</dd>
+      <dt><code>format</code></dt><dd>A d3-format string. See the <a href="https://github.com/d3/d3-format" target="_blank">documentation</a>.</dd>
+    </dl>
+</ink-callout>
+
+<hr class="small">
 
 <h3>Display Variables</h3>
 
@@ -78,16 +109,16 @@
 </p>
 
 <ink-callout class="info">
-    <strong>Properties of <code>ink-display</code>:</strong>
+    Properties of <code>ink-display</code>:
     <dl>
       <dt><code>name</code></dt><dd>The variable to name to in the state.</dd>
       <dt><code>format</code></dt><dd>A d3-format string. See the <a href="https://github.com/d3/d3-format" target="_blank">documentation</a>.</dd>
     </dl>
 </ink-callout>
 
-<hr>
+<hr class="small">
 
-<h3>Reactive Variables</h3>
+<h3>Controlling Variables</h3>
 
 <p>What gets slightly more exciting is when you can bring these together with inputs that can be ranges or dynamic text elements that you can drag.</p>
 
@@ -102,9 +133,9 @@
 
 <ink-code language="html" compact>&lt;ink-range name="x"&gt;&lt;/ink-range&gt;</ink-code>
 <p>
-    $x_{1.00}:$ <ink-range name="x"></ink-range><br>
-    $x_{0.01}:$ <ink-range name="x" step="0.01"></ink-range><br>
-    $y_{1.00}:$ <ink-range name="y"></ink-range><br>
+    $x_{1.0}:$ <ink-range name="x"></ink-range><br>
+    $x_{0.5}:$ <ink-range name="x" step="0.5"></ink-range><br>
+    $y_{1.0}:$ <ink-range name="y"></ink-range><br>
 </p>
 
 
@@ -119,16 +150,6 @@
       <dt><code>sensitivity</code></dt><dd>Multiplier on pixels dragged for the <code>dynamic</code> text input.</dd>
     </dl>
 </ink-callout>
-
-<ink-demo>
-    If we have two ranges:<br>
-    X: <ink-range name="x"></ink-range><br>
-    X: <ink-range name="x" step="0.01"></ink-range><br>
-    Y: <ink-range name="y"></ink-range><br>
-    Then we can see them in plain text X is <ink-display name="x"></ink-display> and Y is <ink-display name="y"></ink-display>.<br>
-    Or you can set the value directly in the text for X <ink-dynamic name="x"></ink-dynamic> and Y <ink-dynamic name="y"></ink-dynamic>.<br>
-    Can you see it? <ink-display name="xSquared"></ink-display>.
-</ink-demo>
 
 <hr>
 
