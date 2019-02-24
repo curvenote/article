@@ -9,28 +9,40 @@
 
 <ink-article>
 
-    <ink-var name="x" value="0"></ink-var>
+    <ink-var name="x" value="1"></ink-var>
     <ink-var name="y" value="5"></ink-var>
+    <ink-var name="x2" :value="2 * x"></ink-var>
+    <ink-var name="x22" :value="2 * x2"></ink-var>
+    <ink-var name="xSquared" :value="x * x" description="The square of x."></ink-var>
 
 <h1>Ink Components</h1>
 <p>
     The goal of <code>ink.js</code> is to provide a number of web-components for interactive scientific writing.
-    This includes:
-
-    <dl>
-      <dt><a href="#dynamic-content">Dynamic Content</a></dt><dd>Variables (e.g. $x=$ <ink-display name="x"></ink-display>) and ways to change them using inline components (e.g. <ink-range name="x"></ink-range> or <ink-dynamic name="x"></ink-dynamic>).</dd>
-      <dt></dt><dd>A d3-format string. See the <a href="https://github.com/d3/d3-format" target="_blank">documentation</a>.</dd>
-    </dl>
+</p>
+<h2>Why?</h2>
+<p>
+    The goal of <code>ink.js</code> is to make it easier to write interactive scientific writing.
 </p>
 
+<h2>Overview</h2>
+<p>Check out the table of contents on the right, or scroll on:</p>
+<dl>
+  <dt><a href="#dynamic-content">Dynamic Content</a></dt><dd>Variables (e.g. $x=$ <ink-display name="x"></ink-display>) and ways to change them using inline components (e.g. <ink-range name="x"></ink-range> or <ink-dynamic name="x"></ink-dynamic>).</dd>
+  <dt><a href="#text-content">Text Content</a></dt><dd>Equations, code, figures, asides, call-outs and more.</dd>
+  <dt><a href="#charts">Charts</a></dt><dd>TODO</dd>
+  <dt><a href="#extensions">Extensions</a></dt><dd>TODO</dd>
+</dl>
 
+<hr>
 
 <h2>Getting started</h2>
-<p>These should be done in the head of your page.</p>
+<p>Ink is based on <a href="https://www.webcomponents.org/" target="_blank">web components</a>, which create custom HTML tags so that they can make writing documents easier. To get started, copy the built javascript file to the head of your page.</p>
 
 <ink-code copy compact>
     &lt;script src="/path/to/ink.js"&gt;&lt;/script&gt;
 </ink-code>
+
+<ink-callout class="danger"><strong>Note:</strong> This should be installable through <code>npm</code></ink-callout>
 
 
 
@@ -43,34 +55,30 @@
 
 <p>You can also create derived variables which get executed in an <code>iframe</code> with access to all other variables.</p>
 
-<ink-code language="html" compact>&lt;ink-derived name="xSquared" function="x * x"&gt;&lt;/ink-derived&gt;</ink-code>
+<ink-code language="html" compact>&lt;ink-var name="xSquared" :value="x * x"&gt;&lt;/ink-var&gt;</ink-code>
 
-<ink-callout class="danger">
-    <strong>Note:</strong> This should probably be completed through a special way, maybe with <code>Jinja</code> like templating?
-    <ink-code language="html" compact>&lt;ink-var name="xSquared" value="{{ x * x }}"&gt;&lt;/ink-var&gt;</ink-code>
-</ink-callout>
 <ink-callout class="info"><strong>TODO:</strong> These should be scoped under an <code>ink-scope</code></ink-callout>
 
 
 <ink-aside>
-    This documentation has variables:
+    This document has variables:
     <ink-var-list></ink-var-list>
 </ink-aside>
 <ink-callout class="info"><strong>Note:</strong> These variables are hidden in the <code>DOM</code>, you can use a <code>ink-var-list</code> to see them. This is displayed in the aside to the right.</ink-callout>
 
 <h3>Display Variables</h3>
 
-<p>To display an element create an <code>ink-display</code>, which will just render the bound variable as text.</p>
+<p>To display an element create an <code>ink-display</code>, which will just render the named variable as text.</p>
 
 <ink-code language="html" compact>&lt;ink-display name="x"&gt;&lt;/ink-display&gt;</ink-code>
 
 <p>
     This is a number that is dynamic: <ink-display name="x"></ink-display>.<br>
-    Try setting the range: <ink-range name="x" max="5"></ink-range>
+    Try setting the value of $x$ with the range input: <ink-range name="x" max="5"></ink-range>
 </p>
 
 <ink-callout class="info">
-    <strong>Properties:</strong>
+    <strong>Properties of <code>ink-display</code>:</strong>
     <dl>
       <dt><code>name</code></dt><dd>The variable to name to in the state.</dd>
       <dt><code>format</code></dt><dd>A d3-format string. See the <a href="https://github.com/d3/d3-format" target="_blank">documentation</a>.</dd>
@@ -78,7 +86,8 @@
 </ink-callout>
 
 <hr>
-<h3>Update Variables</h3>
+
+<h3>Reactive Variables</h3>
 
 <p>What gets slightly more exciting is when you can bring these together with inputs that can be ranges or dynamic text elements that you can drag.</p>
 
@@ -118,22 +127,12 @@
     Y: <ink-range name="y"></ink-range><br>
     Then we can see them in plain text X is <ink-display name="x"></ink-display> and Y is <ink-display name="y"></ink-display>.<br>
     Or you can set the value directly in the text for X <ink-dynamic name="x"></ink-dynamic> and Y <ink-dynamic name="y"></ink-dynamic>.<br>
-    Hi: <ink-derived name="xSquared" function="x * x" description="The square of x."></ink-derived><br>
     Can you see it? <ink-display name="xSquared"></ink-display>.
 </ink-demo>
 
-    <!-- <ink-derived name="x2" value="x * x"></ink-derived> -->
-
-
-
-
 <hr>
-<h2>Text content</h2>
 
-<p>
-    Ink has <a href="https://edwardtufte.github.io/tufte-css/" target="_blank">Tufte style sidenotes</a> to add sarcastic or poignant insights.
-    These sidenotes can include figures and equations.
-</p>
+<h2>Text Content</h2>
 
 <h3>Equations</h3>
 
@@ -199,6 +198,13 @@
       Setup of a DC resistivity survey.
     </ink-figure>
 </ink-demo>
+
+
+<h3>Asides</h3>
+<p>
+    Ink has <a href="https://edwardtufte.github.io/tufte-css/" target="_blank">Tufte style sidenotes</a> to add sarcastic or poignant insights.
+    These asides can include figures and equations.
+</p>
 
 <ink-demo>
     <p>

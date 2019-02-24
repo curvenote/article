@@ -14,12 +14,14 @@ function variables(state, action) {
             ...state
         };
         newState[action.name] = Object.assign({}, action);
+        delete newState[action.name].type;
         return newState;
     case 'CREATE_VARIABLE':
         var newState = {
             ...state
         };
         newState[action.name] = Object.assign({}, action);
+        delete newState[action.name].type;
         return newState;
     default:
         return {};
@@ -38,7 +40,8 @@ class BaseDynamic extends LitElement{
         return {
             name: { type: String, reflect: false },
             description: { type: String, reflect: false },
-            value: { type: Number, reflect: false },
+            value: { type: Number, reflect: true },
+            valueFunctionString: {type: String, attribute: ":value", reflect: true},
             format: { type: String, reflect: false },
         };
     }
@@ -52,6 +55,7 @@ class BaseDynamic extends LitElement{
     setDefaults(){
         this.name = null;
         this.value = 0;
+        this.valueFunctionString = undefined;
         this.format = ".1f";
         this.description = "";
     }
@@ -236,69 +240,6 @@ store.subscribe(() =>{
 });
 
 
-class InkDerived extends BaseDynamic {
-    static get properties() {
-        return {
-            function: String,
-            ...super.properties
-        };
-    }
-    setDefaults() {
-        super.setDefaults();
-        this.function = 'undefined'
-    }
-    render() {
-        return html`<span>${this.formatter(this.value)}</span>`;
-    }
-    evalFunction(){
-        try{
-            return this.func();
-        }catch(err){
-            console.log('Could not evaluate the function', err)
-            return;
-        }
-    }
-    subscribe() {
-        if(this.unsubscribe){
-            this.unsubscribe();
-        }
-        this.unsubscribe = store.subscribe(() => {
-            this.value = this.evalFunction();
-            iframe.contentWindow[this.name] = this.value;
-            if(Number.isNaN(this.value)){
-                return;
-            }
-            if(store.getState().variables[this.name] && store.getState().variables[this.name].value == this.value){
-                return;
-            }
-            store.dispatch({
-                type: 'UPDATE_VARIABLE',
-                name: this.name,
-                value: this.value,
-                description: this.description,
-                derived: true,
-            });
-        });
-    }
-    updated(changedProperties) {
-        changedProperties.forEach((oldValue, propName) => {
-            switch (propName) {
-                case 'function':
-                    this.func = iframe.contentWindow.Function('"use strict";return ' + this.function + '');
-                    this.value = this.evalFunction();
-                    return;
-                case 'name':
-                    this.subscribe();
-                default:
-                  return;
-            }
-        });
-    }
-}
-
-customElements.define('ink-derived', InkDerived);
-
-
 class InkVarList extends LitElement{
     static get properties() {
         return {
@@ -354,10 +295,20 @@ class InkVarList extends LitElement{
                 .value{
                     text-decoration: underline;
                 }
+                .error{
+                    color: red;
+                }
             </style>
             <dl>
               ${Object.keys(vars).map(key => html`
-                      <dt title=${ vars[key].name }><code>${ vars[key].name }</code></dt><dd><span class="value">${ this.formatter(vars[key].value) }</span> ${ vars[key].description || '' }</dd>
+                    <dt title=${ vars[key].name }><code>${ vars[key].name }</code></dt>
+                    <dd>
+                    ${vars[key].derived ?
+                        html`<span class="value${vars[key].error ? ' error' : ''}" title="${vars[key].error || ''}">${ this.formatter(vars[key].value) }</span> <code>${ vars[key].valueFunctionString }</code> ${ vars[key].description || '' }`
+                        :
+                        html`<span class="value">${ this.formatter(vars[key].value) }</span>${ vars[key].description || '' }`
+                    }
+                    </dd>
               `)}
             </div>`;
     }
@@ -367,64 +318,120 @@ customElements.define('ink-var-list', InkVarList);
 
 
 
-// TODO: This needs to be combined with ink-derived. `value="{{ x * x }}""`  or something?
+function getFunction(value){
+    return iframe.contentWindow.Function('"use strict";return ' + value + '');
+}
 
 class InkVar extends BaseDynamic {
     render() {
+        // Not very exciting, render a hidden span.
         return html`<span hidden>${this.formatter(this.value)}</span>`;
     }
-    evalFunction(){
-        try{
-            return this.func();
-        }catch(err){
-            console.log('Could not evaluate the function', err)
-            return;
-        }
-    }
+
     firstUpdated() {
-        // if value
-        const action = {
-            type: 'CREATE_VARIABLE',
-            name: this.name,
-            value: this.value,
-            description: this.description,
-            // TODO: Default formating
-            derived: true,
-        }
-        store.dispatch(action);
-        console.log('created var', action)
+        this.dispatch(true);
         this.subscribe();
     }
-    // subscribe() {
-    //     if(this.unsubscribe){
-    //         this.unsubscribe();
-    //     }
-    //     this.unsubscribe = store.subscribe(() => {
-    //         this.value = this.evalFunction();
-    //         iframe.contentWindow[this.name] = this.value;
-    //         if(Number.isNaN(this.value)){
-    //             return;
-    //         }
-    //         if(store.getState().variables[this.name] && store.getState().variables[this.name].value == this.value){
-    //             return;
-    //         }
-    //         store.dispatch({
-    //             type: 'UPDATE_VARIABLE',
-    //             name: this.name,
-    //             value: this.value,
-    //             description: this.description,
-    //             derived: true,
-    //         });
-    //     });
-    // }
+
+    get derived() {
+        var s = this.valueFunctionString;
+        return !(s === undefined || s === null || s === '');
+    }
+
+    get valueFunction() {
+        if(!this.derived){
+            // ensure the function is deleted
+            this._valueFunction === undefined;
+            return undefined;
+        }
+        if(this._valueFunction === undefined){
+            // create the function if it isn't there already
+            console.log(this.name, 'Creating function', this.valueFunctionString);
+            this._valueFunction = getFunction(this.valueFunctionString);
+        }
+        return this._valueFunction;
+    }
+
+    get value() {
+        if(this.derived){
+            let oldVal = this._value;
+            try{
+                var val = this.valueFunction();
+                // update the iframe variable
+                iframe.contentWindow[this.name] = val;
+                this.valueFunctionError = false;
+                this._value = val;
+            }catch(err){
+                console.log('Could not evaluate the function', err);
+                this.valueFunctionError = err.message;
+                iframe.contentWindow[this.name] = Number.NaN;
+                this._value = Number.NaN;
+            }
+            var same = this._value == oldVal;
+            var bothNaN = Number.isNaN(this._value) && Number.isNaN(oldVal);
+            if( same || bothNaN ) {
+                // The variable exists and is the same, return.
+                return this._value;
+            }
+            this.requestUpdate('value', oldVal);
+        }
+        return this._value;
+    }
+
+    set value(x) {
+        let oldVal = this._value;
+        this._value = x;
+        console.log(this.name, 'updating value', x, oldVal);
+        this.requestUpdate('value', oldVal);
+    }
+
+    subscribe() {
+        if(this.unsubscribe){
+            this.unsubscribe();
+        }
+        this.unsubscribe = store.subscribe(() => {
+            var variable = store.getState().variables[this.name];
+            var val = this.value;
+            var same = variable.value == val;
+            var bothNaN = Number.isNaN(variable.value) && Number.isNaN(val);
+            if(variable && ( same || bothNaN ) ){
+                // The variable exists and is the same, return.
+                return;
+            }
+            if(this.derived){
+                this.dispatch();
+            }else{
+                this.value = variable.value;
+            }
+        });
+    }
+
+    dispatch(firstUpdated){
+        const action = {
+            type: firstUpdated ? 'CREATE_VARIABLE' : 'UPDATE_VARIABLE',
+            name: this.name,
+            value: this.value,
+            valueFunctionString: this.valueFunctionString,
+            description: this.description,
+            // TODO: Default formating
+            derived: this.derived,
+            error: this.valueFunctionError,
+        };
+        console.log(this.name, 'updating var', action);
+        store.dispatch(action);
+    }
+
     updated(changedProperties) {
+        console.log(this.name, changedProperties, this.value, this.valueFunctionString);
         changedProperties.forEach((oldValue, propName) => {
             switch (propName) {
-                case 'function':
-                    this.func = iframe.contentWindow.Function('"use strict";return ' + this.function + '');
-                    this.value = this.evalFunction();
-                    return;
+                case 'valueFunctionString':
+                    this._valueFunction = undefined;
+                    this.dispatch();
+                case 'value':
+                    // TODO: remove old value and dispatch and subscribe to a new name
                 case 'name':
+                    // TODO: remove old value and dispatch and subscribe to a new name
                     this.subscribe();
                 default:
                   return;
