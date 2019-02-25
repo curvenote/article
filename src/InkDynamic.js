@@ -6,34 +6,84 @@ const Selection = require('d3-selection');
 
 var HORIZONTAL_SCROLL_CLASS = 'ink-drag-horz';
 
-// Reducer
-function variables(state, action) {
-  switch (action.type) {
-    case 'UPDATE_VARIABLE':
-        var newState = {
-            ...state
-        };
-        newState[action.name] = Object.assign({}, action);
-        delete newState[action.name].type;
-        return newState;
-    case 'CREATE_VARIABLE':
-        var newState = {
-            ...state
-        };
-        newState[action.name] = Object.assign({}, action);
-        delete newState[action.name].type;
-        return newState;
-    default:
-        return {};
-  }
+
+function getStore(){
+    // Reducer
+    function variables(state, action) {
+      switch (action.type) {
+        case 'UPDATE_VARIABLE':
+            var newState = {
+                ...state
+            };
+            newState[action.name] = Object.assign({}, action);
+            delete newState[action.name].type;
+            return newState;
+        case 'CREATE_VARIABLE':
+            var newState = {
+                ...state
+            };
+            newState[action.name] = Object.assign({}, action);
+            delete newState[action.name].type;
+            return newState;
+        default:
+            return {};
+      }
+    }
+
+    // These should be added inside of a container element
+    const reducer = combineReducers({ variables });
+    const store = createStore(reducer);
+    store.dispatch({type: 'INITIALIZE'});
+    return store;
 }
 
-// These should be added inside of a container element
-const reducer = combineReducers({ variables });
-const store = createStore(reducer);
-store.dispatch({type: 'INITIALIZE'});
+function getIFrame(store){
+    // This is a hack-y way to create a place to execute javascript with globals.
+    var iframe = document.createElement('iframe');
+    iframe.setAttribute('hidden', '');
+    // iframe.setAttribute('sandbox', '');
+    document.body.appendChild(iframe);
 
-window.store = store;
+    store.subscribe(() =>{
+        const variables = store.getState().variables;
+        for(var variable in variables){
+            iframe.contentWindow[variable] = variables[variable].value;
+        }
+    });
+
+    return iframe;
+}
+
+window.store = getStore();
+window.iframe = getIFrame(window.store);
+
+
+
+class InkScope extends LitElement{
+    static get properties() {
+        return {
+            name: { type: String, reflect: true },
+        };
+    }
+    constructor() {
+        super();
+        this.name = 'window';
+    }
+    firstUpdated() {
+        this.store = getStore();
+        this.iframe = getIFrame(this.store);
+    }
+    render() {
+        return html`
+            <span>
+              <slot></slot>
+            </span>
+        `;
+    }
+}
+
+customElements.define('ink-scope', InkScope);
+
 
 class BaseDynamic extends LitElement{
     static get properties() {
@@ -43,10 +93,27 @@ class BaseDynamic extends LitElement{
             value: { type: Number, reflect: true },
             valueFunctionString: {type: String, attribute: ":value", reflect: true},
             format: { type: String, reflect: false },
+            // scope: { type: String, reflect: false },
         };
     }
     get setValue(){
         return true;
+    }
+    get store(){
+        var closestScope = this.closest('ink-scope');
+        if(closestScope === null){
+            return window.store;
+        }else{
+            return closestScope.store;
+        }
+    }
+    get iframe(){
+        var closestScope = this.closest('ink-scope');
+        if(closestScope === null){
+            return window.iframe;
+        }else{
+            return closestScope.iframe;
+        }
     }
     constructor() {
         super();
@@ -58,13 +125,14 @@ class BaseDynamic extends LitElement{
         this.valueFunctionString = undefined;
         this.format = ".1f";
         this.description = "";
+        // this.scope = undefined;
     }
     subscribe() {
         if(this.unsubscribe){
             this.unsubscribe();
         }
-        this.unsubscribe = store.subscribe(() => {
-            var variable = store.getState().variables[this.name];
+        this.unsubscribe = this.store.subscribe(() => {
+            var variable = this.store.getState().variables[this.name];
             if(variable === undefined || this.value == variable.value){
                 return;
             }
@@ -75,7 +143,7 @@ class BaseDynamic extends LitElement{
         return Format.format(this.format)(value);
     }
     firstUpdated() {
-        this.value = store.getState().variables[this.name];
+        this.value = this.store.getState().variables[this.name];
         this.subscribe();
     }
     disconnectedCallback(){
@@ -88,7 +156,7 @@ class BaseDynamic extends LitElement{
                     if(!this.setValue){
                         return
                     }
-                    return store.dispatch({
+                    return this.store.dispatch({
                         type: 'UPDATE_VARIABLE',
                         name: this.name,
                         value: this.value,
@@ -98,10 +166,10 @@ class BaseDynamic extends LitElement{
                 case 'name':
                     // Check if the bound variable is legit
                     this.subscribe();
-                    this.value = store.getState().variables[this.name];
+                    this.value = this.store.getState().variables[this.name];
                     return;
                 default:
-                  return;
+                    return;
             }
         });
     }
@@ -159,8 +227,8 @@ class InkDynamic extends BaseRange {
             ...super.properties
         };
     }
-    constructor(){
-        super();
+    setDefaults(){
+        super.setDefaults();
         this.senstivity = 10;
         this.dragging = false;
     }
@@ -223,28 +291,15 @@ class InkDynamic extends BaseRange {
 customElements.define('ink-dynamic', InkDynamic);
 
 
-
-// This is a hack-y way to create a place to execute javascript with globals.
-var iframe = document.createElement('iframe');
-iframe.setAttribute('hidden', '');
-// iframe.setAttribute('sandbox', '');
-document.body.appendChild(iframe);
-
-window.iframe = iframe;
-
-store.subscribe(() =>{
-    const variables = store.getState().variables;
-    for(var variable in variables){
-        iframe.contentWindow[variable] = variables[variable].value;
-    }
-});
-
-
 class InkVarList extends LitElement{
     static get properties() {
         return {
             variables: { type: Object, reflect: false }
         };
+    }
+    get store(){
+        // todo, update based on scope
+        return store;
     }
     constructor(){
         super();
@@ -255,15 +310,15 @@ class InkVarList extends LitElement{
         if(this.unsubscribe){
             this.unsubscribe();
         }
-        this.unsubscribe = store.subscribe(() => {
-            this.variables = store.getState().variables;
+        this.unsubscribe = this.store.subscribe(() => {
+            this.variables = this.store.getState().variables;
         });
     }
     formatter(value){
         return Format.format(this.format)(value);
     }
     firstUpdated() {
-        this.variables = store.getState().variables;
+        this.variables = this.store.getState().variables;
         this.subscribe();
     }
     disconnectedCallback(){
@@ -318,7 +373,7 @@ customElements.define('ink-var-list', InkVarList);
 
 
 
-function getFunction(value){
+function getFunction(iframe, value){
     return iframe.contentWindow.Function('"use strict";return ' + value + '');
 }
 
@@ -347,7 +402,7 @@ class InkVar extends BaseDynamic {
         if(this._valueFunction === undefined){
             // create the function if it isn't there already
             console.log(this.name, 'Creating function', this.valueFunctionString);
-            this._valueFunction = getFunction(this.valueFunctionString);
+            this._valueFunction = getFunction(this.iframe, this.valueFunctionString);
         }
         return this._valueFunction;
     }
@@ -358,13 +413,13 @@ class InkVar extends BaseDynamic {
             try{
                 var val = this.valueFunction();
                 // update the iframe variable
-                iframe.contentWindow[this.name] = val;
+                this.iframe.contentWindow[this.name] = val;
                 this.valueFunctionError = false;
                 this._value = val;
             }catch(err){
                 console.log('Could not evaluate the function', err);
                 this.valueFunctionError = err.message;
-                iframe.contentWindow[this.name] = Number.NaN;
+                this.iframe.contentWindow[this.name] = Number.NaN;
                 this._value = Number.NaN;
             }
             var same = this._value == oldVal;
@@ -389,8 +444,8 @@ class InkVar extends BaseDynamic {
         if(this.unsubscribe){
             this.unsubscribe();
         }
-        this.unsubscribe = store.subscribe(() => {
-            var variable = store.getState().variables[this.name];
+        this.unsubscribe = this.store.subscribe(() => {
+            var variable = this.store.getState().variables[this.name];
             var val = this.value;
             var same = variable.value == val;
             var bothNaN = Number.isNaN(variable.value) && Number.isNaN(val);
@@ -418,7 +473,7 @@ class InkVar extends BaseDynamic {
             error: this.valueFunctionError,
         };
         console.log(this.name, 'updating var', action);
-        store.dispatch(action);
+        this.store.dispatch(action);
     }
 
     updated(changedProperties) {

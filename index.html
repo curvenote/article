@@ -54,10 +54,14 @@
     <ink-var-list></ink-var-list>
 </ink-aside>
 <ink-demo>
-    If we have ranges for two variables:<br>
-    X: <ink-range name="x"></ink-range>, which is <ink-display name="x"></ink-display><br>
-    Y: <ink-range name="y"></ink-range>, which is <ink-display name="y"></ink-display><br>
-    Or you can set the value directly in the text for X <ink-dynamic name="x"></ink-dynamic> and Y <ink-dynamic name="y"></ink-dynamic>.<br>
+    <ink-scope name="demoVars">
+        <ink-var name="x" value="2"></ink-var>
+        <ink-var name="y" value="4"></ink-var>
+        If we have ranges for two variables:<br>
+        X: <ink-range name="x"></ink-range>, which is <ink-display name="x"></ink-display><br>
+        Y: <ink-range name="y"></ink-range>, which is <ink-display name="y"></ink-display><br>
+        Or you can set the value directly in the text for X <ink-dynamic name="x"></ink-dynamic> and Y <ink-dynamic name="y"></ink-dynamic>.<br>
+    </ink-scope>
 </ink-demo>
 
 
