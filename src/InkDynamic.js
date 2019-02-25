@@ -222,14 +222,14 @@ customElements.define('ink-range', InkRange);
 class InkDynamic extends BaseRange {
     static get properties() {
         return {
-            senstivity: Number,
-            dragging: Boolean,
+            sensitivity: {type: Number, reflect: false},
+            dragging: {type: Boolean, reflect: false},
             ...super.properties
         };
     }
     setDefaults(){
         super.setDefaults();
-        this.senstivity = 10;
+        this.sensitivity = 10;
         this.dragging = false;
     }
     render() {
@@ -279,10 +279,11 @@ class InkDynamic extends BaseRange {
         }).on('drag', () => {
             Selection.event.sourceEvent.preventDefault();
             const dx = Selection.event.dx;
-            var { step, value, min, max, senstivity } = this;
-            const newValue = Math.max(Math.min(this._prevValue + (dx / senstivity), max), min);
+            var { step, value, min, max, sensitivity } = this;
+            console.log(Selection.event, this._prevValue + (dx / sensitivity), dx, sensitivity)
+            const newValue = Math.max(Math.min(this._prevValue + (dx / sensitivity), max), min);
             this._prevValue = newValue; // Store the actual value so the drag is smooth
-            this.value = Math.round(newValue/step)*step; // Then round with the step size
+            this.value = Math.round(newValue / step) * step; // Then round with the step size
         });
 
         this.drag(Selection.select(node));

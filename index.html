@@ -57,7 +57,7 @@
 
 <ink-callout class="danger">Variables should be able to choose their type, e.g. array.</ink-callout>
 <ink-callout class="danger">Variables should be able to control their bounds ??</ink-callout>
-<ink-callout class="danger">Format should be defined once.</ink-callout>
+<ink-callout class="danger">Format should be defined once, and show up in the <code>var-list</code>.</ink-callout>
 <ink-callout class="danger">Max should be over ridden with a function <code>:max="p_f_choices.length-1"</code></ink-callout>
 <ink-callout class="danger">Format should be a variable.</ink-callout>
 <ink-callout class="success">Chart types</ink-callout>
@@ -65,7 +65,7 @@
 
 <p>In order to gain insight into the potential risk of an oil spill, you can play with the parameters below! You can <i>drag</i> the blue highlighted numbers to adjust the interactive graph.</p>
 
-<p>Let's say the probability of a spill is <ink-dynamic name="p_f_pick" format=".2" min="0" max="66"></ink-dynamic> <ink-display name="p_f" format=".2%"></ink-display> per year (Use <a href="#table1">Table 1</a>). Let's say you are comfortable with a <ink-dynamic name="beta" min="0.01" max="0.99" step="0.01" sensitivity="0.01" format=".0%"></ink-dynamic> probability of <i>not</i> having a spill. <b>With your risk tolerance and this probability, the pipeline should not be operated longer than <ink-display name="et2fail" format=".1f"></ink-display> years.</b></p>
+<p>Let's say the probability of a spill is <ink-dynamic name="p_f_pick" format=".2" min="0" max="66"></ink-dynamic> <ink-display name="p_f" format=".2%"></ink-display> per year (Use <a href="#table1">Table 1</a>). Let's say you are comfortable with a <ink-dynamic name="beta" min="0.01" max="0.99" step="0.01" sensitivity="1000" format=".0%"></ink-dynamic> probability of <i>not</i> having a spill. <b>With your risk tolerance and this probability, the pipeline should not be operated longer than <ink-display name="et2fail" format=".1f"></ink-display> years.</b></p>
 
 
 <p>When the probability of a spill is <ink-display name="p_f" format=".2%"></ink-display> the average interval between spills (the return period) as calculated by Northern Gateway is <ink-display name="years2fail" format=".1f"></ink-display> years. <b>At <ink-display name="years2fail" format=".1f"></ink-display> years there is a <ink-display name="chance_spill" format=".0%"></ink-display> chance there has already been an oil spill.</b>
