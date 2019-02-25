@@ -11,8 +11,6 @@
 
     <ink-var name="x" value="1"></ink-var>
     <ink-var name="y" value="5"></ink-var>
-    <ink-var name="x2" :value="2 * x"></ink-var>
-    <ink-var name="x22" :value="2 * x2"></ink-var>
     <ink-var name="xSquared" :value="x * x" description="The square of x."></ink-var>
 
 <h1>Ink Components</h1>
@@ -49,27 +47,29 @@
 <hr>
 <h2>Dynamic Content</h2>
 
-<ink-aside>
-    This document has variables:
-    <ink-var-list></ink-var-list>
-</ink-aside>
 <ink-demo>
     <ink-scope name="demoVars">
         <ink-var name="x" value="2"></ink-var>
         <ink-var name="y" value="4"></ink-var>
+        <ink-var name="xy" :value="x * y"></ink-var>
         If we have ranges for two variables:<br>
         X: <ink-range name="x"></ink-range>, which is <ink-display name="x"></ink-display><br>
         Y: <ink-range name="y"></ink-range>, which is <ink-display name="y"></ink-display><br>
         Or you can set the value directly in the text for X <ink-dynamic name="x"></ink-dynamic> and Y <ink-dynamic name="y"></ink-dynamic>.<br>
+        The product of X and Y is <ink-display name="xy"></ink-display>.
     </ink-scope>
 </ink-demo>
 
 
 <h3>Variables</h3>
-<ink-callout class="danger"><strong>TODO:</strong> These should be scoped under an <code>ink-scope</code></ink-callout>
+<ink-callout class="danger"><strong>TODO:</strong> These should be able to reference a different <code>ink-scope</code></ink-callout>
 <ink-callout class="danger"><strong>TODO:</strong> Format should be a default and pulled through to other variables.</ink-callout>
 
 
+<ink-aside>
+    This document has variables:
+    <ink-var-list></ink-var-list>
+</ink-aside>
 <p>
     Variables need to be defined to drive your dynamic document, the <code>ink-var</code> web component can specify a name, description and a value.
 </p>
