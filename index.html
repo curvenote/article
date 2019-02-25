@@ -42,6 +42,36 @@
 
 <ink-callout class="danger"><strong>Note:</strong> This should be installable through <code>npm</code></ink-callout>
 
+<h2>Demo</h2>
+
+<ink-scope>
+<ink-var name="p_f_pick" value="5"></ink-var>
+<ink-var name="p_f" :value="[0.001, 0.0012, 0.0014, 0.0016, 0.0018, 0.002, 0.0025, 0.003, 0.0035, 0.004, 0.0045, 0.005, 0.0055, 0.006, 0.0065, 0.007, 0.0075, 0.008, 0.0085, 0.009, 0.0095, 0.01, 0.0105, 0.011, 0.0115, 0.012, 0.0125, 0.013, 0.0135, 0.014, 0.0145, 0.015, 0.0155, 0.016, 0.0165, 0.017, 0.0175, 0.018, 0.0185, 0.019, 0.0195, 0.02, 0.025, 0.03, 0.035, 0.04, 0.045, 0.05, 0.055, 0.06, 0.065, 0.07, 0.075, 0.08, 0.085, 0.09, 0.095, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55][p_f_pick]"></ink-var>
+<ink-var name="beta" value="0.85"></ink-var>
+<ink-var name="p_s" :value="1 - p_f"></ink-var>
+<ink-var name="years2fail" :value="1 / p_f"></ink-var>
+<ink-var name="et2fail" :value="Math.log(beta)/Math.log(p_s)"></ink-var>
+<ink-var name="chance_spill" :value="1 - Math.pow(p_s, years2fail)"></ink-var>
+
+<ink-var-list></ink-var-list>
+
+<ink-callout class="danger">Variables should be able to choose their type, e.g. array.</ink-callout>
+<ink-callout class="danger">Variables should be able to control their bounds ??</ink-callout>
+<ink-callout class="danger">Format should be defined once.</ink-callout>
+<ink-callout class="danger">Max should be over ridden with a function <code>:max="p_f_choices.length-1"</code></ink-callout>
+<ink-callout class="danger">Format should be a variable.</ink-callout>
+<ink-callout class="success">Chart types</ink-callout>
+<ink-callout class="success">Spark types, hist, spark line, etc.</ink-callout>
+
+<p>In order to gain insight into the potential risk of an oil spill, you can play with the parameters below! You can <i>drag</i> the blue highlighted numbers to adjust the interactive graph.</p>
+
+<p>Let's say the probability of a spill is <ink-dynamic name="p_f_pick" format=".2" min="0" max="66"></ink-dynamic> <ink-display name="p_f" format=".2%"></ink-display> per year (Use <a href="#table1">Table 1</a>). Let's say you are comfortable with a <ink-dynamic name="beta" min="0.01" max="0.99" step="0.01" sensitivity="0.01" format=".0%"></ink-dynamic> probability of <i>not</i> having a spill. <b>With your risk tolerance and this probability, the pipeline should not be operated longer than <ink-display name="et2fail" format=".1f"></ink-display> years.</b></p>
+
+
+<p>When the probability of a spill is <ink-display name="p_f" format=".2%"></ink-display> the average interval between spills (the return period) as calculated by Northern Gateway is <ink-display name="years2fail" format=".1f"></ink-display> years. <b>At <ink-display name="years2fail" format=".1f"></ink-display> years there is a <ink-display name="chance_spill" format=".0%"></ink-display> chance there has already been an oil spill.</b>
+</p>
+</ink-scope>
+
 
 
 <hr>

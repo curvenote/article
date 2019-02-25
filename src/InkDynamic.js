@@ -297,9 +297,15 @@ class InkVarList extends LitElement{
             variables: { type: Object, reflect: false }
         };
     }
+
+    // todo: higher level base class
     get store(){
-        // todo, update based on scope
-        return store;
+        var closestScope = this.closest('ink-scope');
+        if(closestScope === null){
+            return window.store;
+        }else{
+            return closestScope.store;
+        }
     }
     constructor(){
         super();
