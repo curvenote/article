@@ -239,7 +239,7 @@ class InkCard extends LitElement {
                 font-family: 'Roboto', sans-serif;
                 color: #333333;
                 font-size: 14px;
-                width: calc(100% - 50px);
+                width: calc(100% - 65px);
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
