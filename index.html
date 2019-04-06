@@ -42,34 +42,174 @@
 
 <ink-callout class="danger"><strong>Note:</strong> This should be installable through <code>npm</code></ink-callout>
 
+<h2>Tangled Cookies</h2>
+
+<ink-scope>
+
+    <p><code>ink.js</code> is heavily inspired by <a href="http://worrydream.com/Tangle/guide.html">Tangle.js</a>, the goal is to allow you to write in html Web Components.</p>
+
+    <ink-demo>
+        <ink-var name="cookies" value="3" format=".4"></ink-var>
+        <ink-var name="caloriesPerCookie" value="50"></ink-var>
+        <ink-var name="dailyCalories" value="2100"></ink-var>
+
+        <ink-var name="calories" :value="cookies * caloriesPerCookie" format=".0f"></ink-var>
+        <ink-var name="dailyPercent" :value="calories / dailyCalories" format=".0%"></ink-var>
+
+        <p>
+            When you eat <ink-dynamic name="cookies" min="2" max="100"> cookies</ink-dynamic>,
+            you consume <ink-display name="calories"></ink-display> calories.<br>
+            That's <ink-display name="dailyPercent"></ink-display> of your recommended daily calories.
+        </p>
+    </ink-demo>
+
+</ink-scope>
+
+
+<hr>
+<ink-scope>
+    <ink-var name="ind" value="1"></ink-var>
+
+    <h1>Taylor Series</h1>
+
+    <p>
+        The Taylor series of a real or complex-valued function $f(x)$ that is infinitely differentiable at a real or complex number $a$ is the power series
+        <ink-equation>
+            f(x) \approx f(a) + \frac {f'(a)}{1!} (x-a) + \frac{f''(a)}{2!} (x-a)^2 + \frac{f^{(3)}(a)}{3!}(x-a)^3 + \cdots
+        </ink-equation>
+        where $n!$ denotes the factorial of $n$ and $f^{(n)}(a)$ denotes the $n$th derivative of $f$ evaluated at the point $a$. In the more compact sigma notation, this can be written as
+        <ink-equation>
+            \sum _{n=0}^{\infty }{\frac {f^{(n)}(a)}{n!}}(x-a)^{n}.
+        </ink-equation>
+        The derivative of order zero of $f$ is defined to be $f$ itself and $(x − a)^0$ and $0!$ are both defined to be 1. When $a = 0$, the series is also called a Maclaurin series.
+    </p>
+
+    <p>
+        The sine function is closely approximated by its Taylor polynomial of degree 7 for a full period centered at the origin.<br>
+        Try expanding the Taylor series: <ink-range name="ind" min="1" max="5"></ink-range>.
+        <ink-equation :math="[
+            '\sin(x) \\approx x',
+            '-{\\frac {x^{3}}{3!}}',
+            '+{\\frac {x^{5}}{5!}}',
+            '-{\\frac {x^{7}}{7!}}',
+            '-{\\frac {x^{9}}{9!}}'
+        ].slice(0, ind).join(' ') + ' + \\cdots'"></ink-equation>
+    </p>
+
+    <ink-chart :xlim="[-3 * Math.PI, 3 * Math.PI]" ylim="[-3, 3]">
+        <ink-chart-line eq="Math.sin(x)"></ink-chart-line>
+        <ink-chart-line :eq="[
+            'x',
+            '- (Math.pow(x, 3) / 6)',
+            '+ (Math.pow(x, 5) / 120)',
+            '- (Math.pow(x, 7) / 5040)',
+            '+ (Math.pow(x, 9) / 362880)',
+        ].slice(0, ind).join(' ')" stroke-width="2"></ink-chart-line>
+        <ink-chart-line eq="x" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-line>
+        <ink-chart-line eq="x - (Math.pow(x, 3) / 6)" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-line>
+        <ink-chart-line eq="x - (Math.pow(x, 3) / 6) + (Math.pow(x, 5) / 120)" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-line>
+        <ink-chart-line eq="x - (Math.pow(x, 3) / 6) + (Math.pow(x, 5) / 120) - (Math.pow(x, 7) / 5040)" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-line>
+        <ink-chart-line eq="x - (Math.pow(x, 3) / 6) + (Math.pow(x, 5) / 120) - (Math.pow(x, 7) / 5040) + (Math.pow(x, 9) / 362880)" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-line>
+    </ink-chart>
+</ink-scope>
+
+<hr>
+
 <h2>Demo</h2>
 
 <ink-scope>
-<ink-var name="p_f_pick" value="5"></ink-var>
-<ink-var name="p_f" :value="[0.001, 0.0012, 0.0014, 0.0016, 0.0018, 0.002, 0.0025, 0.003, 0.0035, 0.004, 0.0045, 0.005, 0.0055, 0.006, 0.0065, 0.007, 0.0075, 0.008, 0.0085, 0.009, 0.0095, 0.01, 0.0105, 0.011, 0.0115, 0.012, 0.0125, 0.013, 0.0135, 0.014, 0.0145, 0.015, 0.0155, 0.016, 0.0165, 0.017, 0.0175, 0.018, 0.0185, 0.019, 0.0195, 0.02, 0.025, 0.03, 0.035, 0.04, 0.045, 0.05, 0.055, 0.06, 0.065, 0.07, 0.075, 0.08, 0.085, 0.09, 0.095, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55][p_f_pick]"></ink-var>
-<ink-var name="beta" value="0.85"></ink-var>
-<ink-var name="p_s" :value="1 - p_f"></ink-var>
-<ink-var name="years2fail" :value="1 / p_f"></ink-var>
-<ink-var name="et2fail" :value="Math.log(beta)/Math.log(p_s)"></ink-var>
-<ink-var name="chance_spill" :value="1 - Math.pow(p_s, years2fail)"></ink-var>
+    <ink-var name="p_f_pick" value="5" format=".2"></ink-var>
 
-<ink-var-list></ink-var-list>
+    <ink-var name="p_f_array" type="Array" value="[0.001, 0.0012, 0.0014, 0.0016, 0.0018, 0.002, 0.0025, 0.003, 0.0035, 0.004, 0.0045, 0.005, 0.0055, 0.006, 0.0065, 0.007, 0.0075, 0.008, 0.0085, 0.009, 0.0095, 0.01, 0.0105, 0.011, 0.0115, 0.012, 0.0125, 0.013, 0.0135, 0.014, 0.0145, 0.015, 0.0155, 0.016, 0.0165, 0.017, 0.0175, 0.018, 0.0185, 0.019, 0.0195, 0.02, 0.025, 0.03, 0.035, 0.04, 0.045, 0.05, 0.055, 0.06, 0.065, 0.07, 0.075, 0.08, 0.085, 0.09, 0.095, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]"></ink-var>
 
-<ink-callout class="danger">Variables should be able to choose their type, e.g. array.</ink-callout>
-<ink-callout class="danger">Variables should be able to control their bounds ??</ink-callout>
-<ink-callout class="danger">Format should be defined once, and show up in the <code>var-list</code>.</ink-callout>
-<ink-callout class="danger">Max should be over ridden with a function <code>:max="p_f_choices.length-1"</code></ink-callout>
-<ink-callout class="danger">Format should be a variable, but should still use the format that is defined. <code>format=".2%" :map="p_f_array[p_f_pick]"</code>, not sure if this is a map, transform, or something else?</ink-callout>
-<ink-callout class="success">Chart types</ink-callout>
-<ink-callout class="success">Spark types, hist, spark line, etc.</ink-callout>
+    <ink-var name="p_f" :value="[0.001, 0.0012, 0.0014, 0.0016, 0.0018, 0.002, 0.0025, 0.003, 0.0035, 0.004, 0.0045, 0.005, 0.0055, 0.006, 0.0065, 0.007, 0.0075, 0.008, 0.0085, 0.009, 0.0095, 0.01, 0.0105, 0.011, 0.0115, 0.012, 0.0125, 0.013, 0.0135, 0.014, 0.0145, 0.015, 0.0155, 0.016, 0.0165, 0.017, 0.0175, 0.018, 0.0185, 0.019, 0.0195, 0.02, 0.025, 0.03, 0.035, 0.04, 0.045, 0.05, 0.055, 0.06, 0.065, 0.07, 0.075, 0.08, 0.085, 0.09, 0.095, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55][p_f_pick]" format=".2%"></ink-var>
+    <ink-var name="beta" value="0.85" format=".0%"></ink-var>
+    <ink-var name="p_s" :value="1 - p_f"></ink-var>
+    <ink-var name="years2fail" :value="1 / p_f" format=".1f"></ink-var>
+    <ink-var name="et2fail" :value="Math.log(beta)/Math.log(p_s)" format=".1f"></ink-var>
+    <ink-var name="chance_spill" :value="1 - Math.pow(p_s, years2fail)" format=".0%"></ink-var>
 
-<p>In order to gain insight into the potential risk of an oil spill, you can play with the parameters below! You can <i>drag</i> the blue highlighted numbers to adjust the interactive graph.</p>
+    <ink-var-list></ink-var-list>
 
-<p>Let's say the probability of a spill is <ink-dynamic name="p_f_pick" format=".2" min="0" max="66"></ink-dynamic> <ink-display name="p_f" format=".2%"></ink-display> per year (Use <a href="#table1">Table 1</a>). Let's say you are comfortable with a <ink-dynamic name="beta" min="0.01" max="0.99" step="0.01" sensitivity="1000" format=".0%"></ink-dynamic> probability of <i>not</i> having a spill. <b>With your risk tolerance and this probability, the pipeline should not be operated longer than <ink-display name="et2fail" format=".1f"></ink-display> years.</b></p>
+    <ink-callout class="danger">Variables should be able to choose their type, e.g. array.</ink-callout>
+    <ink-callout class="danger">Variables should be able to control their bounds ??</ink-callout>
+    <ink-callout class="danger">Max should be overridden with a function <code>:max="p_f_choices.length-1"</code></ink-callout>
+    <ink-callout class="danger">Format should be a variable, but should still use the format that is defined. <code>format=".2%" :map="p_f_array[p_f_pick]"</code>, not sure if this is a map, transform, or something else?</ink-callout>
+    <ink-callout class="success">Chart types</ink-callout>
+    <ink-callout class="success">Spark types, hist, spark line, etc.</ink-callout>
+
+    <p>In order to gain insight into the potential risk of an oil spill, you can play with the parameters below! You can <i>drag</i> the blue highlighted numbers to adjust the interactive graph.</p>
+
+    <p>Let's say the probability of a spill is <ink-dynamic name="p_f_pick" transform="[0.001, 0.0012, 0.0014, 0.0016, 0.0018, 0.002, 0.0025, 0.003, 0.0035, 0.004, 0.0045, 0.005, 0.0055, 0.006, 0.0065, 0.007, 0.0075, 0.008, 0.0085, 0.009, 0.0095, 0.01, 0.0105, 0.011, 0.0115, 0.012, 0.0125, 0.013, 0.0135, 0.014, 0.0145, 0.015, 0.0155, 0.016, 0.0165, 0.017, 0.0175, 0.018, 0.0185, 0.019, 0.0195, 0.02, 0.025, 0.03, 0.035, 0.04, 0.045, 0.05, 0.055, 0.06, 0.065, 0.07, 0.075, 0.08, 0.085, 0.09, 0.095, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55][value]" min="0" max="66" format=".2%"></ink-dynamic> per year (Use <a href="#table1">Table 1</a>). Let's say you are comfortable with a <ink-dynamic name="beta" min="0.01" max="0.99" step="0.01" sensitivity="1000"></ink-dynamic> probability of <i>not</i> having a spill. <b>With your risk tolerance and this probability, the pipeline should not be operated longer than <ink-display name="et2fail"></ink-display> years.</b></p>
 
 
-<p>When the probability of a spill is <ink-display name="p_f" format=".2%"></ink-display> the average interval between spills (the return period) as calculated by Northern Gateway is <ink-display name="years2fail" format=".1f"></ink-display> years. <b>At <ink-display name="years2fail" format=".1f"></ink-display> years there is a <ink-display name="chance_spill" format=".0%"></ink-display> chance there has already been an oil spill.</b>
-</p>
+    <p>When the probability of a spill is <ink-display name="p_f"></ink-display> the average interval between spills (the return period) as calculated by Northern Gateway is <ink-display name="years2fail"></ink-display> years. <b>At <ink-display name="years2fail"></ink-display> years there is a <ink-display name="chance_spill"></ink-display> chance there has already been an oil spill.</b>
+    </p>
+
+    <ink-chart xlim="[0, 550]" xlabel="Years" ylabel="Probability of No Spill">
+        <ink-chart-line eq="Math.pow(p_s, x)" stroke="steelblue"></ink-chart-line>
+        <ink-chart-line eq="0.5" stroke="#333" stroke-dasharray="5" stroke-width="1"></ink-chart-line>
+        <ink-chart-text x="540" y="0.52" text="Coin Toss"></ink-chart-text>
+        <ink-chart-point :x="1/(1-p_s)" :y="Math.pow(p_s, 1/(1-p_s))" fill="black"></ink-chart-point>
+        <ink-chart-point :x="et2fail" :y="Math.pow(p_s, et2fail)" fill="red"></ink-chart-point>
+    </ink-chart>
+
+</ink-scope>
+
+
+<ink-scope>
+    <h2>Example Charts - Sin Wave</h2>
+
+    <ink-var name="amplitude" value="1"></ink-var>
+    <ink-var name="freq" value="1"></ink-var>
+    <ink-var name="phase" value="0"></ink-var>
+
+    <strong>Amplitude, $A$:</strong><ink-dynamic name="amplitude" min="-3" max="3" step="0.25"></ink-dynamic><br>
+    <strong>Frequency, $f$:</strong><ink-dynamic name="freq" min="0" max="6.28" step="0.2"></ink-dynamic><br>
+    <strong>Phase, $\varphi$:</strong><ink-dynamic name="phase" min="-3" max="3" step="0.25"></ink-dynamic><br>
+
+    <ink-equation>
+        y(t) = A \sin(2 \pi f t + \varphi)
+    </ink-equation>
+
+    <ink-chart :xlim="[0, 2 * Math.PI]" ylim="[-3, 3]" xlabel="t" ylabel="y(t)">
+        <ink-chart-line eq="amplitude * Math.sin(2 * Math.PI * freq * x + phase)"></ink-chart-line>
+    </ink-chart>
+
+</ink-scope>
+
+
+<ink-scope>
+    <h2>Example Charts - Adding Sin and Cos</h2>
+
+    <ink-var name="amplitude1" value="1"></ink-var>
+    <ink-var name="freq1" value="1"></ink-var>
+    <ink-var name="phase1" value="0"></ink-var>
+
+    <ink-var name="amplitude2" value="1"></ink-var>
+    <ink-var name="freq2" value="1"></ink-var>
+    <ink-var name="phase2" value="0"></ink-var>
+
+    <h2>Sin</h2>
+    <strong>Amplitude, $A$:</strong><ink-dynamic name="amplitude1" min="-3" max="3" step="0.05"></ink-dynamic><br>
+    <strong>Frequency, $f$:</strong><ink-dynamic name="freq1" min="0" max="6.28" step="0.05"></ink-dynamic><br>
+    <strong>Phase, $\varphi$:</strong><ink-dynamic name="phase1" min="-10" max="10" step="0.05"></ink-dynamic><br>
+
+
+    <h2>Cos</h2>
+    <strong>Amplitude, $A$:</strong><ink-dynamic name="amplitude2" min="-3" max="3" step="0.05"></ink-dynamic><br>
+    <strong>Frequency, $f$:</strong><ink-dynamic name="freq2" min="0" max="6.28" step="0.05"></ink-dynamic><br>
+    <strong>Phase, $\varphi$:</strong><ink-dynamic name="phase2" min="-10" max="10" step="0.05"></ink-dynamic><br>
+
+    <ink-equation>
+        y(t) = A \sin(2 \pi f t + \varphi)
+    </ink-equation>
+
+    <ink-chart :xlim="[0, 10]" ylim="[-6, 6]" xlabel="t" ylabel="f(t)">
+        <ink-chart-line eq="amplitude1 * Math.sin(2 * Math.PI * freq1 * x + phase1)"></ink-chart-line>
+        <ink-chart-line eq="amplitude2 * Math.cos(2 * Math.PI * freq2 * x + phase2)"></ink-chart-line>
+        <ink-chart-line eq="amplitude1 * Math.sin(2 * Math.PI * freq1 * x + phase1) + amplitude2 * Math.cos(2 * Math.PI * freq2 * x + phase2)" stroke-width="2.5"></ink-chart-line>
+    </ink-chart>
 </ink-scope>
 
 
@@ -200,25 +340,16 @@
 <p>Use the <code>eqn.math</code> property to change the math dynamically:</p>
 
 <ink-demo>
-    Drag me to expand the Taylor Series: <input type="range" min="1" max="4" value="1" id="taylor-slider">
-    <script type="text/javascript">
-        document.addEventListener("DOMContentLoaded", function(event) {
-            var eqn = document.getElementById("taylor");
-            var slider = document.getElementById("taylor-slider");
-            var taylor = [
-                "f(x) \\approx f(a)",
-                "\\frac {f'(a)}{1!} (x-a)",
-                "\\frac{f''(a)}{2!} (x-a)^2",
-                "\\frac{f^{(3)}(a)}{3!}(x-a)^3"
-            ];
-            slider.oninput = function() {
-                eqn.math = taylor.slice(0, this.value).join(' + ') + ' + \\cdots';
-            }
-        });
-    </script>
-    <ink-equation id="taylor">
-        f(x) \approx f(a) \cdots
-    </ink-equation>
+    <ink-scope>
+    <ink-var name="index" value="1"></ink-var>
+    Drag me to expand the Taylor Series: <ink-range name="index" min="1" max="4"></ink-range>
+    <ink-equation :math="[
+            'f(x) \\approx f(a)',
+            '\\frac {f\'(a)}{1!} (x-a)',
+            '\\frac{f\'\'(a)}{2!} (x-a)^2',
+            '\\frac{f^{(3)}(a)}{3!}(x-a)^3'
+        ].slice(0, index).join(' + ') + ' + \\cdots'"></ink-equation>
+    </ink-scope>
 </ink-demo>
 
 

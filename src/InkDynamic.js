@@ -1,96 +1,19 @@
 import { LitElement, html } from '@polymer/lit-element';
-import { combineReducers, createStore } from 'redux'
 const Format = require('d3-format');
 const Drag = require('d3-drag');
 const Selection = require('d3-selection');
 
 var HORIZONTAL_SCROLL_CLASS = 'ink-drag-horz';
 
-
-function getStore(){
-    // Reducer
-    function variables(state, action) {
-      switch (action.type) {
-        case 'UPDATE_VARIABLE':
-            var newState = {
-                ...state
-            };
-            newState[action.name] = Object.assign({}, action);
-            delete newState[action.name].type;
-            return newState;
-        case 'CREATE_VARIABLE':
-            var newState = {
-                ...state
-            };
-            newState[action.name] = Object.assign({}, action);
-            delete newState[action.name].type;
-            return newState;
-        default:
-            return {};
-      }
-    }
-
-    // These should be added inside of a container element
-    const reducer = combineReducers({ variables });
-    const store = createStore(reducer);
-    store.dispatch({type: 'INITIALIZE'});
-    return store;
-}
-
-function getIFrame(store){
-    // This is a hack-y way to create a place to execute javascript with globals.
-    var iframe = document.createElement('iframe');
-    iframe.setAttribute('hidden', '');
-    // iframe.setAttribute('sandbox', '');
-    document.body.appendChild(iframe);
-
-    store.subscribe(() =>{
-        const variables = store.getState().variables;
-        for(var variable in variables){
-            iframe.contentWindow[variable] = variables[variable].value;
-        }
-    });
-
-    return iframe;
-}
-
-window.store = getStore();
-window.iframe = getIFrame(window.store);
+import { BaseGetProps, propDef, getProp, setProp, getPropFunction, getIFrameFunction } from './InkDynamicProps.js';
 
 
-
-class InkScope extends LitElement{
-    static get properties() {
-        return {
-            name: { type: String, reflect: true },
-        };
-    }
-    constructor() {
-        super();
-        this.name = 'window';
-    }
-    firstUpdated() {
-        this.store = getStore();
-        this.iframe = getIFrame(this.store);
-    }
-    render() {
-        return html`
-            <span>
-              <slot></slot>
-            </span>
-        `;
-    }
-}
-
-customElements.define('ink-scope', InkScope);
-
-
-class BaseDynamic extends LitElement{
+class BaseDynamic extends BaseGetProps{
     static get properties() {
         return {
             name: { type: String, reflect: false },
             description: { type: String, reflect: false },
-            value: { type: Number, reflect: true },
+            value: { type: Number, reflect: false },
             valueFunctionString: {type: String, attribute: ":value", reflect: true},
             format: { type: String, reflect: false },
             // scope: { type: String, reflect: false },
@@ -99,31 +22,11 @@ class BaseDynamic extends LitElement{
     get setValue(){
         return true;
     }
-    get store(){
-        var closestScope = this.closest('ink-scope');
-        if(closestScope === null){
-            return window.store;
-        }else{
-            return closestScope.store;
-        }
-    }
-    get iframe(){
-        var closestScope = this.closest('ink-scope');
-        if(closestScope === null){
-            return window.iframe;
-        }else{
-            return closestScope.iframe;
-        }
-    }
-    constructor() {
-        super();
-        this.setDefaults();
-    }
     setDefaults(){
         this.name = null;
         this.value = 0;
         this.valueFunctionString = undefined;
-        this.format = ".1f";
+        this.format = undefined;
         this.description = "";
         // this.scope = undefined;
     }
@@ -140,7 +43,12 @@ class BaseDynamic extends LitElement{
         });
     }
     formatter(value){
-        return Format.format(this.format)(value);
+        var variable = this.store.getState().variables[this.name];
+        var def = undefined;
+        if(variable){
+            def = variable.format;
+        }
+        return Format.format(this.format || def || ".1f")(value);
     }
     firstUpdated() {
         this.value = this.store.getState().variables[this.name];
@@ -160,8 +68,6 @@ class BaseDynamic extends LitElement{
                         type: 'UPDATE_VARIABLE',
                         name: this.name,
                         value: this.value,
-                        description: this.description,
-                        derived: false,
                     });
                 case 'name':
                     // Check if the bound variable is legit
@@ -224,17 +130,26 @@ class InkDynamic extends BaseRange {
         return {
             sensitivity: {type: Number, reflect: false},
             dragging: {type: Boolean, reflect: false},
-            ...super.properties
+            ...propDef('transform', String),
+            ...super.properties,
         };
     }
     setDefaults(){
         super.setDefaults();
         this.sensitivity = 10;
         this.dragging = false;
+        this.transform = 'value';
     }
+
+    get transform() { return getProp(this, 'transform'); }
+    set transform(val) { return setProp(this, 'transform', val); }
+    get transformFunction() { return getPropFunction(this, 'transform'); }
+
     render() {
-        return html`
-        <style>
+
+        var func = getIFrameFunction(this.iframe, this.transform, ['value']);
+
+        return html`<style>
             .container{
                 display: inline-block;
                 position: relative;
@@ -257,10 +172,9 @@ class InkDynamic extends BaseRange {
             }
         </style>
         <div class="container">
-            <span class="dynamic">${ this.formatter(this.value) }</span>
+            <span class="dynamic">${ this.formatter(func(this.value)) }<slot></slot></span>
             <div class="help" style="${ this.dragging? 'display:none' : ''}">drag</div>
-        </div>
-        `;
+        </div>`;
     }
     firstUpdated() {
         super.firstUpdated();
@@ -321,8 +235,8 @@ class InkVarList extends LitElement{
             this.variables = this.store.getState().variables;
         });
     }
-    formatter(value){
-        return Format.format(this.format)(value);
+    formatter(value, format){
+        return Format.format(format || this.format)(value);
     }
     firstUpdated() {
         this.variables = this.store.getState().variables;
@@ -333,6 +247,8 @@ class InkVarList extends LitElement{
     }
     render() {
         const vars = this.variables || {};
+
+        console.log(vars)
 
         return html`
             <style>
@@ -366,9 +282,9 @@ class InkVarList extends LitElement{
                     <dt title=${ vars[key].name }><code>${ vars[key].name }</code></dt>
                     <dd>
                     ${vars[key].derived ?
-                        html`<span class="value${vars[key].error ? ' error' : ''}" title="${vars[key].error || ''}">${ this.formatter(vars[key].value) }</span> <code>${ vars[key].valueFunctionString }</code> ${ vars[key].description || '' }`
+                        html`<span class="value${vars[key].error ? ' error' : ''}" title="${vars[key].error || ''}">${ this.formatter(vars[key].value, vars[key].format) }</span> <code>${ vars[key].valueFunctionString }</code> ${ vars[key].description || '' }`
                         :
-                        html`<span class="value">${ this.formatter(vars[key].value) }</span>${ vars[key].description || '' }`
+                        html`<span class="value">${ this.formatter(vars[key].value, vars[key].format) }</span>${ vars[key].description || '' }`
                     }
                     </dd>
               `)}
@@ -379,10 +295,6 @@ class InkVarList extends LitElement{
 customElements.define('ink-var-list', InkVarList);
 
 
-
-function getFunction(iframe, value){
-    return iframe.contentWindow.Function('"use strict";return ' + value + '');
-}
 
 class InkVar extends BaseDynamic {
     render() {
@@ -409,7 +321,7 @@ class InkVar extends BaseDynamic {
         if(this._valueFunction === undefined){
             // create the function if it isn't there already
             console.log(this.name, 'Creating function', this.valueFunctionString);
-            this._valueFunction = getFunction(this.iframe, this.valueFunctionString);
+            this._valueFunction = getIFrameFunction(this.iframe, this.valueFunctionString);
         }
         return this._valueFunction;
     }
@@ -475,7 +387,7 @@ class InkVar extends BaseDynamic {
             value: this.value,
             valueFunctionString: this.valueFunctionString,
             description: this.description,
-            // TODO: Default formating
+            format: this.format,
             derived: this.derived,
             error: this.valueFunctionError,
         };

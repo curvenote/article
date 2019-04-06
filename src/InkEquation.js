@@ -4,18 +4,27 @@ import katex from 'katex';
 import { katexCSS } from './styles.js';
 
 
-class InkEquation extends LitElement {
+import { BaseGetProps, propDef, getProp, setProp, getPropFunction, getIFrameFunction } from './InkDynamicProps.js';
+
+
+class InkEquation extends BaseGetProps {
     static get properties() {
         return {
-            math: String,
+            ...propDef('math', String),
         };
     }
-    constructor() {
-        super();
+
+    get math() { return getProp(this, 'math'); }
+    set math(val) { return setProp(this, 'math', val); }
+    get mathFunction() { return getPropFunction(this, 'math'); }
+
+    setDefaults(){
         this.math = '';
     }
+
     firstUpdated() {
         // This updates the inside of the element to be in-line with the math property.
+        super.firstUpdated();
         var shadow = this.shadowRoot;
         this.math = this.textContent;
         shadow.addEventListener('slotchange', () => {
