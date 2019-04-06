@@ -17,8 +17,14 @@ class BaseDynamic extends BaseGetProps{
             valueFunctionString: {type: String, attribute: ":value", reflect: true},
             format: { type: String, reflect: false },
             // scope: { type: String, reflect: false },
+            ...propDef('transform', String),
         };
     }
+
+    get transform() { return getProp(this, 'transform'); }
+    set transform(val) { return setProp(this, 'transform', val); }
+    get transformFunction() { return getPropFunction(this, 'transform'); }
+
     get setValue(){
         return true;
     }
@@ -28,6 +34,7 @@ class BaseDynamic extends BaseGetProps{
         this.valueFunctionString = undefined;
         this.format = undefined;
         this.description = "";
+        this.transform = 'value';
         // this.scope = undefined;
     }
     subscribe() {
@@ -43,6 +50,7 @@ class BaseDynamic extends BaseGetProps{
         });
     }
     formatter(value){
+        if(typeof value === 'string'){return value;}
         var variable = this.store.getState().variables[this.name];
         var def = undefined;
         if(variable){
@@ -87,7 +95,8 @@ class InkDisplay extends BaseDynamic {
         return false;
     }
     render() {
-        return html`<span>${this.formatter(this.value)}</span>`;
+        var func = getIFrameFunction(this.iframe, this.transform, ['value']);
+        return html`<span>${ this.formatter(func(this.value)) }</span>`;
     }
 }
 
@@ -130,7 +139,6 @@ class InkDynamic extends BaseRange {
         return {
             sensitivity: {type: Number, reflect: false},
             dragging: {type: Boolean, reflect: false},
-            ...propDef('transform', String),
             ...super.properties,
         };
     }
@@ -138,12 +146,7 @@ class InkDynamic extends BaseRange {
         super.setDefaults();
         this.sensitivity = 10;
         this.dragging = false;
-        this.transform = 'value';
     }
-
-    get transform() { return getProp(this, 'transform'); }
-    set transform(val) { return setProp(this, 'transform', val); }
-    get transformFunction() { return getPropFunction(this, 'transform'); }
 
     render() {
 

@@ -81,7 +81,7 @@
         <ink-equation>
             \sum _{n=0}^{\infty }{\frac {f^{(n)}(a)}{n!}}(x-a)^{n}.
         </ink-equation>
-        The derivative of order zero of $f$ is defined to be $f$ itself and $(x − a)^0$ and $0!$ are both defined to be 1. When $a = 0$, the series is also called a Maclaurin series.
+        The derivative of order zero of $f$ is defined to be $f$ itself and $(x - a)^0$ and $0!$ are both defined to be 1. When $a = 0$, the series is also called a Maclaurin series.
     </p>
 
     <p>
@@ -282,11 +282,22 @@
     Try setting the value of $x$ with the range input: <ink-range name="x" max="5"></ink-range>
 </p>
 
+<p>
+    You can also <code>transform</code> the value of a variable before you format it.
+    For example, you might want to say that the admission to a park is <code>'free'</code> when the <code>value == 0</code>.
+</p>
+<ink-demo>The park admission is <ink-display name="x" format="$.2f" transform="(value > 0)? value : 'free'"></ink-display>.</ink-demo>
+<p>
+    You can also use this <code>transform</code> to say that the park admission is <strong><ink-display name="x" format="$.2f" transform="(value > 0)? (value > 2)? 'expensive' : 'cheap' : 'free'"></ink-display></strong>.
+    This is also quite useful if you want to use the transform to index into an array <ink-display name="x" format="$.2f" transform="['😍','😆','😊','😐','😒','😠'][Math.min(Math.max(value,0),5)]"></ink-display>, in this case emoji array - but it could be numeric too!
+</p>
+
 <ink-callout class="info">
     Properties of <code>ink-display</code>:
     <dl>
       <dt><code>name</code></dt><dd>The variable to name to in the state.</dd>
       <dt><code>format</code></dt><dd>A d3-format string. See the <a href="https://github.com/d3/d3-format" target="_blank">documentation</a>.</dd>
+      <dt><code>transform</code></dt><dd>Allows you to change or transform the value before formating: <code>format(transform(value))</code>. If the value is a string after transformation, it will not be formatted.</dd>
     </dl>
 </ink-callout>
 
@@ -299,7 +310,10 @@
 <ink-code language="html" compact>&lt;ink-dynamic name="x"&gt;&lt;/ink-dynamic&gt;</ink-code>
 
 <p>
-    This allows you to set the value of $x$ inline: <ink-dynamic name="x"></ink-dynamic> or $y=$<ink-dynamic name="y"></ink-dynamic>.<br>Notice how it is linked to the above <code>ink-range</code> and <code>ink-display</code>.
+    This allows you to set the value of $x$ inline: <ink-dynamic name="x"></ink-dynamic> or $y=$<ink-dynamic name="y"></ink-dynamic>.<br>
+    Notice how it is linked to the above <code>ink-range</code> and <code>ink-display</code>.<br>
+    You can also add inside of the html tag, to have custom formatting that also is dynamic.<br>
+    For example, <ink-dynamic name="y">ºC</ink-dynamic>, the <code>ºC</code> is inside of the <code>&lt;ink-dynamic&gt;</code> tags, so it is also has a blue underline.
 </p>
 <p>
     You can also create ranges, as see above, notice that we can create a lot of these and name to different values.
@@ -316,12 +330,13 @@
 <ink-callout class="info">
     <strong>Properties:</strong>
     <dl>
-      <dt><code>name</code></dt><dd>The variable to name to in the state.</dd>
-      <dt><code>format</code></dt><dd>A d3-format string. See the <a href="https://github.com/d3/d3-format" target="_blank">documentation</a>.</dd>
-      <dt><code>min</code></dt><dd>Minimum of the range.</dd>
-      <dt><code>max</code></dt><dd>Maximum of the range.</dd>
-      <dt><code>step</code></dt><dd>Step size.</dd>
-      <dt><code>sensitivity</code></dt><dd>Multiplier on pixels dragged for the <code>dynamic</code> text input.</dd>
+        <dt><code>name</code></dt><dd>The variable to name to in the state.</dd>
+        <dt><code>format</code></dt><dd>A d3-format string. See the <a href="https://github.com/d3/d3-format" target="_blank">documentation</a>.</dd>
+        <dt><code>min</code></dt><dd>Minimum of the range.</dd>
+        <dt><code>max</code></dt><dd>Maximum of the range.</dd>
+        <dt><code>step</code></dt><dd>Step size.</dd>
+        <dt><code>sensitivity</code></dt><dd>Multiplier on pixels dragged for the <code>dynamic</code> text input.</dd>
+        <dt><code>transform</code></dt><dd>Allows you to change or transform the value before formating: <code>format(transform(value))</code>. If the value is a string after transformation, it will not be formatted.</dd>
     </dl>
 </ink-callout>
 
