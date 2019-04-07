@@ -9,6 +9,7 @@ import * as scale from 'd3-scale'
 const d3axis = require('d3-axis');
 const d3array = require('d3-array');
 const d3shape = require('d3-shape');
+const Drag = require('d3-drag');
 
 const d3ScaleChromatic = require('d3-scale-chromatic');
 
@@ -337,6 +338,110 @@ class InkChartText extends InkChartObject {
 customElements.define('ink-chart-text', InkChartText);
 
 
+class InkChartNode extends InkChartObject {
+    static get properties() {
+        return {
+            // name: String,
+            // description: String,
+            ...propDef('x', Number),
+            ...propDef('y', Number),
+            r: String,
+            fill: String,
+            bind: String,
+        };
+    }
+
+    setDefaults() {
+        // this.name = 'temp';
+        this.bind = '';
+        // this.description = '';
+        this.x = 0.5;
+        this.y = 0.5;
+        this.r = 20;
+        this.fill = this.inkChart.nextColor();
+    }
+
+    get x() { return getProp(this, 'x'); }
+    set x(val) { return setProp(this, 'x', val); }
+    get xFunction() { return getPropFunction(this, 'x'); }
+
+    get y() { return getProp(this, 'y'); }
+    set y(val) { return setProp(this, 'y', val); }
+    get yFunction() { return getPropFunction(this, 'y'); }
+
+    dispatch(x, y){
+
+        this.x = x;
+        this.y = y;
+
+        if(!this.bind){return;}
+
+        var func = getIFrameFunction(this.iframe, this.bind, ['x', 'y']);
+        var updates = func(x, y);
+
+        var keys = Object.keys(updates);
+
+        for (var i = 0; i < keys.length; i++) {
+            const action = {
+                type: 'UPDATE_VARIABLE',
+                name: keys[i],
+                value: updates[keys[i]]
+            };
+            this.store.dispatch(action);
+        }
+        console.log('Drag node updating var:', updates);
+    }
+
+    _renderSVG(inkChart){
+
+        if(!this._node){
+            this._node = inkChart.chart.append("circle")
+                .attr("r", this.r)
+                .attr("fill", this.fill)
+                .attr("cx", inkChart.x(this.x))
+                .attr("cy", inkChart.y(this.y));
+
+            this.drag = Drag.drag().on('start', () => {
+                Selection.event.sourceEvent.preventDefault();
+                this.dragging = true;
+                this._prevValue = this.value; // Start out with the actual value
+            }).on('drag', () => {
+                Selection.event.sourceEvent.preventDefault();
+
+                const x = Selection.event.x;
+                const y = Selection.event.y;
+
+                this._node
+                    .attr("cx", x)
+                    .attr("cy", y);
+
+                this.dispatch(
+                    inkChart.x.invert(x),
+                    inkChart.y.invert(y)
+                );
+            }).on('end', () => {
+                this.dragging = false;
+            });
+            this._node.call(this.drag);
+            return;
+        }
+        if(this.dragging){
+            return;
+        }
+
+        this._node
+            .attr("r", this.r)
+            .attr("fill", this.fill)
+            .attr("cx", inkChart.x(this.x))
+            .attr("cy", inkChart.y(this.y));
+
+    }
+
+}
+
+customElements.define('ink-chart-node', InkChartNode);
+
+
         // function img(id, src, xLoc, yLoc, wLoc, hLoc){
         //     if(imgs[id] !== undefined){imgs[id].img.remove();}
         //     var img = chart.append("svg:image")
@@ -352,4 +457,4 @@ customElements.define('ink-chart-text', InkChartText);
 
 
 
-export { InkChart, InkChartPoint, InkChartLine, InkChartText };
+export { InkChart, InkChartPoint, InkChartLine, InkChartText, InkChartNode };

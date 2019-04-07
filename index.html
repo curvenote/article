@@ -174,8 +174,31 @@
 
     <ink-chart :xlim="[0, 2 * Math.PI]" ylim="[-3, 3]" xlabel="t" ylabel="y(t)">
         <ink-chart-line eq="amplitude * Math.sin(2 * Math.PI * freq * x + phase)"></ink-chart-line>
+        <ink-chart-node x="3" :y="amplitude" bind="{amplitude: y, phase: - 2 * Math.PI * freq * x}"></ink-chart-node>
     </ink-chart>
 
+
+</ink-scope>
+<ink-scope>
+
+
+    <ink-var name="a" value="0.5"></ink-var>
+    <ink-var name="b" value="0.5"></ink-var>
+
+    <ink-var name="off_x" value="0.5"></ink-var>
+    <ink-var name="off_y" value="0.5"></ink-var>
+
+
+    <strong>$A$:</strong><ink-dynamic name="a" min="-3" max="3" step="0.25"></ink-dynamic><br>
+    <strong>$B$:</strong><ink-dynamic name="a" min="-3" max="3" step="0.25"></ink-dynamic><br>
+    <strong>$x$:</strong><ink-dynamic name="off_x" min="-1" max="1" step="0.1"></ink-dynamic><br>
+    <strong>$y$:</strong><ink-dynamic name="off_y" min="-1" max="1" step="0.1"></ink-dynamic><br>
+
+
+    <ink-chart xlim="[-3, 3]" ylim="[-3, 3]">
+        <ink-chart-node :x="a" :y="b" bind="{a: x, b: y}"></ink-chart-node>
+        <ink-chart-node :x="a + off_x" :y="b + off_y" bind="{a: x - off_x, b: y - off_y}"></ink-chart-node>
+    </ink-chart>
 </ink-scope>
 
 
@@ -286,10 +309,13 @@
     You can also <code>transform</code> the value of a variable before you format it.
     For example, you might want to say that the admission to a park is <code>'free'</code> when the <code>value == 0</code>.
 </p>
-<ink-demo>The park admission is <ink-display name="x" format="$.2f" transform="(value > 0)? value : 'free'"></ink-display>.</ink-demo>
+<ink-demo>
+    The park admission is
+    <ink-display name="x" transform="(value > 0)? value : 'free'" format="$.2f"></ink-display>.
+</ink-demo>
 <p>
-    You can also use this <code>transform</code> to say that the park admission is <strong><ink-display name="x" format="$.2f" transform="(value > 0)? (value > 2)? 'expensive' : 'cheap' : 'free'"></ink-display></strong>.
-    This is also quite useful if you want to use the transform to index into an array <ink-display name="x" format="$.2f" transform="['😍','😆','😊','😐','😒','😠'][Math.min(Math.max(value,0),5)]"></ink-display>, in this case emoji array - but it could be numeric too!
+    You can also use this <code>transform</code> to say that the park admission is <strong><ink-dynamic name="x" format="$.2f" transform="['free','real cheap','cheap','costly','expensive','real expensive'][Math.min(Math.max(value,0),5)]" max="5"></ink-dynamic></strong>.<br>
+    This is also quite useful if you want to use the transform to index into an array <ink-dynamic name="x" format="$.2f" transform="['😍','😆','😊','😐','😒','😠'][Math.min(Math.max(value,0),5)]" max="5"></ink-dynamic>, in this case emoji array - but it could be numeric too!
 </p>
 
 <ink-callout class="info">
@@ -322,8 +348,8 @@
 <ink-code language="html" compact>&lt;ink-range name="x"&gt;&lt;/ink-range&gt;</ink-code>
 <p>
     $x_{1.0}:$ <ink-range name="x"></ink-range><br>
-    $x_{0.5}:$ <ink-range name="x" step="0.5"></ink-range><br>
     $y_{1.0}:$ <ink-range name="y"></ink-range><br>
+    $y_{0.5}:$ <ink-range name="y" step="0.5"></ink-range><br>
 </p>
 
 
