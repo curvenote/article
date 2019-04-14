@@ -209,6 +209,198 @@ class InkDynamic extends BaseRange {
 customElements.define('ink-dynamic', InkDynamic);
 
 
+
+
+class InkDynamic2 extends BaseGetProps {
+    static get properties() {
+        return {
+            ...propDef('min', Number),
+            ...propDef('max', Number),
+            ...propDef('step', Number),
+            ...propDef('value', Number),
+            ...propDef('transform', String),
+            sensitivity: {type: Number, reflect: false},
+            dragging: {type: Boolean, reflect: false},
+            bind: String,
+        };
+    }
+
+    setDefaults() {
+        this.min = 0;
+        this.max = 10;
+        this.step = 1;
+        this.value = 0;
+        this.sensitivity = 10;
+        this.dragging = false;
+        this.transform = 'value';
+    }
+
+    get min() { return getProp(this, 'min'); }
+    set min(val) { return setProp(this, 'min', val); }
+    get minFunction() { return getPropFunction(this, 'min'); }
+
+    get max() { return getProp(this, 'max'); }
+    set max(val) { return setProp(this, 'max', val); }
+    get maxFunction() { return getPropFunction(this, 'max'); }
+
+    get step() { return getProp(this, 'step'); }
+    set step(val) { return setProp(this, 'step', val); }
+    get stepFunction() { return getPropFunction(this, 'step'); }
+
+    get value() { return getProp(this, 'value'); }
+    set value(val) { return setProp(this, 'value', val); }
+    get valueFunction() { return getPropFunction(this, 'value'); }
+
+    get transform() { return getProp(this, 'transform'); }
+    set transform(val) { return setProp(this, 'transform', val); }
+    get transformFunction() { return getPropFunction(this, 'transform'); }
+
+
+    formatter(value){
+        if(typeof value === 'string'){return value;}
+        // if bind is simple
+        var variable = this.store.getState().variables[this.name];
+        var def = undefined;
+        if(variable){
+            def = variable.format;
+        }
+        return Format.format(this.format || def || ".1f")(value);
+    }
+
+    dispatch(val){
+
+        this.value = val;
+
+        if(!this.bind){return;}
+
+        var func = getIFrameFunction(this.iframe, this.bind, ['value']);
+        var updates = func( val );
+
+        var keys = Object.keys(updates);
+
+        for (var i = 0; i < keys.length; i++) {
+            const action = {
+                type: 'UPDATE_VARIABLE',
+                name: keys[i],
+                value: updates[keys[i]]
+            };
+            this.store.dispatch(action);
+        }
+        console.log('Drag node updating var:', updates);
+    }
+
+    firstUpdated() {
+        super.firstUpdated();
+
+        const node = this.shadowRoot.children[1].children[0];
+        const bodyClassList = document.getElementsByTagName("BODY")[0].classList
+
+        this.drag = Drag.drag().on('start', () => {
+            Selection.event.sourceEvent.preventDefault();
+            this.dragging = true; // Hides the "drag" tool-tip
+            this._prevValue = this.value; // Start out with the actual value
+            bodyClassList.add(HORIZONTAL_SCROLL_CLASS);
+        }).on('end', () => {
+            this.dragging = false;
+            bodyClassList.remove(HORIZONTAL_SCROLL_CLASS);
+        }).on('drag', () => {
+            Selection.event.sourceEvent.preventDefault();
+            const dx = Selection.event.dx;
+            var { step, value, min, max, sensitivity } = this;
+            console.log(Selection.event, this._prevValue + (dx / sensitivity), dx, sensitivity)
+            const newValue = Math.max(Math.min(this._prevValue + (dx / sensitivity), max), min);
+            this._prevValue = newValue; // Store the actual value so the drag is smooth
+            // Then round with the step size
+            var val = Math.round( newValue / step ) * step;
+            this.dispatch( val );
+        });
+
+        this.drag(Selection.select(node));
+    }
+
+    render(){
+
+        var func = getIFrameFunction(this.iframe, this.transform, ['value']);
+
+        return html`<style>
+            .container{
+                display: inline-block;
+                position: relative;
+            }
+            .dynamic{
+                color: #46f;
+                border-bottom: 1px dashed #46f;
+                cursor: col-resize;
+            }
+            .help{
+                left: calc(50% - 9px);
+                top: -7px;
+                position: absolute;
+                color: #00f;
+                font: 9px "Helvetica-Neue", "Arial", sans-serif;
+                display: none;
+            }
+            .container:hover .help{
+                display: block;
+            }
+        </style>
+        <div class="container">
+            <span class="dynamic">${ this.formatter(func(this.value)) }<slot></slot></span>
+            <div class="help" style="${ this.dragging? 'display:none' : ''}">drag</div>
+        </div>`;
+
+    }
+
+    _renderSVG(inkChart){
+
+        if(!this._node){
+            this._node = inkChart.chart.append("circle")
+                .attr("r", this.r)
+                .attr("fill", this.fill)
+                .attr("cx", inkChart.x(this.x))
+                .attr("cy", inkChart.y(this.y));
+
+            this.drag = Drag.drag().on('start', () => {
+                Selection.event.sourceEvent.preventDefault();
+                this.dragging = true;
+                this._prevValue = this.value; // Start out with the actual value
+            }).on('drag', () => {
+                Selection.event.sourceEvent.preventDefault();
+
+                const x = Selection.event.x;
+                const y = Selection.event.y;
+
+                this._node
+                    .attr("cx", x)
+                    .attr("cy", y);
+
+                this.dispatch(
+                    inkChart.x.invert(x),
+                    inkChart.y.invert(y)
+                );
+            }).on('end', () => {
+                this.dragging = false;
+            });
+            this._node.call(this.drag);
+            return;
+        }
+        if(this.dragging){
+            return;
+        }
+
+        this._node
+            .attr("r", this.r)
+            .attr("fill", this.fill)
+            .attr("cx", inkChart.x(this.x))
+            .attr("cy", inkChart.y(this.y));
+
+    }
+
+}
+
+customElements.define('ink-dynamic2', InkDynamic2);
+
+
 class InkVarList extends LitElement{
     static get properties() {
         return {

@@ -68,8 +68,6 @@
 
 <hr>
 <ink-scope>
-    <ink-var name="ind" value="1"></ink-var>
-
     <h1>Taylor Series</h1>
 
     <p>
@@ -83,6 +81,8 @@
         </ink-equation>
         The derivative of order zero of $f$ is defined to be $f$ itself and $(x - a)^0$ and $0!$ are both defined to be 1. When $a = 0$, the series is also called a Maclaurin series.
     </p>
+
+    <ink-var name="ind" value="1"></ink-var>
 
     <p>
         The sine function is closely approximated by its Taylor polynomial of degree 7 for a full period centered at the origin.<br>
@@ -176,9 +176,8 @@
         <ink-chart-line eq="amplitude * Math.sin(2 * Math.PI * freq * x + phase)"></ink-chart-line>
         <ink-chart-node x="3" :y="amplitude" bind="{amplitude: y, phase: - 2 * Math.PI * freq * x}"></ink-chart-node>
     </ink-chart>
-
-
 </ink-scope>
+
 <ink-scope>
 
 
@@ -189,15 +188,55 @@
     <ink-var name="off_y" value="0.5"></ink-var>
 
 
+
     <strong>$A$:</strong><ink-dynamic name="a" min="-3" max="3" step="0.25"></ink-dynamic><br>
     <strong>$B$:</strong><ink-dynamic name="a" min="-3" max="3" step="0.25"></ink-dynamic><br>
     <strong>$x$:</strong><ink-dynamic name="off_x" min="-1" max="1" step="0.1"></ink-dynamic><br>
     <strong>$y$:</strong><ink-dynamic name="off_y" min="-1" max="1" step="0.1"></ink-dynamic><br>
 
-
     <ink-chart xlim="[-3, 3]" ylim="[-3, 3]">
         <ink-chart-node :x="a" :y="b" bind="{a: x, b: y}"></ink-chart-node>
         <ink-chart-node :x="a + off_x" :y="b + off_y" bind="{a: x - off_x, b: y - off_y}"></ink-chart-node>
+        <ink-chart-text :x="a" :y="b" text="(a, b)"></ink-chart-text>
+        <ink-chart-text :x="a + off_x" :y="b + off_y" text="(a + x, b + y)"></ink-chart-text>
+    </ink-chart>
+
+</ink-scope>
+
+<hr>
+
+<ink-scope>
+
+    <h2>ArcTan2</h2>
+
+    <ink-var name="a" value="0.5"></ink-var>
+    <ink-var name="b" value="0.5"></ink-var>
+    <ink-var name="r" :value="Math.sqrt(a*a + b*b)"></ink-var>
+
+    <ink-equation :math="'r = \\sqrt{a^2 + b^2} = ' + Math.round(r*100)/100">
+    </ink-equation>
+
+
+    <strong>$\theta$:</strong><ink-dynamic2 :value="Math.atan2(b, a) * 180 / Math.PI" bind="{
+        a: r * Math.cos(value * Math.PI / 180),
+        b: r * Math.sin(value * Math.PI / 180)
+    }"
+    min="-180" :max="180" step="1" sensitivity="1"></ink-dynamic2><br>
+
+    <ink-chart xlim="[-3, 3]" ylim="[-3, 3]">
+        <ink-chart-node :x="a" :y="b" bind="{a: x, b: y}"></ink-chart-node>
+    </ink-chart>
+
+    <ink-chart xlim="[-10, 10]" ylim="[-180, 180]" xlabel="y / x" ylabel="atan2(y,x)" x-axis-location="origin" y-axis-location="origin">
+        <ink-chart-point :x="b / a" :y="Math.atan2(b, a) * 180/Math.PI" :r="r*5"></ink-chart-point>
+        <ink-chart-line eq="Math.atan2(x, 1) * 180/Math.PI"></ink-chart-line>
+        <ink-chart-line eq="Math.atan2(-x, -1) * 180/Math.PI" :domain="[-Infinity, -0.05]"></ink-chart-line>
+        <ink-chart-line eq="Math.atan2(-x, -1) * 180/Math.PI" :domain="[0.05, Infinity]"></ink-chart-line>
+        <ink-chart-line eq="90" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-line>
+        <ink-chart-line eq="-90" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-line>
+        <ink-chart-text x="4" y="-125" text="x < 0"></ink-chart-text>
+        <ink-chart-text x="4" y="55" text="x > 0"></ink-chart-text>
+        <ink-chart-text x="-4" y="120" text="x < 0"></ink-chart-text>
     </ink-chart>
 </ink-scope>
 
