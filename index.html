@@ -208,13 +208,30 @@
 <ink-scope>
 
     <h2>ArcTan2</h2>
+    <ink-callout class="danger">Periodic boundaries for dynamic.</ink-callout>
 
     <ink-var name="a" value="0.5"></ink-var>
     <ink-var name="b" value="0.5"></ink-var>
     <ink-var name="r" :value="Math.sqrt(a*a + b*b)"></ink-var>
 
-    <ink-equation :math="'r = \\sqrt{a^2 + b^2} = ' + Math.round(r*100)/100">
-    </ink-equation>
+
+    <ink-aside><ink-chart xlim="[-5, 5]" ylim="[-5, 5]" height="300" width="300" x-axis-location="origin" y-axis-location="origin">
+        <ink-chart-node :x="a" :y="b" bind="{a: x, b: y}"></ink-chart-node>
+    </ink-chart></ink-aside>
+
+    <p>
+        The function $\operatorname{atan2}(y,x)$ (from "2-argument arctangent") is defined as the angle in the Euclidean plane, given in radians, between the positive x-axis and the ray to the point $(x,y)$.
+
+        $\operatorname{atan2}(y,x)$ returns a single value $\theta$ such that $−\pi < θ \le \pi$ and, for some $r > 0$,
+
+        <ink-equation>\begin{aligned}
+            x&=r\cos \theta \\
+            y&=r\sin \theta
+        \end{aligned}</ink-equation>
+    </p>
+
+
+    <ink-equation :math="'r = \\sqrt{x^2 + y^2} = ' + Math.round(r*100)/100"></ink-equation>
 
 
     <strong>$\theta$:</strong><ink-dynamic2 :value="Math.atan2(b, a) * 180 / Math.PI" bind="{
@@ -222,10 +239,14 @@
         b: r * Math.sin(value * Math.PI / 180)
     }"
     min="-180" :max="180" step="1" sensitivity="1"></ink-dynamic2><br>
+    <strong>$r$:</strong><ink-dynamic2 :value="Math.sqrt(a*a + b*b)" bind="{
+        a: value * Math.cos(Math.atan2(b, a)),
+        b: value * Math.sin(Math.atan2(b, a))
+    }"
+    min="0.1" :max="5" step="0.05" sensitivity="5"></ink-dynamic2><br>
+    <strong>$x$:</strong><ink-dynamic2 :value="a" bind="{a: value}" min="-5" :max="5" step="0.05" sensitivity="5"></ink-dynamic2><br>
+    <strong>$y$:</strong><ink-dynamic2 :value="b" bind="{b: value}" min="-5" :max="5" step="0.05" sensitivity="5"></ink-dynamic2><br>
 
-    <ink-chart xlim="[-3, 3]" ylim="[-3, 3]">
-        <ink-chart-node :x="a" :y="b" bind="{a: x, b: y}"></ink-chart-node>
-    </ink-chart>
 
     <ink-chart xlim="[-10, 10]" ylim="[-180, 180]" xlabel="y / x" ylabel="atan2(y,x)" x-axis-location="origin" y-axis-location="origin">
         <ink-chart-point :x="b / a" :y="Math.atan2(b, a) * 180/Math.PI" :r="r*5"></ink-chart-point>

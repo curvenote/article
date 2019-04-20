@@ -333,7 +333,7 @@ class InkChartLine extends InkChartObject {
             .attr("stroke-dasharray", this.strokeDasharray)
             .attr("stroke", this.stroke)
             .attr("d", d3shape.line()
-            .defined(function(d) { return func(d); })
+            .defined(function(d) { return isFinite(func(d)); })
             .x(function(d) { return inkChart.x(d); })
             .y(function(d) { return inkChart.y(func(d)); }));
     }
