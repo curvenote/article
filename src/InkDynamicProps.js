@@ -10,7 +10,7 @@ function getIFrameFunction(iframe, value, args){
 
 
 function getPropDef(self, propName){
-    return self.constructor._classProperties.get(propName)
+    return self.constructor._classProperties.get(propName);
 }
 
 function propDef(propName, propType){
