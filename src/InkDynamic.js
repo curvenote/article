@@ -3,7 +3,7 @@ const Format = require('d3-format');
 const Drag = require('d3-drag');
 const Selection = require('d3-selection');
 
-var HORIZONTAL_SCROLL_CLASS = 'ink-drag-horz';
+let HORIZONTAL_SCROLL_CLASS = 'ink-drag-horz';
 
 import { BaseGetProps, propDef, getProp, setProp, getPropFunction, getIFrameFunction } from './InkDynamicProps.js';
 
@@ -42,7 +42,7 @@ class BaseDynamic extends BaseGetProps{
             this.unsubscribe();
         }
         this.unsubscribe = this.store.subscribe(() => {
-            var variable = this.store.getState().variables[this.name];
+            let variable = this.store.getState().variables[this.name];
             if(variable === undefined || this.value == variable.value){
                 return;
             }
@@ -51,8 +51,8 @@ class BaseDynamic extends BaseGetProps{
     }
     formatter(value){
         if(typeof value === 'string'){return value;}
-        var variable = this.store.getState().variables[this.name];
-        var def = undefined;
+        let variable = this.store.getState().variables[this.name];
+        let def = undefined;
         if(variable){
             def = variable.format;
         }
@@ -95,7 +95,7 @@ class InkDisplay extends BaseDynamic {
         return false;
     }
     render() {
-        var func = getIFrameFunction(this.iframe, this.transform, ['value']);
+        let func = getIFrameFunction(this.iframe, this.transform, ['value']);
         return html`<span>${ this.formatter(func(this.value)) }</span>`;
     }
 }
@@ -184,8 +184,8 @@ class InkDynamic extends BaseGetProps {
     formatter(value){
         if(typeof value === 'string'){return value;}
         // if bind is simple
-        var variable = this.store.getState().variables[this.name];
-        var def = undefined;
+        let variable = this.store.getState().variables[this.name];
+        let def = undefined;
         if(variable){
             def = variable.format;
         }
@@ -198,12 +198,12 @@ class InkDynamic extends BaseGetProps {
 
         if(!this.bind){return;}
 
-        var func = getIFrameFunction(this.iframe, this.bind, ['value']);
-        var updates = func(val);
+        let func = getIFrameFunction(this.iframe, this.bind, ['value']);
+        let updates = func(val);
 
-        var keys = Object.keys(updates);
+        let keys = Object.keys(updates);
 
-        for (var i = 0; i < keys.length; i++) {
+        for (let i = 0; i < keys.length; i++) {
             const action = {
                 type: 'UPDATE_VARIABLE',
                 name: keys[i],
@@ -237,13 +237,16 @@ class InkDynamic extends BaseGetProps {
             bodyClassList.remove(HORIZONTAL_SCROLL_CLASS);
         }).on('drag', () => {
             Selection.event.sourceEvent.preventDefault();
+
             const dx = Selection.event.dx;
-            var { step, value, min, max, sensitivity } = this;
-            console.log(Selection.event, this._prevValue + (dx / sensitivity), dx, sensitivity)
+
+            let { step, value, min, max, sensitivity } = this;
+
             const newValue = Math.max(Math.min(this._prevValue + (dx / sensitivity), max), min);
-            this._prevValue = newValue; // Store the actual value so the drag is smooth
+            // Store the actual value so the drag is smooth
+            this._prevValue = newValue;
             // Then round with the step size
-            var val = Math.round( newValue / step ) * step;
+            let val = Math.round( newValue / step ) * step;
             this.dispatch(val);
         });
 
@@ -252,7 +255,7 @@ class InkDynamic extends BaseGetProps {
 
     render(){
 
-        var func = getIFrameFunction(this.iframe, this.transform, ['value']);
+        let func = getIFrameFunction(this.iframe, this.transform, ['value']);
 
         return html`<style>
             .container{
@@ -297,7 +300,7 @@ class InkVarList extends LitElement{
 
     // todo: higher level base class
     get store(){
-        var closestScope = this.closest('ink-scope');
+        let closestScope = this.closest('ink-scope');
         if(closestScope === null){
             return window.store;
         }else{
@@ -390,7 +393,7 @@ class InkVar extends BaseDynamic {
     }
 
     get derived() {
-        var s = this.valueFunctionString;
+        let s = this.valueFunctionString;
         return !(s === undefined || s === null || s === '');
     }
 
@@ -412,7 +415,7 @@ class InkVar extends BaseDynamic {
         if(this.derived){
             let oldVal = this._value;
             try{
-                var val = this.valueFunction();
+                let val = this.valueFunction();
                 // update the iframe variable
                 this.iframe.contentWindow[this.name] = val;
                 this.valueFunctionError = false;
@@ -423,8 +426,8 @@ class InkVar extends BaseDynamic {
                 this.iframe.contentWindow[this.name] = Number.NaN;
                 this._value = Number.NaN;
             }
-            var same = this._value == oldVal;
-            var bothNaN = Number.isNaN(this._value) && Number.isNaN(oldVal);
+            let same = this._value == oldVal;
+            let bothNaN = Number.isNaN(this._value) && Number.isNaN(oldVal);
             if( same || bothNaN ) {
                 // The variable exists and is the same, return.
                 return this._value;
@@ -446,10 +449,10 @@ class InkVar extends BaseDynamic {
             this.unsubscribe();
         }
         this.unsubscribe = this.store.subscribe(() => {
-            var variable = this.store.getState().variables[this.name];
-            var val = this.value;
-            var same = variable.value == val;
-            var bothNaN = Number.isNaN(variable.value) && Number.isNaN(val);
+            let variable = this.store.getState().variables[this.name];
+            let val = this.value;
+            let same = variable.value == val;
+            let bothNaN = Number.isNaN(variable.value) && Number.isNaN(val);
             if(variable && ( same || bothNaN ) ){
                 // The variable exists and is the same, return.
                 return;
