@@ -55,6 +55,9 @@ var bricksTheme = html`
   emph {
     font-style: italic;
   }
+  strong {
+      color: black;
+  }
   .ink-drag-horz{
     cursor: col-resize;
   }

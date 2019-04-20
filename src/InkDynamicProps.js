@@ -38,7 +38,7 @@ function getProp(self, propName){
             newVal = propFunc();
             self[propName + 'FunctionError'] = false;
         }catch(err){
-            console.log('Could not evaluate the function', err);
+            // console.log('Could not evaluate the function', err);
             self[propName + 'FunctionError'] = err.message;
             newVal = Number.NaN;
         }
@@ -56,7 +56,7 @@ function setProp(self, propName, val){
     }
 
     self['_' + propName] = val;
-    console.log(propName, 'updating ' + propName, val, oldVal);
+    // console.log(propName, 'updating ' + propName, val, oldVal);
     self.requestUpdate(propName, oldVal);
 }
 
@@ -76,7 +76,7 @@ function getPropFunction(self, propName){
     }
     if(self._xlimFunction === undefined){
         // create the function if it isn't there already
-        console.log(propName, 'Creating function', functionString);
+        // console.log(propName, 'Creating function', functionString);
         self['_' + propName + 'Function'] = getIFrameFunction(self.iframe, functionString);
     }
 

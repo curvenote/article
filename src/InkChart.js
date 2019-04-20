@@ -1,4 +1,4 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html, svg } from '@polymer/lit-element';
 import {unsafeHTML} from 'lit-html/directives/unsafe-html.js';
 
 import { BaseGetProps, propDef, getProp, setProp, getPropFunction, getIFrameFunction } from './InkDynamicProps.js';
@@ -46,26 +46,12 @@ class InkChart extends BaseGetProps {
 
     firstUpdated(){
         super.firstUpdated();
-
-        var margin = this.margin;
-
-        this.svgRoot = Selection.select(this.shadowRoot.children[1]);
-        this.svg = this.svgRoot.append("g");
-        this.clip = this.svg.append("svg:clipPath")
-                .attr("id", "clip")
-            .append("svg:rect")
-                .attr("id", "clip-rect")
-                .attr("x", "0")
-                .attr("y", "0");
-        this.chart = this.svg.append("g")
-            .attr("clip-path", "url(#clip)");
-
         this._initialized = true;
         this.requestUpdate();
     }
 
     get margin(){
-        var margin = {
+        let margin = {
             top: 20, right: 20, bottom: 40, left: 50
         };
         margin.width = this.width - margin.left - margin.right;
@@ -73,11 +59,7 @@ class InkChart extends BaseGetProps {
         return margin;
     }
 
-    renderChart(margin){
-
-        this.svgRoot.attr("width", this.width).attr("height", this.height);
-        this.svg.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-        this.clip.attr("width", margin.width).attr("height", margin.height);
+    updateDomainAndRange(margin){
 
         this.x = scale.scaleLinear()
             .range([0, margin.width])
@@ -91,21 +73,17 @@ class InkChart extends BaseGetProps {
 
     renderXAxis(margin){
 
-
-        var xAxis = d3axis.axisBottom()
+        let xAxis = d3axis.axisBottom()
             .scale(this.x);
 
-        if(this.gXAxis){
-            this.gXAxis.remove();
-        }
-
-        this.gXAxis = this.svg.append("g");
+        this.gXAxis = Selection.select(this.shadowRoot.children[1].children[0].children[1]);
+        this.gXAxis.html(null);
         this.gXAxis
             .attr("class", "x axis")
             .attr("transform", "translate(0," + ((this.xAxisLocation === 'bottom')? margin.height : this.y(0)) + ")")
             .call(xAxis);
 
-        var label = this.gXAxis.append("text")
+        let label = this.gXAxis.append("text")
             .style("text-anchor", "middle")
             .attr("fill", "#333")
             .text(this.xlabel);
@@ -120,19 +98,16 @@ class InkChart extends BaseGetProps {
 
     renderYAxis(margin){
 
-        var yAxis = d3axis.axisLeft()
+        let yAxis = d3axis.axisLeft()
             .scale(this.y);
 
-        if(this.gYAxis){
-            this.gYAxis.remove();
-        }
-
-        this.gYAxis = this.svg.append("g");
+        this.gYAxis = Selection.select(this.shadowRoot.children[1].children[0].children[2]);
+        this.gYAxis.html(null);
         this.gYAxis
             .attr("class", "y axis")
             .attr("transform", "translate(" + ((this.yAxisLocation === 'left')? 0 : this.x(0)) + ", 0)")
             .call(yAxis);
-        var label = this.gYAxis.append("text")
+        let label = this.gYAxis.append("text")
             .attr("transform", "rotate(-90)")
             .style("text-anchor", "middle")
             .attr("fill", "#333")
@@ -162,10 +137,10 @@ class InkChart extends BaseGetProps {
     }
 
     render() {
-        var margin = this.margin;
+        let margin = this.margin;
 
         if(this._initialized){
-            this.renderChart(margin);
+            this.updateDomainAndRange(margin);
             this.renderXAxis(margin);
             this.renderYAxis(margin);
         }
@@ -192,8 +167,20 @@ class InkChart extends BaseGetProps {
                     margin-right: auto;
                 }
             </style>
-            <svg></svg>
-            <slot hidden></slot>
+            <svg width="${this.width}" height="${this.height}">
+                <g transform="translate(${margin.left},${margin.top})">
+                    <clipPath id="clip"><rect id="clip-rect" x="0" y="0" width="${margin.width}" height="${margin.height}"></rect></clipPath>
+                    <g class="x axis"></g>
+                    <g class="x axis"></g>
+                    <g clip-path="url(#clip)">
+                        ${[...this.children].map(child =>{
+                            if(this._initialized && (child instanceof InkChartObject)){
+                                return child.renderSVG(this);
+                            }
+                        })}
+                    </g>
+                </g>
+            </svg>
         `;
     }
 }
@@ -205,24 +192,13 @@ customElements.define('ink-chart', InkChart);
 
 class InkChartObject extends BaseGetProps {
 
-    firstUpdated() {
-        super.firstUpdated();
-        this._initialized = true;
-        this.requestUpdate();
-    }
-
     get inkChart(){
         return this.closest('ink-chart');
     }
 
     render(){
-        if(this._svgObject){
-            this._svgObject.remove();
-        }
-
-        if(this._initialized){
-            this._renderSVG(this.inkChart);
-        }
+        // The parent needs to render - but this will just be called too many times.
+        // this.inkChart.requestUpdate();
         return html``;
     }
 
@@ -231,12 +207,22 @@ class InkChartObject extends BaseGetProps {
 
 
 class InkChartPoint extends InkChartObject {
+
     static get properties() {
         return {
             ...propDef('x', Number),
             ...propDef('y', Number),
             ...propDef('r', Number),
             fill: String,
+            stroke: String,
+            strokeWidth: {
+                type: Number,
+                attribute: 'stroke-width'
+            },
+            strokeDasharray: {
+                type: String,
+                attribute: 'stroke-dasharray'
+            }
         };
     }
 
@@ -245,6 +231,9 @@ class InkChartPoint extends InkChartObject {
         this.y = 0.5;
         this.r = 4.5;
         this.fill = this.inkChart.nextColor();
+        this.stroke = undefined;
+        this.strokeWidth = 1;
+        this.strokeDasharray = undefined;
     }
 
     get x() { return getProp(this, 'x'); }
@@ -260,12 +249,8 @@ class InkChartPoint extends InkChartObject {
     set r(val) { return setProp(this, 'r', val); }
     get rFunction() { return getPropFunction(this, 'r'); }
 
-    _renderSVG(inkChart){
-        this._svgObject = inkChart.chart.append("circle")
-            .attr("r", this.r)
-            .attr("fill", this.fill)
-            .attr("cx", inkChart.x(this.x))
-            .attr("cy", inkChart.y(this.y))
+    renderSVG(chart){
+        return svg`<circle r="${this.r}" fill="${this.fill}" cx="${chart.x(this.x)}" cy="${chart.y(this.y)}" stroke="${this.stroke}" stroke-width="${this.strokeWidth}" stroke-dasharray="${this.strokeDasharray}"></circle>`;
     }
 }
 
@@ -308,34 +293,25 @@ class InkChartLine extends InkChartObject {
     set domain(val) { return setProp(this, 'domain', val); }
     get domainFunction() { return getPropFunction(this, 'domain'); }
 
-    _renderSVG(inkChart){
+    renderSVG(chart){
 
         // TODO: assumes sorted.
-        var chartDomain = this.inkChart.xlim;
-        var domain = this.domain || [-Infinity, Infinity];
+        let chartDomain = chart.xlim;
+        let domain = this.domain || [-Infinity, Infinity];
 
         domain[0] = Math.max(domain[0], chartDomain[0]);
         domain[1] = Math.min(domain[1], chartDomain[1]);
 
+        let step = (domain[1] - domain[0]) / this.samples;
+        let data = d3array.range(domain[0] - step, domain[1] + step, step);
+        let func = getIFrameFunction(this.iframe, this.eq, ['x']);
 
-        var step = (domain[1] - domain[0]) / this.samples;
-        var data = d3array.range(domain[0] - step, domain[1] + step, step);
-
-        // console.log(domain, data);
-
-        var func = getIFrameFunction(this.iframe, this.eq, ['x']);
-
-        this._svgObject = inkChart.chart.append("path")
-            .datum(data)
-            .attr("class", "line")
-            .attr("fill", "none")
-            .attr("stroke-width", this.strokeWidth)
-            .attr("stroke-dasharray", this.strokeDasharray)
-            .attr("stroke", this.stroke)
-            .attr("d", d3shape.line()
+        let path = d3shape.line()
             .defined(function(d) { return isFinite(func(d)); })
-            .x(function(d) { return inkChart.x(d); })
-            .y(function(d) { return inkChart.y(func(d)); }));
+            .x(function(d) { return chart.x(d); })
+            .y(function(d) { return chart.y(func(d)); });
+
+        return svg`<path class="line" fill="none" stroke="${this.stroke}" stroke-width="${this.strokeWidth}" stroke-dasharray="${this.strokeDasharray}" d="${path(data)}"></path>`
     }
 
 }
@@ -371,12 +347,8 @@ class InkChartText extends InkChartObject {
     set text(val) { return setProp(this, 'text', val); }
     get textFunction() { return getPropFunction(this, 'text'); }
 
-    _renderSVG(inkChart){
-        this._svgObject = inkChart.chart.append("text")
-            .text(this.text)
-            .attr("x", inkChart.x(this.x))
-            .attr("y", inkChart.y(this.y))
-            .style("text-anchor", "end");
+    renderSVG(chart){
+        return svg`<text x="${chart.x(this.x)}" y="${chart.y(this.y)}" style="text-anchor: end;">${this.text}</text>`
     }
 
 }
@@ -415,19 +387,22 @@ class InkChartNode extends InkChartObject {
     set y(val) { return setProp(this, 'y', val); }
     get yFunction() { return getPropFunction(this, 'y'); }
 
-    dispatch(x, y){
+    dispatch(rawX, rawY){
+
+        let x = this.inkChart.x.invert(rawX);
+        let y = this.inkChart.y.invert(rawY);
 
         this.x = x;
         this.y = y;
 
         if(!this.bind){return;}
 
-        var func = getIFrameFunction(this.iframe, this.bind, ['x', 'y']);
-        var updates = func(x, y);
+        let func = getIFrameFunction(this.iframe, this.bind, ['x', 'y']);
+        let updates = func(x, y);
 
-        var keys = Object.keys(updates);
+        let keys = Object.keys(updates);
 
-        for (var i = 0; i < keys.length; i++) {
+        for (let i = 0; i < keys.length; i++) {
             const action = {
                 type: 'UPDATE_VARIABLE',
                 name: keys[i],
@@ -435,54 +410,47 @@ class InkChartNode extends InkChartObject {
             };
             this.store.dispatch(action);
         }
-        console.log('Drag node updating var:', updates);
     }
 
-    _renderSVG(inkChart){
-
-        if(!this._node){
-            this._node = inkChart.chart.append("circle")
-                .attr("r", this.r)
-                .attr("fill", this.fill)
-                .attr("cx", inkChart.x(this.x))
-                .attr("cy", inkChart.y(this.y));
-
-            this.drag = Drag.drag().on('start', () => {
-                Selection.event.sourceEvent.preventDefault();
-                this.dragging = true;
-                this._prevValue = this.value; // Start out with the actual value
-            }).on('drag', () => {
-                Selection.event.sourceEvent.preventDefault();
-
-                const x = Selection.event.x;
-                const y = Selection.event.y;
-
-                this._node
-                    .attr("cx", x)
-                    .attr("cy", y);
-
-                this.dispatch(
-                    inkChart.x.invert(x),
-                    inkChart.y.invert(y)
-                );
-            }).on('end', () => {
-                this.dragging = false;
-            });
-            this._node.call(this.drag);
-            return;
+    renderSVG(chart){
+        // wrap the function handler, as it is called in a different event context.
+        function wrapper(drag){
+            return (e) => drag.setupDrag(e);
         }
-        if(this.dragging){
-            return;
-        }
-
-        this._node
-            .attr("r", this.r)
-            .attr("fill", this.fill)
-            .attr("cx", inkChart.x(this.x))
-            .attr("cy", inkChart.y(this.y));
-
+        return svg`<circle r="${this.r}" fill="${this.fill}" cx="${chart.x(this.x)}" cy="${chart.y(this.y)}" @mouseover=${wrapper(this)}></circle>`;
     }
 
+    setupDrag(event){
+        // Lazy setup the drag events
+        // This is only called once
+        let rawNode = event.path[0];
+        if(rawNode._drag !== undefined){
+            return;
+        }
+        this._node = Selection.select(rawNode);
+        this.drag = Drag.drag().on('start', () => {
+            Selection.event.sourceEvent.preventDefault();
+            this.dragging = true;
+            this._prevValue = this.value; // Start out with the actual value
+        }).on('drag', () => {
+            Selection.event.sourceEvent.preventDefault();
+
+            const x = Selection.event.x;
+            const y = Selection.event.y;
+
+            this._node
+                .attr("cx", x)
+                .attr("cy", y);
+
+            this.dispatch(x, y);
+        }).on('end', () => {
+            this.dragging = false;
+        });
+        this._node.call(this.drag);
+
+        // Remember to put the drag function on the rawNode:
+        rawNode._drag = this.drag;
+    }
 }
 
 customElements.define('ink-chart-node', InkChartNode);
@@ -490,7 +458,7 @@ customElements.define('ink-chart-node', InkChartNode);
 
         // function img(id, src, xLoc, yLoc, wLoc, hLoc){
         //     if(imgs[id] !== undefined){imgs[id].img.remove();}
-        //     var img = chart.append("svg:image")
+        //     let img = chart.append("svg:image")
         //         .attr("xlink:href", src)
         //         .attr("id", id)
         //         .attr("x", x(xLoc))

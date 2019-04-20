@@ -179,7 +179,7 @@
 </ink-scope>
 
 <ink-scope>
-
+    <h2>Example chart - Drag Nodes</h2>
 
     <ink-var name="a" value="0.5"></ink-var>
     <ink-var name="b" value="0.5"></ink-var>
@@ -234,22 +234,21 @@
     <ink-equation :math="'r = \\sqrt{x^2 + y^2} = ' + Math.round(r*100)/100"></ink-equation>
 
 
-    <strong>$\theta$:</strong><ink-dynamic2 :value="Math.atan2(b, a) * 180 / Math.PI" bind="{
+    <strong>$\theta$:</strong><ink-dynamic :value="Math.atan2(b, a) * 180 / Math.PI" bind="{
         a: r * Math.cos(value * Math.PI / 180),
         b: r * Math.sin(value * Math.PI / 180)
     }"
-    min="-180" :max="180" step="1" sensitivity="1"></ink-dynamic2><br>
-    <strong>$r$:</strong><ink-dynamic2 :value="Math.sqrt(a*a + b*b)" bind="{
+    min="-180" :max="180" step="1" sensitivity="1">&deg;</ink-dynamic><br>
+    <strong>$r$:</strong><ink-dynamic :value="Math.sqrt(a*a + b*b)" bind="{
         a: value * Math.cos(Math.atan2(b, a)),
         b: value * Math.sin(Math.atan2(b, a))
     }"
-    min="0.1" :max="5" step="0.05" sensitivity="5"></ink-dynamic2><br>
-    <strong>$x$:</strong><ink-dynamic2 :value="a" bind="{a: value}" min="-5" :max="5" step="0.05" sensitivity="5"></ink-dynamic2><br>
-    <strong>$y$:</strong><ink-dynamic2 :value="b" bind="{b: value}" min="-5" :max="5" step="0.05" sensitivity="5"></ink-dynamic2><br>
+    min="0.1" :max="5" step="0.05" sensitivity="5"></ink-dynamic><br>
+    <strong>$x$:</strong><ink-dynamic name="a" min="-5" :max="5" step="0.05" sensitivity="5"></ink-dynamic><br>
+    <strong>$y$:</strong><ink-dynamic name="b" min="-5" :max="5" step="0.05" sensitivity="5"></ink-dynamic><br>
 
 
     <ink-chart xlim="[-10, 10]" ylim="[-180, 180]" xlabel="y / x" ylabel="atan2(y,x)" x-axis-location="origin" y-axis-location="origin">
-        <ink-chart-point :x="b / a" :y="Math.atan2(b, a) * 180/Math.PI" :r="r*5"></ink-chart-point>
         <ink-chart-line eq="Math.atan2(x, 1) * 180/Math.PI"></ink-chart-line>
         <ink-chart-line eq="Math.atan2(-x, -1) * 180/Math.PI" :domain="[-Infinity, -0.05]"></ink-chart-line>
         <ink-chart-line eq="Math.atan2(-x, -1) * 180/Math.PI" :domain="[0.05, Infinity]"></ink-chart-line>
@@ -258,6 +257,7 @@
         <ink-chart-text x="4" y="-125" text="x < 0"></ink-chart-text>
         <ink-chart-text x="4" y="55" text="x > 0"></ink-chart-text>
         <ink-chart-text x="-4" y="120" text="x < 0"></ink-chart-text>
+        <ink-chart-point :x="b / a" :y="Math.atan2(b, a) * 180/Math.PI" :r="r*5"></ink-chart-point>
     </ink-chart>
 </ink-scope>
 
@@ -416,7 +416,9 @@
 <ink-callout class="info">
     <strong>Properties:</strong>
     <dl>
-        <dt><code>name</code></dt><dd>The variable to name to in the state.</dd>
+        <dt><code>name</code></dt><dd>The variable to name to in the state, setting this will set <code>:value="name"</code> and <code>bind="{name:value}"</code>.</dd>
+        <dt><code>value</code></dt><dd>The numeric value of the control. Can also be set by <code>:value</code>.</dd>
+        <dt><code>bind</code></dt><dd>A dictionary that should set variables: <code>(value) => {x: value}</code>.</dd>
         <dt><code>format</code></dt><dd>A d3-format string. See the <a href="https://github.com/d3/d3-format" target="_blank">documentation</a>.</dd>
         <dt><code>min</code></dt><dd>Minimum of the range.</dd>
         <dt><code>max</code></dt><dd>Maximum of the range.</dd>
@@ -426,6 +428,120 @@
     </dl>
 </ink-callout>
 
+<hr class="small">
+
+<h2>name, bind & :value</h2>
+
+<p>
+
+    There are times where you want more control over how your data gets displayed, updated or informs other variables.
+    There are three properties to consider: <code>name</code>, <code>:value</code>, and <code>bind</code>.
+    The most common use is through the <code>name</code> property, which is used to both set the control's value, and bind the change to the named variable.
+    This amounts to a <strong>two way connection</strong>:
+
+    <ink-code language="html">
+        &lt;ink-dynamic
+            name="x"
+        &gt;&lt;/ink-dynamic&gt;
+    </ink-code>
+
+    When the variable <code>x</code> updates, the <code>value</code> is set, and when the control updates the value, the result updates the variable!
+    Under the hood, when <code>name</code> is defined, the <code>:value</code> and the <code>bind</code> functions are automatically set.
+
+    <ink-code language="html">
+        &lt;ink-dynamic
+            :value="x"
+            bind="{x: value}"
+        &gt;&lt;/ink-dynamic&gt;
+    </ink-code>
+
+    As with other properties, the <code>:</code> syntax for the <code>value</code> property recomputes every time there is a change.
+    For example, if you put <code>:value="x"</code> then anytime the variable <code>x</code> changes, the value of the control updates.
+    <strong>However, this is not the case in reverse!</strong>
+    You have to explicitly <code>bind</code> the control to the variable (or variables) you want to update. This is done using a JSON dictionary of the form <code>{variable: value}</code>.
+    Note that you can update multiple variables at a time.
+
+    If you choose to explicitly set these, and not just use the <code>name</code> property, you can do some interesting things!
+</p>
+
+<ink-scope>
+    <ink-var name="a" value="1"></ink-var>
+    <ink-var name="b" value="1"></ink-var>
+
+    <h3>Coordinate Transformation</h3>
+    <p>
+        A good example of this is changing from a radial coordinate system to Cartesian. In this case we will have two variables:
+        <ink-chart style="float:right" xlim="[-5, 5]" ylim="[-5, 5]" height="300" width="300" x-axis-location="origin" y-axis-location="origin">
+            <ink-chart-node :x="a" :y="b" bind="{a: x, b: y}"></ink-chart-node>
+        </ink-chart>
+        <br>
+
+        <strong>Cartesian Coordinate System</strong>
+        <dl>
+            <dt>$x$</dt><dd><ink-dynamic name="a" min="-5" :max="5" step="0.05" sensitivity="5"></ink-dynamic></dd>
+            <dt>$y$</dt><dd><ink-dynamic name="b" min="-5" :max="5" step="0.05" sensitivity="5"></ink-dynamic></dd>
+        </dl>
+        <br>
+        <strong>Radial Coordinate System</strong>
+        <dl>
+            <dt>$r$</dt><dd>
+                <ink-dynamic :value="Math.sqrt(a*a + b*b)" bind="{
+                    a: value * Math.cos(Math.atan2(b, a)),
+                    b: value * Math.sin(Math.atan2(b, a))
+                }"
+                min="0.1" :max="5" step="0.05" sensitivity="5"></ink-dynamic>
+            </dd>
+            <dt>$\theta$</dt><dd>
+                <ink-dynamic :value="Math.atan2(b, a) * 180 / Math.PI" bind="{
+                    a: Math.sqrt(a*a + b*b) * Math.cos(value * Math.PI / 180),
+                    b: Math.sqrt(a*a + b*b) * Math.sin(value * Math.PI / 180)
+                }"
+                min="-180" :max="180" step="1" sensitivity="1">&deg;</ink-dynamic>
+            </dd>
+        </dl>
+    </p>
+
+    <strong style="text-decoration: underline;">Cartesian Update</strong>
+    <p>
+        <ink-equation :math="'\\begin{aligned}x &= x = ' + Math.round(a * 10)/10 + '\\\\ y &= y = ' + Math.round(b * 10)/10 + '\\end{aligned}'"></ink-equation>
+
+        <ink-code language="html">
+            &lt;ink-dynamic name="x"&gt;&lt;/ink-dynamic&gt;
+        </ink-code>
+
+        This gets rewritten and is equivalent to:
+
+        <ink-code language="html">
+            &lt;ink-dynamic :value="x" bind="{
+                x: value
+            }"&gt;&lt;/ink-dynamic&gt;
+        </ink-code>
+    </p>
+
+    <strong style="text-decoration: underline">Radius Update</strong>
+    <ink-equation :math="'\\begin{aligned}r &= \\sqrt{x^2 + y^2} = ' + Math.round(Math.sqrt(a*a + b*b) * 10)/10 + '\\\\ x &= r * \\cos(\\operatorname{atan2}(y, x)) = ' + Math.round(a * 10)/10 + '\\\\ y &= r * \\sin(\\operatorname{atan2}(y, x)) = ' + Math.round(b * 10)/10 + '\\end{aligned}'"></ink-equation>
+
+    <ink-code>
+        &lt;ink-dynamic :value="Math.sqrt(x*x + y*y)" bind="{
+            x: value * Math.cos(Math.atan2(y, x)),
+            y: value * Math.sin(Math.atan2(y, x))
+        }"&gt;&lt;/ink-dynamic&gt;
+    </ink-code>
+
+    <strong style="text-decoration: underline">Theta Update</strong>
+    <ink-equation :math="'\\begin{aligned}\\theta &= \\operatorname{atan2}(y, x) = ' + Math.round(Math.atan2(b, a) * 180 / Math.PI * 10) / 10 + '\\\\ x &= \\sqrt{x^2 + y^2} * \\cos( \\theta ) = ' + Math.round(a * 10)/10 + '\\\\ y &= \\sqrt{x^2 + y^2} * \\sin( \\theta ) = ' + Math.round(b * 10)/10 + '\\end{aligned}'"></ink-equation>
+    <ink-code>
+        &lt;ink-dynamic :value="Math.atan2(y, x)" bind="{
+            x: Math.sqrt(x*x + y*y) * Math.cos(value),
+            y: Math.sqrt(x*x + y*y) * Math.sin(value)
+        }"&gt;&lt;/ink-dynamic&gt;
+    </ink-code>
+
+
+
+
+    </p>
+</ink-scope>
 <hr>
 
 <h2>Text Content</h2>

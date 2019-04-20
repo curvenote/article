@@ -133,85 +133,7 @@ customElements.define('ink-range', InkRange);
 
 
 
-
-class InkDynamic extends BaseRange {
-    static get properties() {
-        return {
-            sensitivity: {type: Number, reflect: false},
-            dragging: {type: Boolean, reflect: false},
-            ...super.properties,
-        };
-    }
-    setDefaults(){
-        super.setDefaults();
-        this.sensitivity = 10;
-        this.dragging = false;
-    }
-
-    render() {
-
-        var func = getIFrameFunction(this.iframe, this.transform, ['value']);
-
-        return html`<style>
-            .container{
-                display: inline-block;
-                position: relative;
-            }
-            .dynamic{
-                color: #46f;
-                border-bottom: 1px dashed #46f;
-                cursor: col-resize;
-            }
-            .help{
-                left: calc(50% - 9px);
-                top: -7px;
-                position: absolute;
-                color: #00f;
-                font: 9px "Helvetica-Neue", "Arial", sans-serif;
-                display: none;
-            }
-            .container:hover .help{
-                display: block;
-            }
-        </style>
-        <div class="container">
-            <span class="dynamic">${ this.formatter(func(this.value)) }<slot></slot></span>
-            <div class="help" style="${ this.dragging? 'display:none' : ''}">drag</div>
-        </div>`;
-    }
-    firstUpdated() {
-        super.firstUpdated();
-
-        const node = this.shadowRoot.children[1].children[0];
-        const bodyClassList = document.getElementsByTagName("BODY")[0].classList
-
-        this.drag = Drag.drag().on('start', () => {
-            Selection.event.sourceEvent.preventDefault();
-            this.dragging = true; // Hides the "drag" tool-tip
-            this._prevValue = this.value; // Start out with the actual value
-            bodyClassList.add(HORIZONTAL_SCROLL_CLASS);
-        }).on('end', () => {
-            this.dragging = false;
-            bodyClassList.remove(HORIZONTAL_SCROLL_CLASS);
-        }).on('drag', () => {
-            Selection.event.sourceEvent.preventDefault();
-            const dx = Selection.event.dx;
-            var { step, value, min, max, sensitivity } = this;
-            console.log(Selection.event, this._prevValue + (dx / sensitivity), dx, sensitivity)
-            const newValue = Math.max(Math.min(this._prevValue + (dx / sensitivity), max), min);
-            this._prevValue = newValue; // Store the actual value so the drag is smooth
-            this.value = Math.round(newValue / step) * step; // Then round with the step size
-        });
-
-        this.drag(Selection.select(node));
-    }
-}
-customElements.define('ink-dynamic', InkDynamic);
-
-
-
-
-class InkDynamic2 extends BaseGetProps {
+class InkDynamic extends BaseGetProps {
     static get properties() {
         return {
             ...propDef('min', Number),
@@ -221,11 +143,14 @@ class InkDynamic2 extends BaseGetProps {
             ...propDef('transform', String),
             sensitivity: {type: Number, reflect: false},
             dragging: {type: Boolean, reflect: false},
+            format: String,
+            name: String,
             bind: String,
         };
     }
 
     setDefaults() {
+        this.name = undefined;
         this.min = 0;
         this.max = 10;
         this.step = 1;
@@ -274,7 +199,7 @@ class InkDynamic2 extends BaseGetProps {
         if(!this.bind){return;}
 
         var func = getIFrameFunction(this.iframe, this.bind, ['value']);
-        var updates = func( val );
+        var updates = func(val);
 
         var keys = Object.keys(updates);
 
@@ -286,11 +211,18 @@ class InkDynamic2 extends BaseGetProps {
             };
             this.store.dispatch(action);
         }
-        console.log('Drag node updating var:', updates);
     }
 
     firstUpdated() {
         super.firstUpdated();
+
+
+        if(this.name){
+            // Create the defaults based on the name
+            // name < -- > value double binding
+            this.bind = '{' + this.name + ': value}';
+            this.valueFunctionString = this.name;
+        }
 
         const node = this.shadowRoot.children[1].children[0];
         const bodyClassList = document.getElementsByTagName("BODY")[0].classList
@@ -312,7 +244,7 @@ class InkDynamic2 extends BaseGetProps {
             this._prevValue = newValue; // Store the actual value so the drag is smooth
             // Then round with the step size
             var val = Math.round( newValue / step ) * step;
-            this.dispatch( val );
+            this.dispatch(val);
         });
 
         this.drag(Selection.select(node));
@@ -351,54 +283,9 @@ class InkDynamic2 extends BaseGetProps {
 
     }
 
-    _renderSVG(inkChart){
-
-        if(!this._node){
-            this._node = inkChart.chart.append("circle")
-                .attr("r", this.r)
-                .attr("fill", this.fill)
-                .attr("cx", inkChart.x(this.x))
-                .attr("cy", inkChart.y(this.y));
-
-            this.drag = Drag.drag().on('start', () => {
-                Selection.event.sourceEvent.preventDefault();
-                this.dragging = true;
-                this._prevValue = this.value; // Start out with the actual value
-            }).on('drag', () => {
-                Selection.event.sourceEvent.preventDefault();
-
-                const x = Selection.event.x;
-                const y = Selection.event.y;
-
-                this._node
-                    .attr("cx", x)
-                    .attr("cy", y);
-
-                this.dispatch(
-                    inkChart.x.invert(x),
-                    inkChart.y.invert(y)
-                );
-            }).on('end', () => {
-                this.dragging = false;
-            });
-            this._node.call(this.drag);
-            return;
-        }
-        if(this.dragging){
-            return;
-        }
-
-        this._node
-            .attr("r", this.r)
-            .attr("fill", this.fill)
-            .attr("cx", inkChart.x(this.x))
-            .attr("cy", inkChart.y(this.y));
-
-    }
-
 }
 
-customElements.define('ink-dynamic2', InkDynamic2);
+customElements.define('ink-dynamic', InkDynamic);
 
 
 class InkVarList extends LitElement{
