@@ -97,19 +97,19 @@
     </p>
 
     <ink-chart :xlim="[-3 * Math.PI, 3 * Math.PI]" ylim="[-3, 3]">
-        <ink-chart-line eq="Math.sin(x)"></ink-chart-line>
-        <ink-chart-line :eq="[
+        <ink-chart-eqn eqn="Math.sin(x)"></ink-chart-eqn>
+        <ink-chart-eqn :eqn="[
             'x',
             '- (Math.pow(x, 3) / 6)',
             '+ (Math.pow(x, 5) / 120)',
             '- (Math.pow(x, 7) / 5040)',
             '+ (Math.pow(x, 9) / 362880)',
-        ].slice(0, ind).join(' ')" stroke-width="2"></ink-chart-line>
-        <ink-chart-line eq="x" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-line>
-        <ink-chart-line eq="x - (Math.pow(x, 3) / 6)" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-line>
-        <ink-chart-line eq="x - (Math.pow(x, 3) / 6) + (Math.pow(x, 5) / 120)" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-line>
-        <ink-chart-line eq="x - (Math.pow(x, 3) / 6) + (Math.pow(x, 5) / 120) - (Math.pow(x, 7) / 5040)" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-line>
-        <ink-chart-line eq="x - (Math.pow(x, 3) / 6) + (Math.pow(x, 5) / 120) - (Math.pow(x, 7) / 5040) + (Math.pow(x, 9) / 362880)" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-line>
+        ].slice(0, ind).join(' ')" stroke-width="2"></ink-chart-eqn>
+        <ink-chart-eqn eqn="x" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-eqn>
+        <ink-chart-eqn eqn="x - (Math.pow(x, 3) / 6)" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-eqn>
+        <ink-chart-eqn eqn="x - (Math.pow(x, 3) / 6) + (Math.pow(x, 5) / 120)" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-eqn>
+        <ink-chart-eqn eqn="x - (Math.pow(x, 3) / 6) + (Math.pow(x, 5) / 120) - (Math.pow(x, 7) / 5040)" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-eqn>
+        <ink-chart-eqn eqn="x - (Math.pow(x, 3) / 6) + (Math.pow(x, 5) / 120) - (Math.pow(x, 7) / 5040) + (Math.pow(x, 9) / 362880)" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-eqn>
     </ink-chart>
 </ink-scope>
 
@@ -147,8 +147,8 @@
     </p>
 
     <ink-chart xlim="[0, 550]" xlabel="Years" ylabel="Probability of No Spill">
-        <ink-chart-line eq="Math.pow(p_s, x)" stroke="steelblue"></ink-chart-line>
-        <ink-chart-line eq="0.5" stroke="#333" stroke-dasharray="5" stroke-width="1"></ink-chart-line>
+        <ink-chart-eqn eqn="Math.pow(p_s, x)" stroke="steelblue"></ink-chart-eqn>
+        <ink-chart-eqn eqn="0.5" stroke="#333" stroke-dasharray="5" stroke-width="1"></ink-chart-eqn>
         <ink-chart-text x="540" y="0.52" text="Coin Toss"></ink-chart-text>
         <ink-chart-point :x="1/(1-p_s)" :y="Math.pow(p_s, 1/(1-p_s))" fill="black"></ink-chart-point>
         <ink-chart-point :x="et2fail" :y="Math.pow(p_s, et2fail)" fill="red"></ink-chart-point>
@@ -173,7 +173,7 @@
     </ink-equation>
 
     <ink-chart :xlim="[0, 2 * Math.PI]" ylim="[-3, 3]" xlabel="t" ylabel="y(t)">
-        <ink-chart-line eq="amplitude * Math.sin(2 * Math.PI * freq * x + phase)"></ink-chart-line>
+        <ink-chart-eqn eqn="amplitude * Math.sin(2 * Math.PI * freq * x + phase)"></ink-chart-eqn>
         <ink-chart-node x="3" :y="amplitude" bind="{amplitude: y, phase: - 2 * Math.PI * freq * x}"></ink-chart-node>
     </ink-chart>
 </ink-scope>
@@ -217,8 +217,9 @@
 
     <ink-aside><ink-chart xlim="[-5, 5]" ylim="[-5, 5]" height="300" width="300" x-axis-location="origin" y-axis-location="origin">
         <ink-chart-node :x="a" :y="b" bind="{a: x, b: y}"></ink-chart-node>
-        <ink-chart-line :domain="[0, Math.atan2(b, a)]" eq="[r * Math.cos(t), r * Math.sin(t)]" parameterize="t"></ink-chart-line>
-        <ink-chart-text :x="(r/2) * Math.cos(Math.atan2(b, a) / 2)" :y="(r/2) * Math.sin(Math.atan2(b, a) / 2)" :text="Math.round(Math.atan2(b, a)*180/Math.PI * 10)/10 + '&deg;'"></ink-chart-text>
+        <ink-chart-eqn :domain="[0, Math.atan2(b, a)]" eqn="[r * Math.cos(t), r * Math.sin(t)]" parameterize="t" stroke="#333" stroke-width="1" stroke-dasharray="3"></ink-chart-eqn>
+        <ink-chart-line :data="[[0, 0],[r * Math.cos(Math.atan2(b, a)), r * Math.sin(Math.atan2(b, a))]]" stroke="#333" stroke-width="1" stroke-dasharray="3"></ink-chart-line>
+        <ink-chart-text :x="(r/2) * Math.cos(Math.atan2(b, a) / 2)" :y="(r/2) * Math.sin(Math.atan2(b, a) / 2)" :text="Math.round(Math.atan2(b, a)*180/Math.PI) + '&deg;'"></ink-chart-text>
     </ink-chart></ink-aside>
 
     <p>
@@ -251,11 +252,11 @@
 
 
     <ink-chart xlim="[-10, 10]" ylim="[-180, 180]" xlabel="y / x" ylabel="atan2(y,x)" x-axis-location="origin" y-axis-location="origin">
-        <ink-chart-line eq="Math.atan2(x, 1) * 180/Math.PI"></ink-chart-line>
-        <ink-chart-line eq="Math.atan2(-x, -1) * 180/Math.PI" :domain="[-Infinity, -0.05]"></ink-chart-line>
-        <ink-chart-line eq="Math.atan2(-x, -1) * 180/Math.PI" :domain="[0.05, Infinity]"></ink-chart-line>
-        <ink-chart-line eq="90" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-line>
-        <ink-chart-line eq="-90" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-line>
+        <ink-chart-eqn eqn="Math.atan2(x, 1) * 180/Math.PI"></ink-chart-eqn>
+        <ink-chart-eqn eqn="Math.atan2(-x, -1) * 180/Math.PI" :domain="[-Infinity, -0.05]"></ink-chart-eqn>
+        <ink-chart-eqn eqn="Math.atan2(-x, -1) * 180/Math.PI" :domain="[0.05, Infinity]"></ink-chart-eqn>
+        <ink-chart-eqn eqn="90" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-eqn>
+        <ink-chart-eqn eqn="-90" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-eqn>
         <ink-chart-text x="4" y="-125" text="x < 0"></ink-chart-text>
         <ink-chart-text x="4" y="55" text="x > 0"></ink-chart-text>
         <ink-chart-text x="-4" y="120" text="x < 0"></ink-chart-text>
@@ -291,9 +292,9 @@
     </ink-equation>
 
     <ink-chart :xlim="[0, 10]" ylim="[-6, 6]" xlabel="t" ylabel="f(t)">
-        <ink-chart-line eq="amplitude1 * Math.sin(2 * Math.PI * freq1 * x + phase1)"></ink-chart-line>
-        <ink-chart-line eq="amplitude2 * Math.cos(2 * Math.PI * freq2 * x + phase2)"></ink-chart-line>
-        <ink-chart-line eq="amplitude1 * Math.sin(2 * Math.PI * freq1 * x + phase1) + amplitude2 * Math.cos(2 * Math.PI * freq2 * x + phase2)" stroke-width="2.5"></ink-chart-line>
+        <ink-chart-eqn eqn="amplitude1 * Math.sin(2 * Math.PI * freq1 * x + phase1)"></ink-chart-eqn>
+        <ink-chart-eqn eqn="amplitude2 * Math.cos(2 * Math.PI * freq2 * x + phase2)"></ink-chart-eqn>
+        <ink-chart-eqn eqn="amplitude1 * Math.sin(2 * Math.PI * freq1 * x + phase1) + amplitude2 * Math.cos(2 * Math.PI * freq2 * x + phase2)" stroke-width="2.5"></ink-chart-eqn>
     </ink-chart>
 </ink-scope>
 

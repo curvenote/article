@@ -259,9 +259,52 @@ customElements.define('ink-chart-point', InkChartPoint);
 
 
 class InkChartLine extends InkChartObject {
+
     static get properties() {
         return {
-            ...propDef('eq', String),
+            ...propDef('data', Number),
+            fill: String,
+            stroke: String,
+            strokeWidth: {
+                type: Number,
+                attribute: 'stroke-width'
+            },
+            strokeDasharray: {
+                type: String,
+                attribute: 'stroke-dasharray'
+            }
+        };
+    }
+
+    get data() { return getProp(this, 'data'); }
+    set data(val) { return setProp(this, 'data', val); }
+    get dataFunction() { return getPropFunction(this, 'data'); }
+
+    setDefaults() {
+        this.data = [[0,0]];
+        this.stroke = this.inkChart.nextColor();
+        this.strokeWidth = 1.5;
+        this.strokeDasharray = undefined;
+    }
+
+    renderSVG(chart){
+        let path = d3shape.line()
+            .defined(function(d) { return isFinite(d[0]) && isFinite(d[1]); })
+            .x(function(d) { return chart.x(d[0]); })
+            .y(function(d) { return chart.y(d[1]); });
+
+        return svg`<path class="line" fill="none" stroke="${this.stroke}" stroke-width="${this.strokeWidth}" stroke-dasharray="${this.strokeDasharray}" d="${path(this.data)}"></path>`
+    }
+}
+
+customElements.define('ink-chart-line', InkChartLine);
+
+
+
+class InkChartEqn extends InkChartObject {
+    static get properties() {
+        return {
+            ...propDef('eqn', String),
             ...propDef('domain', Array),
             samples: Number,
             stroke: String,
@@ -278,7 +321,7 @@ class InkChartLine extends InkChartObject {
     }
 
     setDefaults() {
-        this.eq = 0;
+        this.eqn = 0;
         this.samples = 500; // Number of samples for an equation
         this.stroke = this.inkChart.nextColor();
         this.strokeWidth = 1.5;
@@ -287,9 +330,9 @@ class InkChartLine extends InkChartObject {
         this.parameterize = 'x';
     }
 
-    get eq() { return getProp(this, 'eq'); }
-    set eq(val) { return setProp(this, 'eq', val); }
-    get eqFunction() { return getPropFunction(this, 'eq'); }
+    get eqn() { return getProp(this, 'eqn'); }
+    set eqn(val) { return setProp(this, 'eqn', val); }
+    get eqnFunction() { return getPropFunction(this, 'eqn'); }
 
     get domain() { return getProp(this, 'domain'); }
     set domain(val) { return setProp(this, 'domain', val); }
@@ -310,15 +353,15 @@ class InkChartLine extends InkChartObject {
         let domain;
         let funcXY;
         if(this.parameterize == 'x'){
-            func = getIFrameFunction(this.iframe, this.eq, ['x']);
+            func = getIFrameFunction(this.iframe, this.eqn, ['x']);
             funcXY = (d) => [d, func(d)];
             domain = getDomain(this.domain, chart.xlim);
         }else if(this.parameterize == 'y'){
-            func = getIFrameFunction(this.iframe, this.eq, ['y']);
+            func = getIFrameFunction(this.iframe, this.eqn, ['y']);
             funcXY = (d) => [func(d), d];
             domain = getDomain(this.domain, chart.ylim);
         }else if(this.parameterize == 't'){
-            func = getIFrameFunction(this.iframe, this.eq, ['t']);
+            func = getIFrameFunction(this.iframe, this.eqn, ['t']);
             funcXY = (d) => func(d);
             domain = this.domain;
         }
@@ -341,7 +384,7 @@ class InkChartLine extends InkChartObject {
 
 }
 
-customElements.define('ink-chart-line', InkChartLine);
+customElements.define('ink-chart-eqn', InkChartEqn);
 
 
 
@@ -496,4 +539,4 @@ customElements.define('ink-chart-node', InkChartNode);
 
 
 
-export { InkChart, InkChartPoint, InkChartLine, InkChartText, InkChartNode };
+export { InkChart, InkChartPoint, InkChartLine, InkChartText, InkChartNode, InkChartEqn };
