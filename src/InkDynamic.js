@@ -8,7 +8,7 @@ let HORIZONTAL_SCROLL_CLASS = 'ink-drag-horz';
 import { BaseGetProps, propDef, getProp, setProp, getPropFunction, dispatchUpdates, getIFrameFunction } from './InkDynamicProps.js';
 
 
-class BaseDynamic2 extends BaseGetProps{
+class BaseDynamic extends BaseGetProps{
 
     static get properties() {
         return {
@@ -64,7 +64,7 @@ class BaseDynamic2 extends BaseGetProps{
 
 }
 
-class InkDisplay extends BaseDynamic2 {
+class InkDisplay extends BaseDynamic {
     render() {
         let func = getIFrameFunction(this.iframe, this.transform, ['value']);
         return html`<span>${ this.formatter(func(this.value)) }</span>`;
@@ -74,7 +74,7 @@ class InkDisplay extends BaseDynamic2 {
 customElements.define('ink-display', InkDisplay);
 
 
-class BaseRange extends BaseDynamic2 {
+class BaseRange extends BaseDynamic {
     static get properties() {
         return {
             ...propDef('min', Number),
@@ -173,7 +173,6 @@ class InkDynamic extends BaseRange {
     }
 
     render(){
-
         let func = getIFrameFunction(this.iframe, this.transform, ['value']);
 
         return html`<style>
@@ -202,12 +201,10 @@ class InkDynamic extends BaseRange {
             <span class="dynamic">${ this.formatter(func(this.value)) }<slot></slot></span>
             <div class="help" style="${ this.dragging? 'display:none' : ''}">drag</div>
         </div>`;
-
     }
-
 }
 
 customElements.define('ink-dynamic', InkDynamic);
 
 
-export { InkDisplay, InkRange, InkDynamic};
+export { InkDisplay, InkRange, InkDynamic };
