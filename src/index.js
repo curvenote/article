@@ -1,6 +1,8 @@
 import { InkArticle } from './InkArticle.js';
 import { InkScope } from './InkScope.js';
-import { InkRange, InkDisplay, InkDynamic, InkDerived, InkVar } from './InkDynamic.js';
+import { InkVar } from './InkVar.js';
+import { InkVarList } from './InkVarList.js';
+import { InkDisplay, InkRange, InkDynamic } from './InkDynamic.js';
 import { InkChart, InkChartPoint, InkChartLine, InkChartText, InkChartNode, InkChartEqn } from './InkChart.js'
 
 import { InkOutline } from './InkOutline.js';
