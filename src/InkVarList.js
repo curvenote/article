@@ -44,7 +44,7 @@ class InkVarList extends LitElement{
     render() {
         const vars = this.variables || {};
 
-        console.log(vars)
+        // console.log(vars);
 
         return html`
             <style>

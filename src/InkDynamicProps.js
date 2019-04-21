@@ -133,6 +133,9 @@ class BaseGetProps extends LitElement {
         super();
         this.setDefaults();
     }
+    disconnectedCallback(){
+        this.unsubscribe();
+    }
 }
 
 export { BaseGetProps, propDef, getProp, setProp, getPropFunction, dispatchUpdates, getIFrameFunction };
