@@ -217,6 +217,8 @@
 
     <ink-aside><ink-chart xlim="[-5, 5]" ylim="[-5, 5]" height="300" width="300" x-axis-location="origin" y-axis-location="origin">
         <ink-chart-node :x="a" :y="b" bind="{a: x, b: y}"></ink-chart-node>
+        <ink-chart-line :domain="[0, Math.atan2(b, a)]" eq="[r * Math.cos(t), r * Math.sin(t)]" parameterize="t"></ink-chart-line>
+        <ink-chart-text :x="(r/2) * Math.cos(Math.atan2(b, a) / 2)" :y="(r/2) * Math.sin(Math.atan2(b, a) / 2)" :text="Math.round(Math.atan2(b, a)*180/Math.PI * 10)/10 + '&deg;'"></ink-chart-text>
     </ink-chart></ink-aside>
 
     <p>

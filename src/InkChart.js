@@ -272,7 +272,8 @@ class InkChartLine extends InkChartObject {
             strokeDasharray: {
                 type: String,
                 attribute: 'stroke-dasharray'
-            }
+            },
+            parameterize: String, // can be x, y, or t
         };
     }
 
@@ -282,7 +283,8 @@ class InkChartLine extends InkChartObject {
         this.stroke = this.inkChart.nextColor();
         this.strokeWidth = 1.5;
         this.strokeDasharray = undefined;
-        this.domain = undefined;
+        this.domain = [-Infinity, Infinity];
+        this.parameterize = 'x';
     }
 
     get eq() { return getProp(this, 'eq'); }
@@ -293,25 +295,48 @@ class InkChartLine extends InkChartObject {
     set domain(val) { return setProp(this, 'domain', val); }
     get domainFunction() { return getPropFunction(this, 'domain'); }
 
+
+
     renderSVG(chart){
 
-        // TODO: assumes sorted.
-        let chartDomain = chart.xlim;
-        let domain = this.domain || [-Infinity, Infinity];
+        function getDomain(domain, outerDomain){
+            let out = [...domain];
+            out[0] = Math.max(domain[0], Math.min(...outerDomain));
+            out[1] = Math.min(domain[1], Math.max(...outerDomain));
+            return out;
+        }
 
-        domain[0] = Math.max(domain[0], chartDomain[0]);
-        domain[1] = Math.min(domain[1], chartDomain[1]);
+        let func;
+        let domain;
+        let funcXY;
+        if(this.parameterize == 'x'){
+            func = getIFrameFunction(this.iframe, this.eq, ['x']);
+            funcXY = (d) => [d, func(d)];
+            domain = getDomain(this.domain, chart.xlim);
+        }else if(this.parameterize == 'y'){
+            func = getIFrameFunction(this.iframe, this.eq, ['y']);
+            funcXY = (d) => [func(d), d];
+            domain = getDomain(this.domain, chart.ylim);
+        }else if(this.parameterize == 't'){
+            func = getIFrameFunction(this.iframe, this.eq, ['t']);
+            funcXY = (d) => func(d);
+            domain = this.domain;
+        }
 
         let step = (domain[1] - domain[0]) / this.samples;
         let data = d3array.range(domain[0] - step, domain[1] + step, step);
-        let func = getIFrameFunction(this.iframe, this.eq, ['x']);
+
+        var array = [];
+        for (var i = 0; i < data.length; i++) {
+            array.push(funcXY(data[i]))
+        }
 
         let path = d3shape.line()
-            .defined(function(d) { return isFinite(func(d)); })
-            .x(function(d) { return chart.x(d); })
-            .y(function(d) { return chart.y(func(d)); });
+            .defined(function(d) { return isFinite(d[0]) && isFinite(d[1]); })
+            .x(function(d) { return chart.x(d[0]); })
+            .y(function(d) { return chart.y(d[1]); });
 
-        return svg`<path class="line" fill="none" stroke="${this.stroke}" stroke-width="${this.strokeWidth}" stroke-dasharray="${this.strokeDasharray}" d="${path(data)}"></path>`
+        return svg`<path class="line" fill="none" stroke="${this.stroke}" stroke-width="${this.strokeWidth}" stroke-dasharray="${this.strokeDasharray}" d="${path(array)}"></path>`
     }
 
 }
