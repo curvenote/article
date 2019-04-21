@@ -1,4 +1,4 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 import {unsafeHTML} from 'lit-html/directives/unsafe-html.js';
 import hljs from 'highlight.js';
 

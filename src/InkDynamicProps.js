@@ -1,4 +1,4 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 
 
 function getIFrameFunction(iframe, value, args){
@@ -15,15 +15,20 @@ function getPropDef(self, propName){
 
 function propDef(propName, propType){
     var props = {};
+    // noAccessor means you can have children classes defined without re-implementing the setters.
+    // https://lit-element.polymer-project.org/guide/properties#accessors
+    // If your class does not define accessors for a property, LitElement will generate them, even if a superclass has defined the property or accessors.
     props[propName] = {
         type: String,
         reflect: false,
         _type: propType, // This is getting around LitElement's default parsing.
+        noAccessor: true,
     };
     props[propName + 'FunctionString'] = {
         type: String,
         attribute: ':' + propName,
         reflect: true,
+        noAccessor: true,
     };
     return props;
 }

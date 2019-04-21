@@ -1,4 +1,4 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 const Format = require('d3-format');
 const Drag = require('d3-drag');
 const Selection = require('d3-selection');
@@ -6,6 +6,40 @@ const Selection = require('d3-selection');
 let HORIZONTAL_SCROLL_CLASS = 'ink-drag-horz';
 
 import { BaseGetProps, propDef, getProp, setProp, getPropFunction, getIFrameFunction } from './InkDynamicProps.js';
+
+
+class BaseDynamic2 extends BaseGetProps{
+
+    static get properties() {
+        return {
+            name: String,
+            bind: String,
+            ...propDef('value', Number),
+        }
+    }
+
+    get value() { return getProp(this, 'value'); }
+    set value(val) { return setProp(this, 'value', val); }
+    get valueFunction() { return getPropFunction(this, 'value'); }
+
+    setDefaults(){
+        this.value = 0;
+        this.name = undefined;
+        this.bind = undefined;
+    }
+
+    formatter(value){
+        if(typeof value === 'string'){return value;}
+        // if bind is simple
+        let variable = this.store.getState().variables[this.name];
+        let def = undefined;
+        if(variable){
+            def = variable.format;
+        }
+        return Format.format(this.format || def || ".1f")(value);
+    }
+
+}
 
 
 class BaseDynamic extends BaseGetProps{
@@ -133,28 +167,25 @@ customElements.define('ink-range', InkRange);
 
 
 
-class InkDynamic extends BaseGetProps {
+class InkDynamic extends BaseDynamic2 {
     static get properties() {
         return {
+            ...super.properties,
             ...propDef('min', Number),
             ...propDef('max', Number),
             ...propDef('step', Number),
-            ...propDef('value', Number),
             ...propDef('transform', String),
             sensitivity: {type: Number, reflect: false},
             dragging: {type: Boolean, reflect: false},
             format: String,
-            name: String,
-            bind: String,
         };
     }
 
     setDefaults() {
-        this.name = undefined;
+        super.setDefaults();
         this.min = 0;
         this.max = 10;
         this.step = 1;
-        this.value = 0;
         this.sensitivity = 10;
         this.dragging = false;
         this.transform = 'value';
@@ -172,25 +203,9 @@ class InkDynamic extends BaseGetProps {
     set step(val) { return setProp(this, 'step', val); }
     get stepFunction() { return getPropFunction(this, 'step'); }
 
-    get value() { return getProp(this, 'value'); }
-    set value(val) { return setProp(this, 'value', val); }
-    get valueFunction() { return getPropFunction(this, 'value'); }
-
     get transform() { return getProp(this, 'transform'); }
     set transform(val) { return setProp(this, 'transform', val); }
     get transformFunction() { return getPropFunction(this, 'transform'); }
-
-
-    formatter(value){
-        if(typeof value === 'string'){return value;}
-        // if bind is simple
-        let variable = this.store.getState().variables[this.name];
-        let def = undefined;
-        if(variable){
-            def = variable.format;
-        }
-        return Format.format(this.format || def || ".1f")(value);
-    }
 
     dispatch(val){
 

@@ -1,4 +1,4 @@
-import { LitElement, html, svg } from '@polymer/lit-element';
+import { LitElement, html, svg } from 'lit-element';
 import {unsafeHTML} from 'lit-html/directives/unsafe-html.js';
 
 import { BaseGetProps, propDef, getProp, setProp, getPropFunction, getIFrameFunction } from './InkDynamicProps.js';

@@ -1,5 +1,5 @@
 import { render } from 'lit-html';
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 import katex from 'katex';
 import renderMathInElement from 'katex/contrib/auto-render/auto-render.js';
 import { katexCSS, bricksTheme } from './styles.js';

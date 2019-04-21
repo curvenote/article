@@ -1,4 +1,4 @@
-import { LitElement, html } from '@polymer/lit-element';
+import { LitElement, html } from 'lit-element';
 import date from 'date-and-time';
 import { SERVER_DATE_FORMAT } from './constants.js';
 
