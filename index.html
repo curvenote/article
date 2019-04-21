@@ -300,6 +300,24 @@
 
 
 
+
+<ink-scope>
+    <h2>Example Charts - Parameterize</h2>
+
+    <ink-var name="amplitude" value="0.4"></ink-var>
+
+    <h2>Parameters</h2>
+    <strong>Amplitude, $A$:</strong><ink-dynamic name="amplitude" min="-5" max="5" step="0.05"></ink-dynamic><br>
+
+    <ink-chart :xlim="[-5, 5]" ylim="[-5, 5]" width="400" height="400" x-axis-location="origin" y-axis-location="origin" style="margin-left: 150px;">
+        <ink-chart-eqn eqn="amplitude * Math.sin(x)"></ink-chart-eqn>
+        <ink-chart-eqn eqn="amplitude * Math.sin(y)" parameterize="y"></ink-chart-eqn>
+        <ink-chart-eqn eqn="[amplitude*t * Math.cos(t), amplitude*t * Math.sin(t)]" parameterize="t" :domain="[0,Math.PI*16]"></ink-chart-eqn>
+    </ink-chart>
+</ink-scope>
+
+
+
 <hr>
 <h2>Dynamic Content</h2>
 
