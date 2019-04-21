@@ -5,7 +5,7 @@ const Selection = require('d3-selection');
 
 let HORIZONTAL_SCROLL_CLASS = 'ink-drag-horz';
 
-import { BaseGetProps, propDef, getProp, setProp, getPropFunction, getIFrameFunction } from './InkDynamicProps.js';
+import { BaseGetProps, propDef, getProp, setProp, getPropFunction, dispatchUpdates, getIFrameFunction } from './InkDynamicProps.js';
 
 
 class BaseDynamic2 extends BaseGetProps{
@@ -15,6 +15,8 @@ class BaseDynamic2 extends BaseGetProps{
             name: String,
             bind: String,
             ...propDef('value', Number),
+            ...propDef('transform', String),
+            format: String,
         }
     }
 
@@ -22,10 +24,16 @@ class BaseDynamic2 extends BaseGetProps{
     set value(val) { return setProp(this, 'value', val); }
     get valueFunction() { return getPropFunction(this, 'value'); }
 
+    get transform() { return getProp(this, 'transform'); }
+    set transform(val) { return setProp(this, 'transform', val); }
+    get transformFunction() { return getPropFunction(this, 'transform'); }
+
     setDefaults(){
         this.value = 0;
         this.name = undefined;
         this.bind = undefined;
+        this.transform = 'value';
+        this.format = undefined;
     }
 
     formatter(value){
@@ -37,6 +45,21 @@ class BaseDynamic2 extends BaseGetProps{
             def = variable.format;
         }
         return Format.format(this.format || def || ".1f")(value);
+    }
+
+    updated(changedProperties) {
+        changedProperties.forEach((oldValue, propName) => {
+            switch (propName) {
+                case 'name':
+                    // Create the defaults based on the name
+                    // name < -- > value double binding
+                    this.bind = '{' + this.name + ': value}';
+                    this.valueFunctionString = this.name;
+                    return;
+                default:
+                    return;
+            }
+        });
     }
 
 }
@@ -124,10 +147,7 @@ class BaseDynamic extends BaseGetProps{
 }
 
 
-class InkDisplay extends BaseDynamic {
-    get setValue(){
-        return false;
-    }
+class InkDisplay extends BaseDynamic2 {
     render() {
         let func = getIFrameFunction(this.iframe, this.transform, ['value']);
         return html`<span>${ this.formatter(func(this.value)) }</span>`;
@@ -137,58 +157,14 @@ class InkDisplay extends BaseDynamic {
 customElements.define('ink-display', InkDisplay);
 
 
-class BaseRange extends BaseDynamic {
+class BaseRange extends BaseDynamic2 {
     static get properties() {
         return {
-            step: { type: Number, reflect: false },
-            min: { type: Number, reflect: false },
-            max: { type: Number, reflect: false },
-            ...super.properties
-        };
-    }
-    setDefaults(){
-        super.setDefaults();
-        this.step = 1;
-        this.min = 0;
-        this.max = 10;
-    }
-}
-
-
-class InkRange extends BaseRange {
-    render() {
-        return html`<input type="range" min="${this.min}" step="${this.step}" max="${this.max}" .value="${this.value}" @input="${this._changeHandler}">`;
-    }
-    _changeHandler(e) {
-        this.value = Number.parseFloat(e.target.value);
-    }
-}
-customElements.define('ink-range', InkRange);
-
-
-
-class InkDynamic extends BaseDynamic2 {
-    static get properties() {
-        return {
-            ...super.properties,
             ...propDef('min', Number),
             ...propDef('max', Number),
             ...propDef('step', Number),
-            ...propDef('transform', String),
-            sensitivity: {type: Number, reflect: false},
-            dragging: {type: Boolean, reflect: false},
-            format: String,
+            ...super.properties
         };
-    }
-
-    setDefaults() {
-        super.setDefaults();
-        this.min = 0;
-        this.max = 10;
-        this.step = 1;
-        this.sensitivity = 10;
-        this.dragging = false;
-        this.transform = 'value';
     }
 
     get min() { return getProp(this, 'min'); }
@@ -203,41 +179,52 @@ class InkDynamic extends BaseDynamic2 {
     set step(val) { return setProp(this, 'step', val); }
     get stepFunction() { return getPropFunction(this, 'step'); }
 
-    get transform() { return getProp(this, 'transform'); }
-    set transform(val) { return setProp(this, 'transform', val); }
-    get transformFunction() { return getPropFunction(this, 'transform'); }
+    setDefaults(){
+        super.setDefaults();
+        this.step = 1;
+        this.min = 0;
+        this.max = 10;
+    }
 
     dispatch(val){
-
         this.value = val;
-
         if(!this.bind){return;}
-
         let func = getIFrameFunction(this.iframe, this.bind, ['value']);
         let updates = func(val);
+        dispatchUpdates(updates, this.store);
+    }
+}
 
-        let keys = Object.keys(updates);
+class InkRange extends BaseRange {
+    render() {
+        return html`<input type="range" min="${this.min}" step="${this.step}" max="${this.max}" .value="${this.value}" @input="${this._changeHandler}">`;
+    }
+    _changeHandler(e) {
+        this.dispatch(Number.parseFloat(e.target.value));
+    }
 
-        for (let i = 0; i < keys.length; i++) {
-            const action = {
-                type: 'UPDATE_VARIABLE',
-                name: keys[i],
-                value: updates[keys[i]]
-            };
-            this.store.dispatch(action);
-        }
+}
+customElements.define('ink-range', InkRange);
+
+
+
+class InkDynamic extends BaseRange {
+    static get properties() {
+        return {
+            ...super.properties,
+            sensitivity: {type: Number, reflect: false},
+            dragging: {type: Boolean, reflect: false},
+        };
+    }
+
+    setDefaults() {
+        super.setDefaults();
+        this.sensitivity = 10;
+        this.dragging = false;
     }
 
     firstUpdated() {
         super.firstUpdated();
-
-
-        if(this.name){
-            // Create the defaults based on the name
-            // name < -- > value double binding
-            this.bind = '{' + this.name + ': value}';
-            this.valueFunctionString = this.name;
-        }
 
         const node = this.shadowRoot.children[1].children[0];
         const bodyClassList = document.getElementsByTagName("BODY")[0].classList

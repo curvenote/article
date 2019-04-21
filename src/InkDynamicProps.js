@@ -9,6 +9,19 @@ function getIFrameFunction(iframe, value, args){
 }
 
 
+function dispatchUpdates(updates, store){
+    let keys = Object.keys(updates);
+    for (let i = 0; i < keys.length; i++) {
+        const action = {
+            type: 'UPDATE_VARIABLE',
+            name: keys[i],
+            value: updates[keys[i]]
+        };
+        store.dispatch(action);
+    }
+}
+
+
 function getPropDef(self, propName){
     return self.constructor._classProperties.get(propName);
 }
@@ -122,4 +135,4 @@ class BaseGetProps extends LitElement {
     }
 }
 
-export { BaseGetProps, propDef, getProp, setProp, getPropFunction, getIFrameFunction };
+export { BaseGetProps, propDef, getProp, setProp, getPropFunction, dispatchUpdates, getIFrameFunction };

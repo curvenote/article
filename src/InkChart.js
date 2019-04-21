@@ -1,7 +1,7 @@
 import { LitElement, html, svg } from 'lit-element';
 import {unsafeHTML} from 'lit-html/directives/unsafe-html.js';
 
-import { BaseGetProps, propDef, getProp, setProp, getPropFunction, getIFrameFunction } from './InkDynamicProps.js';
+import { BaseGetProps, propDef, getProp, setProp, getPropFunction, dispatchUpdates, getIFrameFunction } from './InkDynamicProps.js';
 
 const Selection = require('d3-selection');
 // const d3scale = require('d3-scale');
@@ -468,16 +468,7 @@ class InkChartNode extends InkChartObject {
         let func = getIFrameFunction(this.iframe, this.bind, ['x', 'y']);
         let updates = func(x, y);
 
-        let keys = Object.keys(updates);
-
-        for (let i = 0; i < keys.length; i++) {
-            const action = {
-                type: 'UPDATE_VARIABLE',
-                name: keys[i],
-                value: updates[keys[i]]
-            };
-            this.store.dispatch(action);
-        }
+        dispatchUpdates(updates, this.store);
     }
 
     renderSVG(chart){
