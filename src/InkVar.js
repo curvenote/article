@@ -1,9 +1,5 @@
 import { LitElement, html } from 'lit-element';
 const Format = require('d3-format');
-const Drag = require('d3-drag');
-const Selection = require('d3-selection');
-
-let HORIZONTAL_SCROLL_CLASS = 'ink-drag-horz';
 
 import { BaseGetProps, propDef, getProp, setProp, getPropFunction, dispatchUpdates, getIFrameFunction } from './InkDynamicProps.js';
 
