@@ -83,33 +83,26 @@
     </p>
 
     <ink-var name="ind" value="1"></ink-var>
+    <ink-var name="katex" value='["\\sin(x) \\approx x", "-{\\frac {x^{3}}{3!}}", "+{\\frac {x^{5}}{5!}}", "-{\\frac {x^{7}}{7!}}", "-{\\frac {x^{9}}{9!}}", "+{\\frac {x^{11}}{11!}}", "-{\\frac {x^{13}}{13!}}", "-{\\frac {x^{15}}{15!}}"]'></ink-var>
+    <ink-var name="eqn" value='["x", "- (Math.pow(x, 3) / 6)", "+ (Math.pow(x, 5) / 120)", "- (Math.pow(x, 7) / 5040)", "+ (Math.pow(x, 9) / 362880)", "- (Math.pow(x, 11) / 39916800)", "+ (Math.pow(x, 13) / 6227020800)", "- (Math.pow(x, 15) / 1307674368000)"]'></ink-var>
 
     <p>
         The sine function is closely approximated by its Taylor polynomial of degree 7 for a full period centered at the origin.<br>
-        Try expanding the Taylor series: <ink-range name="ind" min="1" max="5"></ink-range>.
-        <ink-equation :math="[
-            '\sin(x) \\approx x',
-            '-{\\frac {x^{3}}{3!}}',
-            '+{\\frac {x^{5}}{5!}}',
-            '-{\\frac {x^{7}}{7!}}',
-            '-{\\frac {x^{9}}{9!}}'
-        ].slice(0, ind).join(' ') + ' + \\cdots'"></ink-equation>
+        Try expanding the Taylor series: <ink-range name="ind" min="1" max="8"></ink-range>.
+        <ink-equation :math="katex.slice(0, ind).join(' ') + ' + \\cdots'"></ink-equation>
     </p>
 
     <ink-chart :xlim="[-3 * Math.PI, 3 * Math.PI]" ylim="[-3, 3]">
         <ink-chart-eqn eqn="Math.sin(x)"></ink-chart-eqn>
-        <ink-chart-eqn :eqn="[
-            'x',
-            '- (Math.pow(x, 3) / 6)',
-            '+ (Math.pow(x, 5) / 120)',
-            '- (Math.pow(x, 7) / 5040)',
-            '+ (Math.pow(x, 9) / 362880)',
-        ].slice(0, ind).join(' ')" stroke-width="2"></ink-chart-eqn>
-        <ink-chart-eqn eqn="x" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-eqn>
-        <ink-chart-eqn eqn="x - (Math.pow(x, 3) / 6)" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-eqn>
-        <ink-chart-eqn eqn="x - (Math.pow(x, 3) / 6) + (Math.pow(x, 5) / 120)" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-eqn>
-        <ink-chart-eqn eqn="x - (Math.pow(x, 3) / 6) + (Math.pow(x, 5) / 120) - (Math.pow(x, 7) / 5040)" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-eqn>
-        <ink-chart-eqn eqn="x - (Math.pow(x, 3) / 6) + (Math.pow(x, 5) / 120) - (Math.pow(x, 7) / 5040) + (Math.pow(x, 9) / 362880)" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-eqn>
+        <ink-chart-eqn :eqn="eqn.slice(0, 1).join(' ')" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-eqn>
+        <ink-chart-eqn :eqn="eqn.slice(0, 2).join(' ')" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-eqn>
+        <ink-chart-eqn :eqn="eqn.slice(0, 3).join(' ')" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-eqn>
+        <ink-chart-eqn :eqn="eqn.slice(0, 4).join(' ')" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-eqn>
+        <ink-chart-eqn :eqn="eqn.slice(0, 5).join(' ')" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-eqn>
+        <ink-chart-eqn :eqn="eqn.slice(0, 6).join(' ')" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-eqn>
+        <ink-chart-eqn :eqn="eqn.slice(0, 7).join(' ')" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-eqn>
+        <ink-chart-eqn :eqn="eqn.slice(0, 8).join(' ')" stroke="#333" stroke-width="1" stroke-dasharray="1 5"></ink-chart-eqn>
+        <ink-chart-eqn :eqn="eqn.slice(0, ind).join(' ')" stroke-width="2" stroke="green"></ink-chart-eqn>
     </ink-chart>
 </ink-scope>
 
@@ -122,7 +115,7 @@
 
     <ink-var name="p_f_array" type="Array" value="[0.001, 0.0012, 0.0014, 0.0016, 0.0018, 0.002, 0.0025, 0.003, 0.0035, 0.004, 0.0045, 0.005, 0.0055, 0.006, 0.0065, 0.007, 0.0075, 0.008, 0.0085, 0.009, 0.0095, 0.01, 0.0105, 0.011, 0.0115, 0.012, 0.0125, 0.013, 0.0135, 0.014, 0.0145, 0.015, 0.0155, 0.016, 0.0165, 0.017, 0.0175, 0.018, 0.0185, 0.019, 0.0195, 0.02, 0.025, 0.03, 0.035, 0.04, 0.045, 0.05, 0.055, 0.06, 0.065, 0.07, 0.075, 0.08, 0.085, 0.09, 0.095, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]"></ink-var>
 
-    <ink-var name="p_f" :value="[0.001, 0.0012, 0.0014, 0.0016, 0.0018, 0.002, 0.0025, 0.003, 0.0035, 0.004, 0.0045, 0.005, 0.0055, 0.006, 0.0065, 0.007, 0.0075, 0.008, 0.0085, 0.009, 0.0095, 0.01, 0.0105, 0.011, 0.0115, 0.012, 0.0125, 0.013, 0.0135, 0.014, 0.0145, 0.015, 0.0155, 0.016, 0.0165, 0.017, 0.0175, 0.018, 0.0185, 0.019, 0.0195, 0.02, 0.025, 0.03, 0.035, 0.04, 0.045, 0.05, 0.055, 0.06, 0.065, 0.07, 0.075, 0.08, 0.085, 0.09, 0.095, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55][p_f_pick]" format=".2%"></ink-var>
+    <ink-var name="p_f" :value="p_f_array[p_f_pick]" format=".2%"></ink-var>
     <ink-var name="beta" value="0.85" format=".0%"></ink-var>
     <ink-var name="p_s" :value="1 - p_f"></ink-var>
     <ink-var name="years2fail" :value="1 / p_f" format=".1f"></ink-var>
@@ -135,12 +128,11 @@
     <ink-callout class="danger">Variables should be able to control their bounds ??</ink-callout>
     <ink-callout class="danger">Max should be overridden with a function <code>:max="p_f_choices.length-1"</code></ink-callout>
     <ink-callout class="danger">Format should be a variable, but should still use the format that is defined. <code>format=".2%" :map="p_f_array[p_f_pick]"</code>, not sure if this is a map, transform, or something else?</ink-callout>
-    <ink-callout class="success">Chart types</ink-callout>
     <ink-callout class="success">Spark types, hist, spark line, etc.</ink-callout>
 
     <p>In order to gain insight into the potential risk of an oil spill, you can play with the parameters below! You can <i>drag</i> the blue highlighted numbers to adjust the interactive graph.</p>
 
-    <p>Let's say the probability of a spill is <ink-dynamic name="p_f_pick" transform="[0.001, 0.0012, 0.0014, 0.0016, 0.0018, 0.002, 0.0025, 0.003, 0.0035, 0.004, 0.0045, 0.005, 0.0055, 0.006, 0.0065, 0.007, 0.0075, 0.008, 0.0085, 0.009, 0.0095, 0.01, 0.0105, 0.011, 0.0115, 0.012, 0.0125, 0.013, 0.0135, 0.014, 0.0145, 0.015, 0.0155, 0.016, 0.0165, 0.017, 0.0175, 0.018, 0.0185, 0.019, 0.0195, 0.02, 0.025, 0.03, 0.035, 0.04, 0.045, 0.05, 0.055, 0.06, 0.065, 0.07, 0.075, 0.08, 0.085, 0.09, 0.095, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55][value]" min="0" max="66" format=".2%"></ink-dynamic> per year (Use <a href="#table1">Table 1</a>). Let's say you are comfortable with a <ink-dynamic name="beta" min="0.01" max="0.99" step="0.01" sensitivity="1000"></ink-dynamic> probability of <i>not</i> having a spill. <b>With your risk tolerance and this probability, the pipeline should not be operated longer than <ink-display name="et2fail"></ink-display> years.</b></p>
+    <p>Let's say the probability of a spill is <ink-dynamic name="p_f_pick" transform="p_f_array[value]" min="0" max="66" format=".2%"></ink-dynamic> per year (Use <a href="#table1">Table 1</a>). Let's say you are comfortable with a <ink-dynamic name="beta" min="0.01" max="0.99" step="0.01" sensitivity="1000"></ink-dynamic> probability of <i>not</i> having a spill. <b>With your risk tolerance and this probability, the pipeline should not be operated longer than <ink-display name="et2fail"></ink-display> years.</b></p>
 
 
     <p>When the probability of a spill is <ink-display name="p_f"></ink-display> the average interval between spills (the return period) as calculated by Northern Gateway is <ink-display name="years2fail"></ink-display> years. <b>At <ink-display name="years2fail"></ink-display> years there is a <ink-display name="chance_spill"></ink-display> chance there has already been an oil spill.</b>
@@ -302,18 +294,32 @@
 
 
 <ink-scope>
-    <h2>Example Charts - Parameterize</h2>
+    <h2>Parameterize - Ink Chart Equations</h2>
 
     <ink-var name="amplitude" value="0.4"></ink-var>
 
-    <h2>Parameters</h2>
+    <ink-callout class="danger">Need to show scatter points for the eqn.</ink-callout>
+
+    <p>
+        The <code>ink-chart-eqn</code> component allows you to create dynamic lines or points based on an equation.
+        This allows you to create and show equations like <code>(x) => Math.sin(x)</code>.
+        You can also <code>parameterize</code> the function over <code>x</code>, <code>y</code> or <code>t</code>.
+        When parameterizing in terms of <code>t</code> you must supply a <code>domain</code> (e.g. <code>[0, 1]</code>) and the function
+        should return a length-two list. Both <code>x</code> and <code>y</code> parameterizations provide the other coordinate
+        so the function should only return a number.
+    </p>
+
+    <br>
+
     <strong>Amplitude, $A$:</strong><ink-dynamic name="amplitude" min="-5" max="5" step="0.05"></ink-dynamic><br>
 
-    <ink-chart :xlim="[-5, 5]" ylim="[-5, 5]" width="400" height="400" x-axis-location="origin" y-axis-location="origin" style="margin-left: 150px;">
-        <ink-chart-eqn eqn="amplitude * Math.sin(x)"></ink-chart-eqn>
-        <ink-chart-eqn eqn="amplitude * Math.sin(y)" parameterize="y"></ink-chart-eqn>
-        <ink-chart-eqn eqn="[amplitude*t * Math.cos(t), amplitude*t * Math.sin(t)]" parameterize="t" :domain="[0,Math.PI*16]"></ink-chart-eqn>
-    </ink-chart>
+    <ink-demo>
+        <ink-chart :xlim="[-5, 5]" ylim="[-5, 5]" width="400" height="400" x-axis-location="origin" y-axis-location="origin">
+            <ink-chart-eqn eqn="amplitude * Math.sin(x)"></ink-chart-eqn>
+            <ink-chart-eqn eqn="amplitude * Math.sin(y)" parameterize="y"></ink-chart-eqn>
+            <ink-chart-eqn eqn="[amplitude*t * Math.cos(t), amplitude*t * Math.sin(t)]" parameterize="t" :domain="[0,Math.PI*16]"></ink-chart-eqn>
+        </ink-chart>
+    </ink-demo>
 </ink-scope>
 
 

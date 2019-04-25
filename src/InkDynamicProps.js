@@ -69,7 +69,7 @@ function setProp(self, propName, val){
     let oldVal = self['_' + propName];
 
     if(getPropDef(self, propName)._type !== String && typeof val == 'string'){
-        // try it...
+        // TODO: try/catch...
         val = JSON.parse(val);
     }
 
@@ -102,8 +102,15 @@ function getPropFunction(self, propName){
 }
 
 class BaseGetProps extends LitElement {
+    constructor(){
+        super();
+        this.setDefaults();
+    }
     firstUpdated() {
         this.subscribe();
+    }
+    setDefaults(){
+        // none on the base class.
     }
     get store(){
         var closestScope = this.closest('ink-scope');
@@ -128,10 +135,6 @@ class BaseGetProps extends LitElement {
         this.unsubscribe = this.store.subscribe(() => {
             this.requestUpdate();
         });
-    }
-    constructor(){
-        super();
-        this.setDefaults();
     }
     disconnectedCallback(){
         this.unsubscribe();
