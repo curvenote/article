@@ -4,7 +4,7 @@ import { InkVar } from './InkVar.js';
 import { InkVarList } from './InkVarList.js';
 import { InkDisplay, InkRange, InkDynamic } from './InkDynamic.js';
 import { InkButton, InkAction } from './InkButton.js';
-import { InkChart, InkChartPoint, InkChartLine, InkChartText, InkChartNode, InkChartEqn } from './InkChart.js'
+import { InkChart, InkChartCircle, InkChartPath, InkChartText, InkChartNode, InkChartEqn } from './InkChart.js'
 
 import { InkOutline } from './InkOutline.js';
 import { InkFigure } from './InkFigure.js';
@@ -24,8 +24,8 @@ export {
     InkButton,
     InkAction,
     InkChart,
-    InkChartPoint,
-    InkChartLine,
+    InkChartCircle,
+    InkChartPath,
     InkChartText,
     InkChartNode,
     InkChartEqn,

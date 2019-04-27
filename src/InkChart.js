@@ -1,6 +1,4 @@
 import { LitElement, html, svg } from 'lit-element';
-import {unsafeHTML} from 'lit-html/directives/unsafe-html.js';
-
 import { BaseGetProps, propDef, getProp, setProp, getPropFunction, dispatchUpdates, getIFrameFunction } from './InkDynamicProps.js';
 
 const Selection = require('d3-selection');
@@ -175,7 +173,7 @@ class InkChart extends BaseGetProps {
                 <g transform="translate(${margin.left},${margin.top})">
                     <clipPath id="clip"><rect id="clip-rect" x="0" y="0" width="${margin.width}" height="${margin.height}"></rect></clipPath>
                     <g class="x axis"></g>
-                    <g class="x axis"></g>
+                    <g class="y axis"></g>
                     <g clip-path="url(#clip)">
                         ${[...this.children].map(child =>{
                             if(this._initialized && (child instanceof InkChartObject)){
@@ -210,7 +208,7 @@ class InkChartObject extends BaseGetProps {
 
 
 
-class InkChartPoint extends InkChartObject {
+class InkChartCircle extends InkChartObject {
 
     static get properties() {
         return {
@@ -258,11 +256,11 @@ class InkChartPoint extends InkChartObject {
     }
 }
 
-customElements.define('ink-chart-point', InkChartPoint);
+customElements.define('ink-chart-circle', InkChartCircle);
 
 
 
-class InkChartLine extends InkChartObject {
+class InkChartPath extends InkChartObject {
 
     static get properties() {
         return {
@@ -301,7 +299,7 @@ class InkChartLine extends InkChartObject {
     }
 }
 
-customElements.define('ink-chart-line', InkChartLine);
+customElements.define('ink-chart-path', InkChartPath);
 
 
 
@@ -398,6 +396,14 @@ class InkChartText extends InkChartObject {
             ...propDef('x', Number),
             ...propDef('y', Number),
             ...propDef('text', String),
+            textAnchor: {
+                type: String,
+                attribute: 'text-anchor'
+            },
+            fontSize: {
+                type: String,
+                attribute: 'font-size'
+            },
         };
     }
 
@@ -405,6 +411,8 @@ class InkChartText extends InkChartObject {
         this.x = 0.5;
         this.y = 0.5;
         this.text = 'Hello World';
+        this.textAnchor = 'end';
+        this.fontSize = 11;
     }
 
     get x() { return getProp(this, 'x'); }
@@ -420,7 +428,7 @@ class InkChartText extends InkChartObject {
     get textFunction() { return getPropFunction(this, 'text'); }
 
     renderSVG(chart){
-        return svg`<text x="${chart.x(this.x)}" y="${chart.y(this.y)}" style="text-anchor: end;">${this.text}</text>`
+        return svg`<text x="${chart.x(this.x)}" y="${chart.y(this.y)}" style="text-anchor: ${this.textAnchor}; font: ${this.fontSize}px sans-serif;">${this.text}</text>`
     }
 
 }
@@ -537,4 +545,4 @@ customElements.define('ink-chart-node', InkChartNode);
 
 
 
-export { InkChart, InkChartPoint, InkChartLine, InkChartText, InkChartNode, InkChartEqn };
+export { InkChart, InkChartCircle, InkChartPath, InkChartText, InkChartNode, InkChartEqn };

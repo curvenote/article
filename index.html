@@ -48,6 +48,8 @@
 
     <p><code>ink.js</code> is heavily inspired by <a href="http://worrydream.com/Tangle/guide.html">Tangle.js</a>, the goal is to allow you to write in html Web Components.</p>
 
+    <ink-span :visible="dailyPercent > 1">That is a <strong>lot</strong> of cookies.</ink-span>
+
     <ink-demo>
         <ink-var name="cookies" value="3" format=".4"></ink-var>
         <ink-var name="caloriesPerCookie" value="50"></ink-var>
@@ -60,6 +62,16 @@
             When you eat <ink-dynamic name="cookies" min="2" max="100"> cookies</ink-dynamic>,
             you consume <ink-display name="calories"></ink-display> calories.<br>
             That's <ink-display name="dailyPercent"></ink-display> of your recommended daily calories.
+        </p>
+    </ink-demo>
+
+
+
+    <ink-demo>
+        <p>
+            When you eat <ink-dynamic name="cookies" min="2" max="100"> cookies</ink-dynamic>,
+            you consume <ink-display :value="cookies * 50" format=".0f"/></ink-display> calories.<br>
+            That's <ink-display :value="cookies * 50 / 2100" format=".0%"></ink-display> of your recommended daily calories.
         </p>
     </ink-demo>
 
@@ -111,6 +123,7 @@
 <h2>Demo</h2>
 
 <ink-scope>
+
     <ink-var name="p_f_pick" value="5" format=".2"></ink-var>
 
     <ink-var name="p_f_array" type="Array" value="[0.001, 0.0012, 0.0014, 0.0016, 0.0018, 0.002, 0.0025, 0.003, 0.0035, 0.004, 0.0045, 0.005, 0.0055, 0.006, 0.0065, 0.007, 0.0075, 0.008, 0.0085, 0.009, 0.0095, 0.01, 0.0105, 0.011, 0.0115, 0.012, 0.0125, 0.013, 0.0135, 0.014, 0.0145, 0.015, 0.0155, 0.016, 0.0165, 0.017, 0.0175, 0.018, 0.0185, 0.019, 0.0195, 0.02, 0.025, 0.03, 0.035, 0.04, 0.045, 0.05, 0.055, 0.06, 0.065, 0.07, 0.075, 0.08, 0.085, 0.09, 0.095, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55]"></ink-var>
@@ -130,6 +143,20 @@
     <ink-callout class="danger">Format should be a variable, but should still use the format that is defined. <code>format=".2%" :map="p_f_array[p_f_pick]"</code>, not sure if this is a map, transform, or something else?</ink-callout>
     <ink-callout class="success">Spark types, hist, spark line, etc.</ink-callout>
 
+
+    <ink-var name="icare" value="2"></ink-var>
+    <ink-range name="icare" min="0" max="5"></ink-range>
+
+    <blockquote>
+        <p class="text-info">
+            According to Northern Gateway risk assessments, the probability of a tanker spill of any size would be about 0.4 per cent in any given year. The company estimated the return period (average interval between events) would be 250 years for a marine spill.
+            <ink-span :visible="icare>2">Northern Gateway said the probability of a full-bore rupture on the oil pipeline would be 0.2 per cent in a given year, based on an estimated return period of 464 years.</ink-span>
+        </p>
+      <small class="pull-right">National Energy Board &amp; Canadian Environmental Assessment Agency (2013-12-19) <cite title="Connections - Volume 1"><a href="http://gatewaypanel.review-examen.gc.ca/clf-nsi/dcmnt/rcmndtnsrprt/rcmndtnsrprtvlm1-eng.html#s51" target="_blank">Joint Review Panel</a></cite></small>
+    </blockquote>
+
+
+
     <p>In order to gain insight into the potential risk of an oil spill, you can play with the parameters below! You can <i>drag</i> the blue highlighted numbers to adjust the interactive graph.</p>
 
     <p>Let's say the probability of a spill is <ink-dynamic name="p_f_pick" transform="p_f_array[value]" min="0" :max="p_f_array.length-1" format=".2%"></ink-dynamic> per year (Use <a href="#table1">Table 1</a>). Let's say you are comfortable with a <ink-dynamic name="beta" min="0.01" max="0.99" step="0.01" sensitivity="1000"></ink-dynamic> probability of <i>not</i> having a spill. <b>With your risk tolerance and this probability, the pipeline should not be operated longer than <ink-display name="et2fail"></ink-display> years.</b></p>
@@ -142,12 +169,79 @@
         <ink-chart-eqn eqn="Math.pow(p_s, x)" stroke="steelblue"></ink-chart-eqn>
         <ink-chart-eqn eqn="0.5" stroke="#333" stroke-dasharray="5" stroke-width="1"></ink-chart-eqn>
         <ink-chart-text x="540" y="0.52" text="Coin Toss"></ink-chart-text>
-        <ink-chart-point :x="1/(1-p_s)" :y="Math.pow(p_s, 1/(1-p_s))" fill="black"></ink-chart-point>
-        <ink-chart-point :x="et2fail" :y="Math.pow(p_s, et2fail)" fill="red"></ink-chart-point>
+        <ink-chart-circle :x="1/(1-p_s)" :y="Math.pow(p_s, 1/(1-p_s))" fill="black"></ink-chart-circle>
+        <ink-chart-circle :x="et2fail" :y="Math.pow(p_s, et2fail)" fill="red"></ink-chart-circle>
+        <!-- silly legend -->
+        <ink-chart-path data="[[390,0.8],[390,0.99], [500,0.99], [500,0.8], [390,0.8]]" stroke="#333"></ink-chart-path>
+        <ink-chart-circle x="400" y="0.95" fill="red"></ink-chart-circle>
+        <ink-chart-text x="415" y="0.935" :text="Math.round(beta*100) + '% probability'" text-anchor="start" font-size="13"></ink-chart-text>
+        <ink-chart-circle x="400" y="0.85" fill="black"></ink-chart-circle>
+        <ink-chart-text x="415" y="0.835" text="Return period" text-anchor="start" font-size="13"></ink-chart-text>
     </ink-chart>
+    <p style="text-align: center;">Figure 1: Probability of no spill when the failure rate is <ink-dynamic name="p_f_pick" transform="p_f_array[value]" min="0" :max="p_f_array.length-1" format=".2%"></ink-dynamic> per year.</p>
+
+    <style>
+        table{
+            width: 100%;
+            border-collapse: collapse;
+        }
+        thead{
+            font-size: 105%;
+            border-bottom: 1px solid #333;
+            color: black;
+        }
+        tbody{
+            border-left: 1px solid #333;
+        }
+        td{
+            padding-left: 8px;
+        }
+    </style>
+
+    <p> Table 1: Northern Gateway's summary of representative parameters for oil spill probabilities. <i>Click</i> a row to change the graph above.</p>
+    <table>
+    <thead>
+      <td>Spill Type</td>
+      <td>Return Period</td>
+      <td>Annual Probability</td>
+      <td>Page Reference</td>
+    </thead>
+    <tr>
+      <td>Oil Pipeline, Other Spills</td>
+      <td>4 years</td>
+      <td><ink-action bind="{p_f_pick:60}">25%</ink-action></td>
+      <td><a href="http://gatewaypanel.review-examen.gc.ca/clf-nsi/dcmnt/rcmndtnsrprt/rcmndtnsrprtvlm1-eng.pdf" target="_blank">page 67</a> (<a href="http://gatewaypanel.review-examen.gc.ca/clf-nsi/dcmnt/rcmndtnsrprt/rcmndtnsrprtvlm1-eng.html#s54" target="_blank">html</a>)</td>
+    </tr>
+    <tr>
+      <td>Marine Terminal Spill</td>
+      <td>61 years</td>
+      <td><ink-action bind="{p_f_pick:34}">1.64%</ink-action></td>
+      <td><a href="http://gatewaypanel.review-examen.gc.ca/clf-nsi/dcmnt/rcmndtnsrprt/rcmndtnsrprtvlm1-eng.pdf" target="_blank">page 67</a> (<a href="http://gatewaypanel.review-examen.gc.ca/clf-nsi/dcmnt/rcmndtnsrprt/rcmndtnsrprtvlm1-eng.html#s54" target="_blank">html</a>)</td>
+    </tr>
+    <tr>
+      <td>Oil Pipeline, Full-bore Rupture</td>
+      <td>240 years</td>
+      <td><ink-action bind="{p_f_pick: 9}">0.417%</ink-action></td>
+      <td><a href="http://gatewaypanel.review-examen.gc.ca/clf-nsi/dcmnt/rcmndtnsrprt/rcmndtnsrprtvlm1-eng.pdf" target="_blank">page 67</a> (<a href="http://gatewaypanel.review-examen.gc.ca/clf-nsi/dcmnt/rcmndtnsrprt/rcmndtnsrprtvlm1-eng.html#s54" target="_blank">html</a>)</td>
+    </tr>
+    <tr>
+      <td>Tanker Spill (any size)</td>
+      <td>250 years</td>
+      <td><ink-action bind="{p_f_pick: 9}">0.4%</ink-action></td>
+      <td><a href="http://gatewaypanel.review-examen.gc.ca/clf-nsi/dcmnt/rcmndtnsrprt/rcmndtnsrprtvlm1-eng.pdf" target="_blank">page 60</a> (<a href="http://gatewaypanel.review-examen.gc.ca/clf-nsi/dcmnt/rcmndtnsrprt/rcmndtnsrprtvlm1-eng.html#s51" target="_blank">html</a>)</td>
+    </tr>
+    <tr>
+      <td>Full-Bore Rupture, Oil Pipeline</td>
+      <td>464 years</td>
+      <td><ink-action bind="{p_f_pick: 5}">0.2%</ink-action></td>
+      <td><a href="http://gatewaypanel.review-examen.gc.ca/clf-nsi/dcmnt/rcmndtnsrprt/rcmndtnsrprtvlm1-eng.pdf" target="_blank">page 60</a> (<a href="http://gatewaypanel.review-examen.gc.ca/clf-nsi/dcmnt/rcmndtnsrprt/rcmndtnsrprtvlm1-eng.html#s51" target="_blank">html</a>)</td>
+    </tr>
+    </table>
+
 
 </ink-scope>
 
+<hr>
 
 <ink-scope>
     <h2>Example Charts - Sin Wave</h2>
@@ -210,14 +304,14 @@
     <ink-aside><ink-chart xlim="[-5, 5]" ylim="[-5, 5]" height="300" width="300" x-axis-location="origin" y-axis-location="origin">
         <ink-chart-node :x="a" :y="b" bind="{a: x, b: y}"></ink-chart-node>
         <ink-chart-eqn :domain="[0, Math.atan2(b, a)]" eqn="[r * Math.cos(t), r * Math.sin(t)]" parameterize="t" stroke="#333" stroke-width="1" stroke-dasharray="3"></ink-chart-eqn>
-        <ink-chart-line :data="[[0, 0],[r * Math.cos(Math.atan2(b, a)), r * Math.sin(Math.atan2(b, a))]]" stroke="#333" stroke-width="1" stroke-dasharray="3"></ink-chart-line>
+        <ink-chart-path :data="[[0, 0],[r * Math.cos(Math.atan2(b, a)), r * Math.sin(Math.atan2(b, a))]]" stroke="#333" stroke-width="1" stroke-dasharray="3"></ink-chart-path>
         <ink-chart-text :x="(r/2) * Math.cos(Math.atan2(b, a) / 2)" :y="(r/2) * Math.sin(Math.atan2(b, a) / 2)" :text="Math.round(Math.atan2(b, a)*180/Math.PI) + '&deg;'"></ink-chart-text>
     </ink-chart></ink-aside>
 
     <p>
         The function $\operatorname{atan2}(y,x)$ (from "2-argument arctangent") is defined as the angle in the Euclidean plane, given in radians, between the positive x-axis and the ray to the point $(x,y)$.
 
-        $\operatorname{atan2}(y,x)$ returns a single value $\theta$ such that $−\pi < θ \le \pi$ and, for some $r > 0$,
+        $\operatorname{atan2}(y,x)$ returns a single value $\theta$ such that $-\pi < \theta \le \pi$ and, for some $r > 0$,
 
         <ink-equation>\begin{aligned}
             x&=r\cos \theta \\
@@ -252,7 +346,7 @@
         <ink-chart-text x="4" y="-125" text="x < 0"></ink-chart-text>
         <ink-chart-text x="4" y="55" text="x > 0"></ink-chart-text>
         <ink-chart-text x="-4" y="120" text="x < 0"></ink-chart-text>
-        <ink-chart-point :x="b / a" :y="Math.atan2(b, a) * 180/Math.PI" :r="r*5"></ink-chart-point>
+        <ink-chart-circle :x="b / a" :y="Math.atan2(b, a) * 180/Math.PI" :r="r*5"></ink-chart-circle>
     </ink-chart>
 </ink-scope>
 
@@ -290,37 +384,6 @@
     </ink-chart>
 </ink-scope>
 
-
-
-
-<ink-scope>
-    <h2>Parameterize - Ink Chart Equations</h2>
-
-    <ink-var name="amplitude" value="0.4"></ink-var>
-
-    <ink-callout class="danger">Need to show scatter points for the eqn.</ink-callout>
-
-    <p>
-        The <code>ink-chart-eqn</code> component allows you to create dynamic lines or points based on an equation.
-        This allows you to create and show equations like <code>(x) => Math.sin(x)</code>.
-        You can also <code>parameterize</code> the function over <code>x</code>, <code>y</code> or <code>t</code>.
-        When parameterizing in terms of <code>t</code> you must supply a <code>domain</code> (e.g. <code>[0, 1]</code>) and the function
-        should return a length-two list. Both <code>x</code> and <code>y</code> parameterizations provide the other coordinate
-        so the function should only return a number.
-    </p>
-
-    <br>
-
-    <strong>Amplitude, $A$:</strong><ink-dynamic name="amplitude" min="-5" max="5" step="0.05"></ink-dynamic><br>
-
-    <ink-demo>
-        <ink-chart :xlim="[-5, 5]" ylim="[-5, 5]" width="400" height="400" x-axis-location="origin" y-axis-location="origin">
-            <ink-chart-eqn eqn="amplitude * Math.sin(x)"></ink-chart-eqn>
-            <ink-chart-eqn eqn="amplitude * Math.sin(y)" parameterize="y"></ink-chart-eqn>
-            <ink-chart-eqn eqn="[amplitude*t * Math.cos(t), amplitude*t * Math.sin(t)]" parameterize="t" :domain="[0,Math.PI*16]"></ink-chart-eqn>
-        </ink-chart>
-    </ink-demo>
-</ink-scope>
 
 
 
@@ -457,7 +520,7 @@
 
 <hr class="small">
 
-<h2><code>name</code>, <code>bind</code> & <code>:value</code></h2>
+<h2><code>name</code>, <code>:value</code> & <code>bind</code></h2>
 
 <p>
 
@@ -659,6 +722,67 @@
     <ink-card title="Website Redesign or a Really Long Title" description="Some ideas about the scholarly commons." img-src="http://localhost:8080/images/website/life.png" url="/on-my-website-2018" date="2018"></ink-card>
 
     And this is just text.
+
+<h2>SVG Web Component Charts</h2>
+<p>The <code>render</code> function of the chart loops through all of the children and renders the SVG template. Each <code>ink-chart</code> child has to return an SVG namespaced string to add to the chart. In this way, they keep the same ordering as the dom</p>
+<ink-code language="js" compact>
+    render() {
+        return html`
+        &lt;svg width="$&lbrace;this.width}" height="$&lbrace;this.height}"&gt;
+            $&lbrace;this.children.map(child =&gt;{
+                return child.renderSVG(this);
+            })}
+        &lt;/svg&gt;
+        `;
+    }
+</ink-code>
+
+<p>
+    Each child component has a <code>renderSVG</code> function that returns an svg template string.
+</p>
+
+
+<ink-callout class="info">
+    <strong>Ink Chart Components:</strong>
+    <dl>
+        <dt><code>ink-chart-circle</code></dt><dd>An SVG circle that can control <code>x</code> and <code>y</code> location, color, radius and other standard svg circle properties.</code>.</dd>
+        <dt><code>ink-chart-path</code></dt><dd>An SVG path that can control <code>data</code> (an array of <code>[x, y]</code>), stroke and other standard svg path properties.</code>.</dd>
+        <dt><code>ink-chart-text</code></dt><dd>An SVG text that can control <code>x</code> and <code>y</code> location, color and other standard svg text properties.</code>.</dd>
+        <dt><code>ink-chart-eqn</code></dt><dd>An SVG path that is parameterized by a function (<code>eqn</code>) and controls stroke, color and other standard svg path properties.</code>.</dd>
+        <dt><code>ink-chart-node</code></dt><dd>An interactive node that can be dragged. Can control stroke, color and other standard svg circle properties.</code>.</dd>
+    </dl>
+</ink-callout>
+
+<ink-scope>
+    <h2>Ink Chart Equations</h2>
+
+    <ink-var name="amplitude" value="0.4"></ink-var>
+
+    <ink-callout class="danger">Need to show scatter points for the eqn.</ink-callout>
+
+    <p>
+        The <code>ink-chart-eqn</code> component allows you to create dynamic lines or points based on an equation.
+        This allows you to create and show equations like <code>(x) => Math.sin(x)</code>.
+        You can also <code>parameterize</code> the function over <code>x</code>, <code>y</code> or <code>t</code>.
+        When parameterizing in terms of <code>t</code> you must supply a <code>domain</code> (e.g. <code>[0, 1]</code>) and the function
+        should return a length-two list. Both <code>x</code> and <code>y</code> parameterizations provide the other coordinate
+        so the function should only return a number.
+    </p>
+
+    <br>
+
+    <strong>Amplitude, $A$:</strong><ink-dynamic name="amplitude" min="-5" max="5" step="0.05"></ink-dynamic><br>
+
+    <ink-demo>
+        <ink-chart :xlim="[-5, 5]" ylim="[-5, 5]" width="400" height="400" x-axis-location="origin" y-axis-location="origin">
+            <ink-chart-eqn eqn="amplitude * Math.sin(x)"></ink-chart-eqn>
+            <ink-chart-eqn eqn="amplitude * Math.sin(y)" parameterize="y"></ink-chart-eqn>
+            <ink-chart-eqn eqn="[amplitude*t * Math.cos(t), amplitude*t * Math.sin(t)]" parameterize="t" :domain="[0,Math.PI*16]"></ink-chart-eqn>
+        </ink-chart>
+    </ink-demo>
+</ink-scope>
+
+
 </ink-article>
 </body>
 </html>
