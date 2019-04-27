@@ -13,6 +13,7 @@ const Drag = require('d3-drag');
 
 const d3ScaleChromatic = require('d3-scale-chromatic');
 
+let CURSOR_MOVE_CLASS = 'ink-drag-move';
 
 class InkChart extends BaseGetProps {
     static get properties() {
@@ -165,6 +166,9 @@ class InkChart extends BaseGetProps {
                     display: block;
                     margin-left: auto;
                     margin-right: auto;
+                }
+                .drag{
+                    cursor: move;
                 }
             </style>
             <svg width="${this.width}" height="${this.height}">
@@ -476,7 +480,7 @@ class InkChartNode extends InkChartObject {
         function wrapper(drag){
             return (e) => drag.setupDrag(e);
         }
-        return svg`<circle r="${this.r}" fill="${this.fill}" cx="${chart.x(this.x)}" cy="${chart.y(this.y)}" @mouseover=${wrapper(this)}></circle>`;
+        return svg`<circle class="drag" r="${this.r}" fill="${this.fill}" cx="${chart.x(this.x)}" cy="${chart.y(this.y)}" @mouseover=${wrapper(this)}></circle>`;
     }
 
     setupDrag(event){
@@ -486,11 +490,13 @@ class InkChartNode extends InkChartObject {
         if(rawNode._drag !== undefined){
             return;
         }
+        const bodyClassList = document.getElementsByTagName("BODY")[0].classList;
         this._node = Selection.select(rawNode);
         this.drag = Drag.drag().on('start', () => {
             Selection.event.sourceEvent.preventDefault();
             this.dragging = true;
             this._prevValue = this.value; // Start out with the actual value
+            bodyClassList.add(CURSOR_MOVE_CLASS);
         }).on('drag', () => {
             Selection.event.sourceEvent.preventDefault();
 
@@ -504,6 +510,7 @@ class InkChartNode extends InkChartObject {
             this.dispatch(x, y);
         }).on('end', () => {
             this.dragging = false;
+            bodyClassList.remove(CURSOR_MOVE_CLASS);
         });
         this._node.call(this.drag);
 

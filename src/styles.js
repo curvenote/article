@@ -61,6 +61,9 @@ var bricksTheme = html`
   .ink-drag-horz{
     cursor: col-resize;
   }
+  .ink-drag-move{
+    cursor: move;
+  }
 </style>
 `;
 

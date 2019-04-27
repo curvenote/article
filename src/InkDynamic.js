@@ -3,7 +3,7 @@ const Format = require('d3-format');
 const Drag = require('d3-drag');
 const Selection = require('d3-selection');
 
-let HORIZONTAL_SCROLL_CLASS = 'ink-drag-horz';
+let CURSOR_DRAG_CLASS = 'ink-drag-horz';
 
 import { BaseGetProps, propDef, getProp, setProp, getPropFunction, dispatchUpdates, getIFrameFunction } from './InkDynamicProps.js';
 
@@ -144,16 +144,16 @@ class InkDynamic extends BaseRange {
         super.firstUpdated();
 
         const node = this.shadowRoot.children[1].children[0];
-        const bodyClassList = document.getElementsByTagName("BODY")[0].classList
+        const bodyClassList = document.getElementsByTagName("BODY")[0].classList;
 
         this.drag = Drag.drag().on('start', () => {
             Selection.event.sourceEvent.preventDefault();
             this.dragging = true; // Hides the "drag" tool-tip
             this._prevValue = this.value; // Start out with the actual value
-            bodyClassList.add(HORIZONTAL_SCROLL_CLASS);
+            bodyClassList.add(CURSOR_DRAG_CLASS);
         }).on('end', () => {
             this.dragging = false;
-            bodyClassList.remove(HORIZONTAL_SCROLL_CLASS);
+            bodyClassList.remove(CURSOR_DRAG_CLASS);
         }).on('drag', () => {
             Selection.event.sourceEvent.preventDefault();
 
