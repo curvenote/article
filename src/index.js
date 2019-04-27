@@ -3,6 +3,7 @@ import { InkScope } from './InkScope.js';
 import { InkVar } from './InkVar.js';
 import { InkVarList } from './InkVarList.js';
 import { InkDisplay, InkRange, InkDynamic } from './InkDynamic.js';
+import { InkButton, InkAction } from './InkButton.js';
 import { InkChart, InkChartPoint, InkChartLine, InkChartText, InkChartNode, InkChartEqn } from './InkChart.js'
 
 import { InkOutline } from './InkOutline.js';
@@ -14,6 +15,20 @@ import { CvItem, CvAward } from './InkCV.js';
 
 export {
     InkArticle,
+    InkScope,
+    InkVar,
+    InkVarList,
+    InkDisplay,
+    InkRange,
+    InkDynamic,
+    InkButton,
+    InkAction,
+    InkChart,
+    InkChartPoint,
+    InkChartLine,
+    InkChartText,
+    InkChartNode,
+    InkChartEqn,
     InkOutline,
     InkFigure,
     InkCode,
@@ -26,16 +41,4 @@ export {
     InkByline,
     CvItem,
     CvAward,
-    InkScope,
-    InkRange,
-    InkDisplay,
-    InkDynamic,
-    InkDerived,
-    InkVar,
-    InkChart,
-    InkChartPoint,
-    InkChartLine,
-    InkChartText,
-    InkChartNode,
-    InkChartEqn,
 }

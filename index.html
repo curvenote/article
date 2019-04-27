@@ -87,7 +87,7 @@
     <ink-var name="eqn" value='["x", "- (Math.pow(x, 3) / 6)", "+ (Math.pow(x, 5) / 120)", "- (Math.pow(x, 7) / 5040)", "+ (Math.pow(x, 9) / 362880)", "- (Math.pow(x, 11) / 39916800)", "+ (Math.pow(x, 13) / 6227020800)", "- (Math.pow(x, 15) / 1307674368000)"]'></ink-var>
 
     <p>
-        The sine function is closely approximated by its Taylor polynomial of degree 7 for a full period centered at the origin.<br>
+        The sine function is closely approximated by its Taylor polynomial of <ink-action bind="{ind: 4}">degree 7</ink-action> for a full period centered at the origin.<br>
         Try expanding the Taylor series: <ink-range name="ind" min="1" max="8"></ink-range>.
         <ink-equation :math="katex.slice(0, ind).join(' ') + ' + \\cdots'"></ink-equation>
     </p>
@@ -394,7 +394,7 @@
 
 <p>
     You can also <code>transform</code> the value of a variable before you format it.
-    For example, you might want to say that the admission to a park is <code>'free'</code> when the <code>value == 0</code>.
+    For example, you might want to say that the admission to a park is <code>'free'</code> when the <ink-action bind="{x:0}">value == 0</ink-action>.
 </p>
 <ink-demo>
     The park admission is
