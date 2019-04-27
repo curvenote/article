@@ -73,30 +73,6 @@ class InkDisplay extends BaseDynamic {
 
 customElements.define('ink-display', InkDisplay);
 
-class InkSpan extends BaseGetProps {
-
-    static get properties() {
-        return {
-            ...propDef('visible', Boolean),
-        }
-    }
-
-    setDefaults(){
-        this.visible = true;
-    }
-
-    get visible() { return getProp(this, 'visible'); }
-    set visible(val) { return setProp(this, 'visible', val); }
-    get visibleFunction() { return getPropFunction(this, 'visible'); }
-
-    render() {
-        // TODO: Make this fade in/out or should that it has changed.
-        return html`<span ?hidden="${ !this.visible }"><slot></slot></span>`;
-    }
-}
-
-customElements.define('ink-span', InkSpan);
-
 
 class BaseRange extends BaseDynamic {
     static get properties() {

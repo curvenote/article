@@ -3,6 +3,7 @@ import { InkScope } from './InkScope.js';
 import { InkVar } from './InkVar.js';
 import { InkVarList } from './InkVarList.js';
 import { InkDisplay, InkRange, InkDynamic } from './InkDynamic.js';
+import { InkSpan, InkP, InkDiv } from './InkVisible.js'
 import { InkButton, InkAction } from './InkButton.js';
 import { InkChart, InkChartCircle, InkChartPath, InkChartText, InkChartNode, InkChartEqn } from './InkChart.js'
 
@@ -23,6 +24,9 @@ export {
     InkDynamic,
     InkButton,
     InkAction,
+    InkSpan,
+    InkP,
+    InkDiv,
     InkChart,
     InkChartCircle,
     InkChartPath,
