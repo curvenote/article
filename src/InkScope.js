@@ -53,8 +53,10 @@ function getIFrame(store){
     return iframe;
 }
 
-window.store = getStore();
-window.iframe = getIFrame(window.store);
+function createDefaultStoreAndIFrame() {
+    window.store = getStore();
+    window.iframe = getIFrame(window.store);
+};
 
 
 class InkScope extends LitElement{
@@ -81,4 +83,4 @@ class InkScope extends LitElement{
 customElements.define('ink-scope', InkScope);
 
 
-export { InkScope };
+export { InkScope, createDefaultStoreAndIFrame };

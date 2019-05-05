@@ -1,4 +1,5 @@
 import { LitElement, html } from 'lit-element';
+import { createDefaultStoreAndIFrame } from './InkScope.js';
 
 
 function getIFrameFunction(iframe, value, args){
@@ -115,6 +116,9 @@ class BaseGetProps extends LitElement {
     get store(){
         var closestScope = this.closest('ink-scope');
         if(closestScope === null){
+            if(window.store === undefined){
+                createDefaultStoreAndIFrame();
+            }
             return window.store;
         }else{
             return closestScope.store;
@@ -123,6 +127,9 @@ class BaseGetProps extends LitElement {
     get iframe(){
         var closestScope = this.closest('ink-scope');
         if(closestScope === null){
+            if(window.iframe === undefined){
+                createDefaultStoreAndIFrame();
+            }
             return window.iframe;
         }else{
             return closestScope.iframe;
