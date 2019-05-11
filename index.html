@@ -321,6 +321,9 @@
 
 
     <ink-equation :math="'r = \\sqrt{x^2 + y^2} = ' + Math.round(r*100)/100"></ink-equation>
+    <ink-equation>
+        r = \sqrt{x^2 + y^2} = <ink-display name="r"></ink-display>
+    </ink-equation>
 
 
     <strong>$\theta$:</strong><ink-dynamic :value="Math.atan2(b, a) * 180 / Math.PI" bind="{

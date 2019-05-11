@@ -67,7 +67,10 @@ class BaseDynamic extends BaseGetProps{
 class InkDisplay extends BaseDynamic {
     render() {
         let func = getIFrameFunction(this.iframe, this.transform, ['value']);
-        return html`<span>${ this.formatter(func(this.value)) }</span>`;
+        let text = this.formatter(func(this.value));
+        // this allows the dynamic text to be taken up by other elements (e.g. ink-equations)
+        this.textContent = text;
+        return html`<span>${ text }</span>`;
     }
 }
 

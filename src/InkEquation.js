@@ -10,6 +10,7 @@ import { BaseGetProps, propDef, getProp, setProp, getPropFunction, getIFrameFunc
 class InkEquation extends BaseGetProps {
     static get properties() {
         return {
+            inline: {type:Boolean, reflect:true},
             ...propDef('math', String),
         };
     }
@@ -20,34 +21,36 @@ class InkEquation extends BaseGetProps {
 
     setDefaults(){
         this.math = '';
+        this.inline = false;
     }
 
     firstUpdated() {
-        // This updates the inside of the element to be in-line with the math property.
         super.firstUpdated();
         var shadow = this.shadowRoot;
+        // Should have a check here that ensures your are pulling math from prop if necessary
         this.math = this.textContent;
         shadow.addEventListener('slotchange', () => {
+            // this is for explicit manipulation
             this.math = this.textContent;
         });
     }
+
     render() {
-        var div = document.createElement('div');
-        katex.render(this.math, div, {
-            displayMode: true,
+        // This may have updates due to shadow dom updates.
+        this.math = this.textContent;
+
+        var element = document.createElement('div');
+
+        katex.render(this.math, element, {
+            displayMode: !this.inline,
             macros: {
               "\\boldsymbol": "\\mathbf"
             }
         });
 
-        if(this.textContent !== this.math && this.math){
-          this.textContent = this.math;
-        }
-
         return html`
             ${ katexCSS }
-            ${ unsafeHTML(div.innerHTML) }
-            <slot hidden></slot>
+            ${ unsafeHTML(element.innerHTML) }
         `;
     }
 }
