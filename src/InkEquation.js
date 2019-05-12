@@ -33,6 +33,11 @@ class InkEquation extends BaseGetProps {
             // this is for explicit manipulation
             this.math = this.textContent;
         });
+
+        // Not sure why, but on other pages this doesn't actually work.
+        setTimeout(()=>{
+            this.requestUpdate()
+        }, 100);
     }
 
     render() {

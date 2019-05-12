@@ -46,7 +46,11 @@ class InkChart extends BaseGetProps {
     firstUpdated(){
         super.firstUpdated();
         this._initialized = true;
-        this.requestUpdate();
+
+        // Not sure why, but on other pages this doesn't actually work.
+        setTimeout(()=>{
+            this.requestUpdate()
+        }, 100);
     }
 
     get margin(){
@@ -129,12 +133,6 @@ class InkChart extends BaseGetProps {
     set ylim(val) { return setProp(this, 'ylim', val); }
     get ylimFunction() { return getPropFunction(this, 'ylim'); }
 
-    nextColor(){
-        this._nextColor = this._nextColor || 0;
-        this._nextColor ++;
-        return d3ScaleChromatic.schemeCategory10[this._nextColor % 10];
-    }
-
     render() {
         let margin = this.margin;
 
@@ -143,7 +141,6 @@ class InkChart extends BaseGetProps {
             this.renderXAxis(margin);
             this.renderYAxis(margin);
         }
-
 
         return html`
             <style>
@@ -189,6 +186,13 @@ class InkChart extends BaseGetProps {
 
 
 
+let _nextColor = 0;
+function nextColor(){
+    _nextColor ++;
+    return d3ScaleChromatic.schemeCategory10[_nextColor % 10];
+}
+
+
 customElements.define('ink-chart', InkChart);
 
 
@@ -232,7 +236,7 @@ class InkChartCircle extends InkChartObject {
         this.x = 0.5;
         this.y = 0.5;
         this.r = 4.5;
-        this.fill = this.inkChart.nextColor();
+        this.fill = nextColor();
         this.stroke = undefined;
         this.strokeWidth = 1;
         this.strokeDasharray = undefined;
@@ -284,7 +288,7 @@ class InkChartPath extends InkChartObject {
 
     setDefaults() {
         this.data = [[0,0]];
-        this.stroke = this.inkChart.nextColor();
+        this.stroke = nextColor();
         this.strokeWidth = 1.5;
         this.strokeDasharray = undefined;
     }
@@ -325,7 +329,7 @@ class InkChartEqn extends InkChartObject {
     setDefaults() {
         this.eqn = 0;
         this.samples = 500; // Number of samples for an equation
-        this.stroke = this.inkChart.nextColor();
+        this.stroke = nextColor();
         this.strokeWidth = 1.5;
         this.strokeDasharray = undefined;
         this.domain = [-Infinity, Infinity];
@@ -456,7 +460,7 @@ class InkChartNode extends InkChartObject {
         this.x = 0.5;
         this.y = 0.5;
         this.r = 20;
-        this.fill = this.inkChart.nextColor();
+        this.fill = nextColor();
     }
 
     get x() { return getProp(this, 'x'); }
