@@ -64,6 +64,21 @@ var bricksTheme = html`
   .ink-drag-move{
     cursor: move;
   }
+  table{
+    width: 100%;
+    border-collapse: collapse;
+  }
+  thead{
+    font-size: 105%;
+    border-bottom: 1px solid #333;
+    color: black;
+  }
+  tbody{
+    border-left: 1px solid #333;
+  }
+  td{
+    padding-left: 8px;
+  }
 </style>
 `;
 

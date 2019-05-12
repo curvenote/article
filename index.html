@@ -180,24 +180,6 @@
     </ink-chart>
     <p style="text-align: center;">Figure 1: Probability of no spill when the failure rate is <ink-dynamic name="p_f_pick" transform="p_f_array[value]" min="0" :max="p_f_array.length-1" format=".2%"></ink-dynamic> per year.</p>
 
-    <style>
-        table{
-            width: 100%;
-            border-collapse: collapse;
-        }
-        thead{
-            font-size: 105%;
-            border-bottom: 1px solid #333;
-            color: black;
-        }
-        tbody{
-            border-left: 1px solid #333;
-        }
-        td{
-            padding-left: 8px;
-        }
-    </style>
-
     <p> Table 1: Northern Gateway's summary of representative parameters for oil spill probabilities. <i>Click</i> a row to change the graph above.</p>
     <table>
     <thead>
@@ -294,7 +276,6 @@
 <ink-scope>
 
     <h2>ArcTan2</h2>
-    <ink-callout class="danger">Periodic boundaries for dynamic.</ink-callout>
 
     <ink-var name="a" value="0.5"></ink-var>
     <ink-var name="b" value="0.5"></ink-var>
@@ -330,7 +311,7 @@
         a: r * Math.cos(value * Math.PI / 180),
         b: r * Math.sin(value * Math.PI / 180)
     }"
-    min="-180" :max="180" step="1" sensitivity="1">&deg;</ink-dynamic><br>
+    min="-180" :max="180" step="1" sensitivity="1" periodic>&deg;</ink-dynamic><br>
     <strong>$r$:</strong><ink-dynamic :value="Math.sqrt(a*a + b*b)" bind="{
         a: value * Math.cos(Math.atan2(b, a)),
         b: value * Math.sin(Math.atan2(b, a))
@@ -468,7 +449,7 @@
 </ink-demo>
 <p>
     You can also use this <code>transform</code> to say that the park admission is <strong><ink-dynamic name="x" format="$.2f" transform="['free','real cheap','cheap','costly','expensive','real expensive'][Math.min(Math.max(value,0),5)]" max="5"></ink-dynamic></strong>.<br>
-    This is also quite useful if you want to use the transform to index into an array <ink-dynamic name="x" format="$.2f" transform="['😍','😆','😊','😐','😒','😠'][Math.min(Math.max(value,0),5)]" max="5"></ink-dynamic>, in this case emoji array - but it could be numeric too!
+    This is also quite useful if you want to use the transform to index into an array <ink-dynamic name="x" format="$.2f" transform="['&#128525;','&#128516;','&#128522;','&#128528;','&#128530;','&#128532;'][Math.min(Math.max(value,0),5)]" max="5"></ink-dynamic>, in this case emoji array - but it could be numeric too!
 </p>
 
 <ink-callout class="info">
@@ -492,7 +473,7 @@
     This allows you to set the value of $x$ inline: <ink-dynamic name="x"></ink-dynamic> or $y=$<ink-dynamic name="y"></ink-dynamic>.<br>
     Notice how it is linked to the above <code>ink-range</code> and <code>ink-display</code>.<br>
     You can also add inside of the html tag, to have custom formatting that also is dynamic.<br>
-    For example, <ink-dynamic name="y">ºC</ink-dynamic>, the <code>ºC</code> is inside of the <code>&lt;ink-dynamic&gt;</code> tags, so it is also has a blue underline.
+    For example, <ink-dynamic name="y">&deg;C</ink-dynamic>, the <code>&deg;C</code> is inside of the <code>&lt;ink-dynamic&gt;</code> tags, so it is also has a blue underline.
 </p>
 <p>
     You can also create ranges, as see above, notice that we can create a lot of these and name to different values.
@@ -518,6 +499,7 @@
         <dt><code>step</code></dt><dd>Step size.</dd>
         <dt><code>sensitivity</code></dt><dd>Multiplier on pixels dragged for the <code>dynamic</code> text input.</dd>
         <dt><code>transform</code></dt><dd>Allows you to change or transform the value before formating: <code>format(transform(value))</code>. If the value is a string after transformation, it will not be formatted.</dd>
+        <dt><code>periodic</code></dt><dd>When dragged start past min/max connect the range by cycling through again.</dd>
     </dl>
 </ink-callout>
 
@@ -589,7 +571,7 @@
                     a: Math.sqrt(a*a + b*b) * Math.cos(value * Math.PI / 180),
                     b: Math.sqrt(a*a + b*b) * Math.sin(value * Math.PI / 180)
                 }"
-                min="-180" :max="180" step="1" sensitivity="1">&deg;</ink-dynamic>
+                min="-180" :max="180" step="1" sensitivity="1" periodic>&deg;</ink-dynamic>
             </dd>
         </dl>
     </p>
@@ -784,7 +766,6 @@
         </ink-chart>
     </ink-demo>
 </ink-scope>
-
 
 </ink-article>
 </body>

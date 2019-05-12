@@ -134,12 +134,14 @@ class InkDynamic extends BaseRange {
             ...super.properties,
             sensitivity: {type: Number, reflect: false},
             dragging: {type: Boolean, reflect: false},
+            periodic: {type: Boolean, reflect: true},
         };
     }
 
     setDefaults() {
         super.setDefaults();
         this.sensitivity = 10;
+        this.periodic = false;
         this.dragging = false;
     }
 
@@ -164,7 +166,12 @@ class InkDynamic extends BaseRange {
 
             let { step, value, min, max, sensitivity } = this;
 
-            const newValue = Math.max(Math.min(this._prevValue + (dx / sensitivity), max), min);
+            let newValue;
+            if(this.periodic){
+                newValue = ( (this._prevValue + (dx / sensitivity)) - min ) % (max - min) + min;
+            }else{
+                newValue = Math.max(Math.min(this._prevValue + (dx / sensitivity), max), min);
+            }
             // Store the actual value so the drag is smooth
             this._prevValue = newValue;
             // Then round with the step size
