@@ -146,6 +146,7 @@ class InkChart extends BaseGetProps {
             <style>
                 svg {
                   font: 11px sans-serif;
+                  display: block;
                 }
                 .axis path,
                 .axis line {
