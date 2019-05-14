@@ -137,6 +137,7 @@ class InkCode extends LitElement {
               #code-wrapper{
                 position: relative;
                 padding: ${this.compact? '0px' : '10px'};
+                overflow: hidden;
               }
               button{
                 position: absolute;
@@ -168,6 +169,11 @@ class InkDemo extends LitElement {
             code: String,
             language: String,
             copy: Boolean,
+            codeOnly: {
+                type:Boolean,
+                attribute: 'code-only',
+                reflect: true,
+            },
         };
     }
     constructor() {
@@ -175,6 +181,7 @@ class InkDemo extends LitElement {
         this.code = '';
         this.language = 'html';
         this.copy = true;
+        this.codeOnly = false;
     }
     firstUpdated() {
         // This updates the inside of the element to be in-line with the code property.
@@ -197,7 +204,7 @@ class InkDemo extends LitElement {
             border-bottom: 1px solid #e0e0e0;
           }
         </style>
-        <div id="demo"><slot></slot></div>
+        <div id="demo" ?hidden="${ this.codeOnly }"><slot></slot></div>
         <ink-code .code="${ this.code }" language="${ this.language }" ?copy="${ this.copy }"></ink-code>
         `;
     }
