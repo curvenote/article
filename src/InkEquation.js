@@ -11,6 +11,7 @@ class InkEquation extends BaseGetProps {
     static get properties() {
         return {
             inline: {type:Boolean, reflect:true},
+            aligned: {type:Boolean, reflect:true},
             ...propDef('math', String),
         };
     }
@@ -22,6 +23,7 @@ class InkEquation extends BaseGetProps {
     setDefaults(){
         this.math = '';
         this.inline = false;
+        this.aligned = false;
     }
 
     firstUpdated() {
@@ -42,16 +44,22 @@ class InkEquation extends BaseGetProps {
 
     render() {
         // This may have updates due to shadow dom updates.
+        // TODO: This is sometimes a beat out of sync with other things if there are nested `ink-display` elements
         this.math = this.textContent;
+
 
         var element = document.createElement('div');
 
-        katex.render(this.math, element, {
-            displayMode: !this.inline,
-            macros: {
-              "\\boldsymbol": "\\mathbf"
+        katex.render(
+            this.aligned ? `\\begin{aligned}${ this.math }\\end{aligned}` : this.math,
+            element,
+            {
+                displayMode: !this.inline,
+                macros: {
+                    "\\boldsymbol": "\\mathbf"
+                }
             }
-        });
+        );
 
         return html`
             ${ katexCSS }
