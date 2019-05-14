@@ -70,8 +70,11 @@ function setProp(self, propName, val){
     let oldVal = self['_' + propName];
 
     if(getPropDef(self, propName)._type !== String && typeof val == 'string'){
-        // TODO: try/catch...
-        val = JSON.parse(val);
+        try{
+            val = JSON.parse(val);
+        }catch(err){
+            val = val;
+        }
     }
 
     self['_' + propName] = val;
