@@ -32,7 +32,7 @@ class InkAction extends BaseGetProps{
             <style>
                 .dynamic{
                     color: #46f;
-                    border-bottom: 1px dashed #46f;
+                    border-bottom: 1px solid #46f;
                     cursor: pointer;
                 }
             </style>
@@ -74,6 +74,41 @@ class InkButton extends BaseGetProps{
 
 }
 customElements.define('ink-button', InkButton);
+
+
+
+class InkInput extends BaseGetProps{
+
+    static get properties() {
+        return {
+            bind: String,
+            ...propDef('text', String),
+        }
+    }
+
+    get text() { return getProp(this, 'text'); }
+    set text(val) { return setProp(this, 'text', val); }
+    get textFunction() { return getPropFunction(this, 'text'); }
+
+    setDefaults(){
+        this.bind = undefined;
+        this.text = '';
+    }
+
+    dispatch(e){
+        if(!this.bind){return;}
+        let func = getIFrameFunction(this.iframe, this.bind, ['value']);
+        this.text = e.srcElement.value;
+        let updates = func(this.text);
+        dispatchUpdates(updates, this.store);
+    }
+
+    render() {
+        return html`<input type="text" value="${this.text}" @change="${this.dispatch}">`;
+    }
+
+}
+customElements.define('ink-input', InkInput);
 
 
 export { InkButton, InkAction };
