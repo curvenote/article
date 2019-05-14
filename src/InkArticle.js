@@ -96,12 +96,12 @@ class InkArticle extends LitElement {
               }
 
               .content {
-                max-width: 700px;
+                max-width: 750px;
                 margin-top: 90px;
-                margin-left: calc(50vw - 350px);
+                margin-left: calc(50vw - 375px);
               }
 
-              @media screen and (max-width: 710px) {
+              @media screen and (max-width: 760px) {
                 .content {
                   margin-left: 10px;
                 }
