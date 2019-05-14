@@ -79,7 +79,7 @@ class InkChart extends BaseGetProps {
         let xAxis = d3axis.axisBottom()
             .scale(this.x);
 
-        this.gXAxis = Selection.select(this.shadowRoot.children[1].children[0].children[1]);
+        this.gXAxis = Selection.select(this.shadowRoot.children[1].children[0].children[0].children[1]);
         this.gXAxis.html(null);
         this.gXAxis
             .attr("class", "x axis")
@@ -104,7 +104,7 @@ class InkChart extends BaseGetProps {
         let yAxis = d3axis.axisLeft()
             .scale(this.y);
 
-        this.gYAxis = Selection.select(this.shadowRoot.children[1].children[0].children[2]);
+        this.gYAxis = Selection.select(this.shadowRoot.children[1].children[0].children[0].children[2]);
         this.gYAxis.html(null);
         this.gYAxis
             .attr("class", "y axis")
@@ -146,7 +146,6 @@ class InkChart extends BaseGetProps {
             <style>
                 svg {
                   font: 11px sans-serif;
-                  display: block;
                 }
                 .axis path,
                 .axis line {
@@ -167,20 +166,22 @@ class InkChart extends BaseGetProps {
                     cursor: move;
                 }
             </style>
-            <svg width="${this.width}" height="${this.height}">
-                <g transform="translate(${margin.left},${margin.top})">
-                    <clipPath id="clip"><rect id="clip-rect" x="0" y="0" width="${margin.width}" height="${margin.height}"></rect></clipPath>
-                    <g class="x axis"></g>
-                    <g class="y axis"></g>
-                    <g clip-path="url(#clip)">
-                        ${[...this.children].map(child =>{
-                            if(this._initialized && (child instanceof InkChartObject)){
-                                return child.renderSVG(this);
-                            }
-                        })}
+            <div>
+                <svg width="${this.width}" height="${this.height}">
+                    <g transform="translate(${margin.left},${margin.top})">
+                        <clipPath id="clip"><rect id="clip-rect" x="0" y="0" width="${margin.width}" height="${margin.height}"></rect></clipPath>
+                        <g class="x axis"></g>
+                        <g class="y axis"></g>
+                        <g clip-path="url(#clip)">
+                            ${[...this.children].map(child =>{
+                                if(this._initialized && (child instanceof InkChartObject)){
+                                    return child.renderSVG(this);
+                                }
+                            })}
+                        </g>
                     </g>
-                </g>
-            </svg>
+                </svg>
+            </div>
         `;
     }
 }
