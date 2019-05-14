@@ -9,21 +9,70 @@
 
 <ink-article>
 
-    <ink-var name="x" value="1"></ink-var>
-    <ink-var name="y" value="5"></ink-var>
-    <ink-var name="xSquared" :value="x * x" description="The square of x."></ink-var>
-
 <h1>Ink Components</h1>
 <p>
-    The goal of <code>ink.js</code> is to provide a number of web-components for interactive scientific writing.
+    The goal of <code>ink.js</code> is to provide web-components for interactive scientific writing, reactive documents and <a href="https://explorabl.es/" target="_blank">explorable explanations</a>.
+    Included in <code>ink.js</code> are ways to create, update and display variables as text, equations and charts.
 </p>
-<h2>Why?</h2>
-<p>
-    The goal of <code>ink.js</code> is to make it easier to write interactive scientific writing.
-</p>
+
+<h2>Tangled Cookies</h2>
+
+<ink-scope>
+    <p>
+        <code>ink.js</code> is heavily inspired by <a href="http://worrydream.com/Tangle/guide.html" target="_blank">tangle.js</a>, updated to be use web-components!
+        This means you can declaratively write your variables and how to display them in <code>html</code> markup.
+        To get an idea of what that looks like, let's take the canonical example of <emph>Tangled Cookies</emph> - a simple reactive document to encourage you to not eat more than <ink-action bind="{cookies:42, hide:false}">42 cookies</ink-action> in one day.
+    </p>
+
+    <ink-var name="hide" value="1"></ink-var>
+
+
+    <ink-button bind="{hide: !hide}" :text="(!hide ? 'Hide' : 'Show') + ' Advanced Example'" style="float: right; margin-right: 5px;"></ink-button>
+    <ink-div :visible="!!hide">
+        <ink-demo>
+            <ink-var name="cookies" value="3" format=".4"></ink-var>
+            <p>
+                When you eat <ink-dynamic name="cookies" min="2" max="100"> cookies</ink-dynamic>,
+                you consume <ink-display :value="cookies * 50" format=".0f"/></ink-display> calories.
+            </p>
+        </ink-demo>
+    </ink-div>
+
+    <ink-div :visible="!hide">
+        <ink-demo>
+            <ink-var name="cookies" value="3" format=".4"></ink-var>
+            <ink-var name="caloriesPerCookie" value="50"></ink-var>
+            <ink-var name="dailyCalories" value="2100"></ink-var>
+
+            <ink-var name="calories" :value="cookies * caloriesPerCookie" format=".0f"></ink-var>
+            <ink-var name="dailyPercent" :value="calories / dailyCalories" format=".0%"></ink-var>
+
+            <p>
+                When you eat <ink-dynamic name="cookies" min="2" max="100"> cookies</ink-dynamic>,
+                you consume <ink-display name="calories"></ink-display> calories.<br>
+                That's <ink-display name="dailyPercent"></ink-display> of your recommended daily calories.
+            </p>
+        </ink-demo>
+    </ink-div>
+</ink-scope>
+
+<hr>
+<h2-more url="/temp">Examples</h2-more>
+<div>
+    <ink-card title="Probability of an Oil Spill" description="In the Northern Gateway project Enbridge calculates the expected time till first (major) oil spill. I decided to read the documents and think about probabilities over Christmas, with a few interesting results..." img-src="/images/probability-of-a-spill/thumbnail.gif" url="/probability-of-a-spill"></ink-card>
+    <ink-card title="Website Redesign or a Really Long Title" description="Some ideas about the scholarly commons." img-src="http://localhost:8080/images/website/life.png" url="/on-my-website-2018"></ink-card>
+    <ink-card title="Website Redesign or a Really Long Title" description="Some ideas about the scholarly commons." img-src="http://localhost:8080/images/website/life.png" url="/on-my-website-2018"></ink-card>
+</div>
+
+<h2-more url="/temp">Components</h2-more>
+
 
 <h2>Overview</h2>
 <p>Check out the table of contents on the right, or scroll on:</p>
+<ink-var name="x" value="1"></ink-var>
+<ink-var name="y" value="5"></ink-var>
+<ink-var name="xSquared" :value="x * x" description="The square of x."></ink-var>
+
 <dl>
   <dt><a href="#dynamic-content">Dynamic Content</a></dt><dd>Variables (e.g. $x=$ <ink-display name="x"></ink-display>) and ways to change them using inline components (e.g. <ink-range name="x"></ink-range> or <ink-dynamic name="x"></ink-dynamic>).</dd>
   <dt><a href="#text-content">Text Content</a></dt><dd>Equations, code, figures, asides, call-outs and more.</dd>
@@ -42,40 +91,6 @@
 
 <ink-callout class="danger"><strong>Note:</strong> This should be installable through <code>npm</code></ink-callout>
 
-<h2>Tangled Cookies</h2>
-
-<ink-scope>
-
-    <p><code>ink.js</code> is heavily inspired by <a href="http://worrydream.com/Tangle/guide.html">Tangle.js</a>, the goal is to allow you to write in html Web Components.</p>
-
-    <ink-span :visible="dailyPercent > 1">That is a <strong>lot</strong> of cookies.</ink-span>
-
-    <ink-demo>
-        <ink-var name="cookies" value="3" format=".4"></ink-var>
-        <ink-var name="caloriesPerCookie" value="50"></ink-var>
-        <ink-var name="dailyCalories" value="2100"></ink-var>
-
-        <ink-var name="calories" :value="cookies * caloriesPerCookie" format=".0f"></ink-var>
-        <ink-var name="dailyPercent" :value="calories / dailyCalories" format=".0%"></ink-var>
-
-        <p>
-            When you eat <ink-dynamic name="cookies" min="2" max="100"> cookies</ink-dynamic>,
-            you consume <ink-display name="calories"></ink-display> calories.<br>
-            That's <ink-display name="dailyPercent"></ink-display> of your recommended daily calories.
-        </p>
-    </ink-demo>
-
-
-
-    <ink-demo>
-        <p>
-            When you eat <ink-dynamic name="cookies" min="2" max="100"> cookies</ink-dynamic>,
-            you consume <ink-display :value="cookies * 50" format=".0f"/></ink-display> calories.<br>
-            That's <ink-display :value="cookies * 50 / 2100" format=".0%"></ink-display> of your recommended daily calories.
-        </p>
-    </ink-demo>
-
-</ink-scope>
 
 
 <hr>
@@ -765,6 +780,25 @@
             <ink-chart-eqn eqn="[amplitude*t * Math.cos(t), amplitude*t * Math.sin(t)]" parameterize="t" :domain="[0,Math.PI*16]"></ink-chart-eqn>
         </ink-chart>
     </ink-demo>
+</ink-scope>
+
+
+<ink-scope>
+    <ink-var name="func" value="Math.sin(x)"></ink-var>
+    <ink-var name="domainStart" value="-5"></ink-var>
+    <ink-var name="domainEnd" value="5"></ink-var>
+
+    <ink-chart :xlim="[domainStart, domainEnd]" ylim="[-1.2, 1.2]" width="400" height="400" x-axis-location="origin" y-axis-location="origin">
+        <ink-chart-eqn :eqn="func"></ink-chart-eqn>
+    </ink-chart>
+
+    <ink-button bind="{func: 'Math.cos(x)'}" text="Cos"></ink-button>
+    <ink-button bind="{func: 'Math.sin(x)'}" text="Sin"></ink-button>
+    Start: <ink-range name="domainStart" :min="-Math.PI * 4" max="0" step="0.01"></ink-range>
+    End: <ink-range name="domainEnd" :max="Math.PI * 4" min="0" step="0.01"></ink-range>
+
+    <ink-input bind="{func: value}" text="x * Math.sin(10 / (x || 1))"></ink-input>
+
 </ink-scope>
 
 </ink-article>
