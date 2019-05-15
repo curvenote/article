@@ -135,7 +135,7 @@ class InkQuote extends LitElement {
         });
     }
     render() {
-        let d = '';
+        let d = this.date;
 
         if(date.isValid(this.date, SERVER_DATE_FORMAT)){
             d = date.format(date.parse(this.date, SERVER_DATE_FORMAT), 'MMMM YYYY');
