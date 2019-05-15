@@ -135,7 +135,7 @@ class InkQuote extends LitElement {
         });
     }
     render() {
-        var d = '';
+        let d = '';
 
         if(date.isValid(this.date, SERVER_DATE_FORMAT)){
             d = date.format(date.parse(this.date, SERVER_DATE_FORMAT), 'MMMM YYYY');
@@ -189,6 +189,7 @@ class InkCard extends LitElement {
             url: String,
             date: String,
             width: String,
+            src: String,
         };
     }
     constructor() {
@@ -199,18 +200,33 @@ class InkCard extends LitElement {
         this.src = '';
         this.width = null;
     }
-    // setFromSrc(){
-    //     fetch(this.src).then(data =>{
-    //         data.json().then(json =>{
-    //             this.textContent = json.quote;
-    //             this.url = json.url_more;
-    //             this.author = json.author;
-    //             this.date = json.date.start;
-    //         });
-    //     });
-    // }
+    setFromSrc(){
+        if(!this.src){
+            return;
+        }
+        // TODO: don't load this again if it is the same
+        fetch(this.src).then(data =>{
+            data.json().then(json =>{
+                this.title = json.title;
+                this.description = json.description;
+                this.url = '/' + json.uid;
+                this.imgSrc = json.thumbnail;
+                this.date = json.date.start;
+            });
+        });
+    }
+    updated(changedProperties) {
+        changedProperties.forEach((oldValue, propName) => {
+            switch (propName) {
+                case 'src':
+                    return this.setFromSrc();
+                default:
+                    return;
+            }
+        });
+    }
     render() {
-        var d = '';
+        let d = this.date;
         if(date.isValid(this.date, SERVER_DATE_FORMAT)){
             d = date.format(date.parse(this.date, SERVER_DATE_FORMAT), 'YYYY');
         }
@@ -270,7 +286,7 @@ class InkCard extends LitElement {
             </style>
             <a class="card" title="${ this.title }" href="${ this.url }">
                 <div class="image" style="background-image: url('${ this.imgSrc }')"></div>
-                <div class="date">${ this.date }</div>
+                <div class="date">${ d }</div>
                 <div class="title">${ this.title }</div>
                 <div class="description">${ this.description }</div>
             </a>
@@ -346,12 +362,12 @@ class InkByline extends LitElement {
     }
     render() {
 
-        var d = this.date;
+        let d = this.date;
         if(date.isValid(this.date, SERVER_DATE_FORMAT)){
             d = date.format(date.parse(this.date, SERVER_DATE_FORMAT), 'MMMM DD, YYYY');
         }
 
-        var authors = this.authors
+        let authors = this.authors
         if(typeof(authors) == "string"){
             authors = JSON.parse(authors);
         }
