@@ -1,7 +1,7 @@
 {
   "name": "ink-components",
-  "version": "0.1.5",
-  "description": "Scientific web components",
+  "version": "0.1.6",
+  "description": "Scientific web components for interactive scientific writing, reactive documents and explorable explanations.",
   "main": "dist/ink.min.js",
   "unpkg": "dist/ink.min.js",
   "module": "src/index.js",
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/rowanc1/ink.git"
+    "url": "https://github.com/ink-components/ink-components.git"
   },
   "devDependencies": {
     "clean-webpack-plugin": "^1.0.0",
@@ -46,8 +46,8 @@
     "redux": "^4.0.1"
   },
   "bugs": {
-    "url": "https://github.com/rowanc1/ink/issues"
+    "url": "https://github.com/ink-components/ink-components/issues"
   },
-  "homepage": "https://github.com/rowanc1/ink",
+  "homepage": "https://components.ink",
   "sideEffects": true
 }
