@@ -1,5 +1,10 @@
 # Ink Components
 
+[![Ink Components on npm](https://img.shields.io/npm/v/ink-components.svg)](https://www.npmjs.com/package/ink-components)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/rowanc1/ink-components/blob/master/LICENSE)
+[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/ink-components)
+
+
 The goal of ink.js is to provide web-components for interactive scientific writing, reactive documents and explorable explanations.
 Included in `ink.js` are ways to create, update and display variables as text, equations and charts.
 
@@ -24,46 +29,6 @@ To get an idea of what that looks like, let's take the canonical example of Tang
 </p>
 ```
 
-## Components
-
-https://www.webcomponents.org/element/ink-components/elements/cv-award
-
-* Variables, actions and displays
-    * ink-scope
-    * ink-var
-    * ink-varList
-    * ink-display
-    * ink-range
-    * ink-dynamic
-    * ink-button
-    * ink-action
-* Charts
-    * ink-chart
-    * ink-chartCircle
-    * ink-chartPath
-    * ink-chartText
-    * ink-chartNode
-    * ink-chartEqn
-* Simple layout
-    * ink-article
-    * ink-equation
-    * ink-figure
-    * ink-code
-    * ink-outline
-    * ink-aside
-    * ink-callout
-    * ink-quote
-    * ink-card
-    * ink-byline
-    * h2-more
-    * ink-span
-    * ink-p
-    * ink-div
-* Resume elements
-    * cv-item
-    * cv-award
-
-
 ## Getting Started
 
 Ink is based on web components, which create custom HTML tags so that they can make writing documents easier.
@@ -84,3 +49,41 @@ You should then be able to extend ink as you see fit:
 ```javascript
 import * as ink from 'ink-components';
 ```
+
+## Components
+
+* Variables, actions and displays
+    * [ink-scope](https://www.webcomponents.org/element/ink-components/elements/ink-scope)
+    * [ink-var](https://www.webcomponents.org/element/ink-components/elements/ink-var)
+    * [ink-varList](https://www.webcomponents.org/element/ink-components/elements/ink-varList)
+    * [ink-display](https://www.webcomponents.org/element/ink-components/elements/ink-display)
+    * [ink-range](https://www.webcomponents.org/element/ink-components/elements/ink-range)
+    * [ink-dynamic](https://www.webcomponents.org/element/ink-components/elements/ink-dynamic)
+    * [ink-button](https://www.webcomponents.org/element/ink-components/elements/ink-button)
+    * [ink-action](https://www.webcomponents.org/element/ink-components/elements/ink-action)
+* Charts
+    * [ink-chart](https://www.webcomponents.org/element/ink-components/elements/ink-chart)
+    * [ink-chart-circle](https://www.webcomponents.org/element/ink-components/elements/ink-chart-circle)
+    * [ink-chart-path](https://www.webcomponents.org/element/ink-components/elements/ink-chart-path)
+    * [ink-chart-text](https://www.webcomponents.org/element/ink-components/elements/ink-chart-text)
+    * [ink-chart-node](https://www.webcomponents.org/element/ink-components/elements/ink-chart-node)
+    * [ink-chart-eqn](https://www.webcomponents.org/element/ink-components/elements/ink-chart-eqn)
+* Simple layout
+    * [ink-article](https://www.webcomponents.org/element/ink-components/elements/ink-article)
+    * [ink-equation](https://www.webcomponents.org/element/ink-components/elements/ink-equation)
+    * [ink-figure](https://www.webcomponents.org/element/ink-components/elements/ink-figure)
+    * [ink-code](https://www.webcomponents.org/element/ink-components/elements/ink-code)
+    * [ink-outline](https://www.webcomponents.org/element/ink-components/elements/ink-outline)
+    * [ink-aside](https://www.webcomponents.org/element/ink-components/elements/ink-aside)
+    * [ink-callout](https://www.webcomponents.org/element/ink-components/elements/ink-callout)
+    * [ink-quote](https://www.webcomponents.org/element/ink-components/elements/ink-quote)
+    * [ink-card](https://www.webcomponents.org/element/ink-components/elements/ink-card)
+    * [ink-byline](https://www.webcomponents.org/element/ink-components/elements/ink-byline)
+    * [h2-more](https://www.webcomponents.org/element/ink-components/elements/h2-more)
+    * [ink-span](https://www.webcomponents.org/element/ink-components/elements/ink-span)
+    * [ink-p](https://www.webcomponents.org/element/ink-components/elements/ink-p)
+    * [ink-div](https://www.webcomponents.org/element/ink-components/elements/ink-div)
+* Resume elements
+    * [cv-item](https://www.webcomponents.org/element/ink-components/elements/cv-item)
+    * [cv-award](https://www.webcomponents.org/element/ink-components/elements/cv-award)
+
