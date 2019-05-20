@@ -55,7 +55,7 @@ import * as ink from 'ink-components';
 * Variables, actions and displays
     * [ink-scope](https://www.webcomponents.org/element/ink-components/elements/ink-scope)
     * [ink-var](https://www.webcomponents.org/element/ink-components/elements/ink-var)
-    * [ink-varList](https://www.webcomponents.org/element/ink-components/elements/ink-varList)
+    * [ink-var-list](https://www.webcomponents.org/element/ink-components/elements/ink-var-list)
     * [ink-display](https://www.webcomponents.org/element/ink-components/elements/ink-display)
     * [ink-range](https://www.webcomponents.org/element/ink-components/elements/ink-range)
     * [ink-dynamic](https://www.webcomponents.org/element/ink-components/elements/ink-dynamic)
