@@ -46,6 +46,9 @@ class InkEquation extends BaseGetProps {
         // This may have updates due to shadow dom updates.
         // TODO: This is sometimes a beat out of sync with other things if there are nested `ink-display` elements
         this.math = this.textContent;
+        if(!this.math){
+            return html``;
+        }
 
 
         var element = document.createElement('div');

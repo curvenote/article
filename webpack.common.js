@@ -19,7 +19,7 @@ module.exports = {
         // new webpack.HotModuleReplacementPlugin()
     ],
     output: {
-        filename: '[name].bundle.js',
+        filename: 'ink.min.js',
         path: path.resolve(__dirname, 'dist')
     },
     module: {
