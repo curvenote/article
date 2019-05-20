@@ -1,6 +1,6 @@
 {
   "name": "ink-components",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Scientific web components",
   "main": "dist/ink.min.js",
   "unpkg": "dist/ink.min.js",
