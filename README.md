@@ -5,12 +5,12 @@
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/ink-components)
 
 
-The goal of ink.js is to provide web-components for interactive scientific writing, reactive documents and explorable explanations.
-Included in `ink.js` are ways to create, update and display variables as text, equations and charts.
+The goal of [ink-components](https://components.ink) is to provide web-components for interactive scientific writing, reactive documents and [explorable explanations](https://explorabl.es).
+Included in [ink-components](https://components.ink) are ways to create, update and display variables as text, equations and charts.
 
-ink.js is heavily inspired by [tangle.js](http://worrydream.com/Tangle/guide.html), re-imagined to use [web-components](https://www.webcomponents.org/)!
+The [ink-components](https://components.ink) project is heavily inspired by [tangle.js](http://worrydream.com/Tangle/guide.html), re-imagined to use [web-components](https://www.webcomponents.org/)!
 This means you can declaratively write your variables and how to display them in `html` markup.
-To get an idea of what that looks like, let's take the canonical example of Tangled Cookies - a simple reactive document.
+To get an idea of what that looks like, let's take the canonical example of *Tangled Cookies* - a simple reactive document.
 
 ![How many calories in that cookie?](images/tangle.gif)
 
@@ -24,8 +24,8 @@ To get an idea of what that looks like, let's take the canonical example of Tang
 
 <p>
     When you eat <ink-dynamic name="cookies" min="2" max="100"> cookies</ink-dynamic>,
-    you consume <ink-display name="calories">150</ink-display> calories.<br>
-    That's <ink-display name="dailyPercent">7%</ink-display> of your recommended daily calories.
+    you consume <ink-display name="calories"></ink-display> calories.<br>
+    That's <ink-display name="dailyPercent"></ink-display> of your recommended daily calories.
 </p>
 ```
 
