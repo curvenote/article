@@ -11,12 +11,11 @@ module.exports = {
         app: './src/index.js',
     },
     plugins: [
-        new CleanWebpackPlugin(['dist']),
+        // new CleanWebpackPlugin(['dist']),
         new HtmlWebpackPlugin({
-            title: 'Main page',
+            title: 'Ink Components',
             template: 'index.html'
-        }),
-        // new webpack.HotModuleReplacementPlugin()
+        })
     ],
     output: {
         filename: 'ink.min.js',
@@ -36,15 +35,7 @@ module.exports = {
             use: [
                 'file-loader'
             ]
-        },
-        // {
-        //     test: /\.tsx?$/,
-        //     use: 'ts-loader',
-        //     exclude: /node_modules/
-        // }
+        }
       ]
-    },
-    // resolve: {
-    //     extensions: [ '.tsx', '.ts', '.js' ]
-    // },
+    }
 };

@@ -1,17 +1,21 @@
 {
   "name": "ink-components",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Scientific web components for interactive scientific writing, reactive documents and explorable explanations.",
-  "main": "dist/ink.min.js",
+  "main": "dist/ink.js",
   "unpkg": "dist/ink.min.js",
   "module": "src/index.js",
-  "keywords": [],
+  "keywords": [
+    "explorable explanations",
+    "web components",
+    "writing"
+  ],
   "author": "rowanc1",
   "license": "MIT",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --open --config webpack.dev.js",
-    "build-dev": "webpack --config webpack.dev.js",
+    "build-dev": "webpack --config webpack.dev.js && cp dist/ink.min.js dist/ink.js",
     "build": "webpack --config webpack.prod.js"
   },
   "repository": {

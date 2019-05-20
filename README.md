@@ -31,14 +31,14 @@ To get an idea of what that looks like, let's take the canonical example of *Tan
 
 ## Getting Started
 
-Ink is based on web components, which create custom HTML tags so that they can make writing documents easier.
+Ink is based on web-components, which creates custom HTML tags so that they can make writing documents easier.
 To get started, copy the built javascript file to the head of your page:
 
 ```html
 <script src="https://unpkg.com/ink-components"></script>
 ```
 
-You can also download the latest release from GitHub. If you are running this without a web server, ensure the script has `charset="utf-8"` in the script tag. You can also install from npm:
+You can also download the [latest release](https://github.com/ink-components/ink-components/releases) from GitHub. If you are running this without a web server, ensure the script has `charset="utf-8"` in the script tag. You can also [install from npm](https://www.npmjs.com/package/ink-components):
 
 ```bash
 >> npm install ink-components
