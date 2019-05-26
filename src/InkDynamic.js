@@ -116,8 +116,14 @@ class BaseRange extends BaseDynamic {
 }
 
 class InkRange extends BaseRange {
+    static get properties() {
+        return {
+            ...super.properties,
+            width: {type: String}
+        };
+    }
     render() {
-        return html`<input type="range" min="${this.min}" step="${this.step}" max="${this.max}" .value="${this.value}" @input="${this._changeHandler}">`;
+        return html`<input type="range" style="width:${this.width};" min="${this.min}" step="${this.step}" max="${this.max}" .value="${this.value}" @input="${this._changeHandler}">`;
     }
     _changeHandler(e) {
         this.dispatch(Number.parseFloat(e.target.value));
