@@ -1,6 +1,6 @@
 {
   "name": "ink-components",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Scientific web components for interactive scientific writing, reactive documents and explorable explanations.",
   "main": "dist/ink.js",
   "unpkg": "dist/ink.min.js",
