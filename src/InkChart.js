@@ -75,7 +75,9 @@ class InkChart extends BaseGetProps {
     }
 
     renderXAxis(margin){
-
+        if(this.xAxisLocation === 'hidden'){
+            return;
+        }
         let xAxis = d3axis.axisBottom()
             .scale(this.x);
 
@@ -100,6 +102,9 @@ class InkChart extends BaseGetProps {
     }
 
     renderYAxis(margin){
+        if(this.yAxisLocation === 'hidden'){
+            return;
+        }
 
         let yAxis = d3axis.axisLeft()
             .scale(this.y);
@@ -200,6 +205,20 @@ customElements.define('ink-chart', InkChart);
 
 class InkChartObject extends BaseGetProps {
 
+    static get properties() {
+        return {
+            ...propDef('visible', Boolean),
+        }
+    }
+
+    setDefaults(){
+        this.visible = true;
+    }
+
+    get visible() { return getProp(this, 'visible'); }
+    set visible(val) { return setProp(this, 'visible', val); }
+    get visibleFunction() { return getPropFunction(this, 'visible'); }
+
     get inkChart(){
         return this.closest('ink-chart');
     }
@@ -230,11 +249,13 @@ class InkChartCircle extends InkChartObject {
             strokeDasharray: {
                 type: String,
                 attribute: 'stroke-dasharray'
-            }
+            },
+            ...super.properties,
         };
     }
 
     setDefaults() {
+        super.setDefaults();
         this.x = 0.5;
         this.y = 0.5;
         this.r = 4.5;
@@ -258,6 +279,9 @@ class InkChartCircle extends InkChartObject {
     get rFunction() { return getPropFunction(this, 'r'); }
 
     renderSVG(chart){
+        if(!this.visible){
+            return svg``;
+        }
         return svg`<circle r="${this.r}" fill="${this.fill}" cx="${chart.x(this.x)}" cy="${chart.y(this.y)}" stroke="${this.stroke}" stroke-width="${this.strokeWidth}" stroke-dasharray="${this.strokeDasharray}"></circle>`;
     }
 }
@@ -280,7 +304,8 @@ class InkChartPath extends InkChartObject {
             strokeDasharray: {
                 type: String,
                 attribute: 'stroke-dasharray'
-            }
+            },
+            ...super.properties,
         };
     }
 
@@ -289,6 +314,7 @@ class InkChartPath extends InkChartObject {
     get dataFunction() { return getPropFunction(this, 'data'); }
 
     setDefaults() {
+        super.setDefaults();
         this.data = [[0,0]];
         this.stroke = nextColor();
         this.strokeWidth = 1.5;
@@ -296,8 +322,11 @@ class InkChartPath extends InkChartObject {
     }
 
     renderSVG(chart){
+        if(!this.visible){
+            return svg``;
+        }
         let path = d3shape.line()
-            .defined(function(d) { return isFinite(d[0]) && isFinite(d[1]); })
+            .defined(function(d) { return (isFinite(d[0]) && isFinite(d[1])) && !(d[0] === null || d[1] === null || d[0] === undefined || d[1] === undefined); })
             .x(function(d) { return chart.x(d[0]); })
             .y(function(d) { return chart.y(d[1]); });
 
@@ -325,10 +354,12 @@ class InkChartEqn extends InkChartObject {
                 attribute: 'stroke-dasharray'
             },
             parameterize: String, // can be x, y, or t
+            ...super.properties,
         };
     }
 
     setDefaults() {
+        super.setDefaults();
         this.eqn = 0;
         this.samples = 500; // Number of samples for an equation
         this.stroke = nextColor();
@@ -349,6 +380,9 @@ class InkChartEqn extends InkChartObject {
 
 
     renderSVG(chart){
+        if(!this.visible){
+            return svg``;
+        }
 
         function getDomain(domain, outerDomain){
             let out = [...domain];
@@ -402,6 +436,7 @@ class InkChartText extends InkChartObject {
             ...propDef('x', Number),
             ...propDef('y', Number),
             ...propDef('text', String),
+            ...propDef('rotate', String),
             textAnchor: {
                 type: String,
                 attribute: 'text-anchor'
@@ -410,15 +445,18 @@ class InkChartText extends InkChartObject {
                 type: String,
                 attribute: 'font-size'
             },
+            ...super.properties,
         };
     }
 
     setDefaults() {
+        super.setDefaults();
         this.x = 0.5;
         this.y = 0.5;
         this.text = 'Hello World';
-        this.textAnchor = 'end';
+        this.textAnchor = 'start';
         this.fontSize = 11;
+        this.rotate = 0;
     }
 
     get x() { return getProp(this, 'x'); }
@@ -433,8 +471,17 @@ class InkChartText extends InkChartObject {
     set text(val) { return setProp(this, 'text', val); }
     get textFunction() { return getPropFunction(this, 'text'); }
 
+    get rotate() { return getProp(this, 'rotate'); }
+    set rotate(val) { return setProp(this, 'rotate', val); }
+    get rotateFunction() { return getPropFunction(this, 'rotate'); }
+
     renderSVG(chart){
-        return svg`<text x="${chart.x(this.x)}" y="${chart.y(this.y)}" style="text-anchor: ${this.textAnchor}; font: ${this.fontSize}px sans-serif;">${this.text}</text>`
+        if(!this.visible){
+            return svg``;
+        }
+        let x = chart.x(this.x);
+        let y = chart.y(this.y);
+        return svg`<text x="${x}" y="${y}" transform="rotate(${ this.rotate }, ${x}, ${y})" style="text-anchor: ${this.textAnchor}; font: ${this.fontSize}px sans-serif;">${this.text}</text>`
     }
 
 }
@@ -452,13 +499,17 @@ class InkChartNode extends InkChartObject {
             r: String,
             fill: String,
             bind: String,
+            constrain: String,
+            ...super.properties,
         };
     }
 
     setDefaults() {
+        super.setDefaults();
         // this.name = 'temp';
         this.bind = '';
         // this.description = '';
+        this.constrain = '[x, y]';
         this.x = 0.5;
         this.y = 0.5;
         this.r = 20;
@@ -473,10 +524,7 @@ class InkChartNode extends InkChartObject {
     set y(val) { return setProp(this, 'y', val); }
     get yFunction() { return getPropFunction(this, 'y'); }
 
-    dispatch(rawX, rawY){
-
-        let x = this.inkChart.x.invert(rawX);
-        let y = this.inkChart.y.invert(rawY);
+    dispatch(x, y){
 
         this.x = x;
         this.y = y;
@@ -490,6 +538,10 @@ class InkChartNode extends InkChartObject {
     }
 
     renderSVG(chart){
+        // TODO: maybe not like this?
+        if(!this.visible){
+            return svg``;
+        }
         // wrap the function handler, as it is called in a different event context.
         function wrapper(drag){
             return (e) => drag.setupDrag(e);
@@ -514,14 +566,24 @@ class InkChartNode extends InkChartObject {
         }).on('drag', () => {
             Selection.event.sourceEvent.preventDefault();
 
-            const x = Selection.event.x;
-            const y = Selection.event.y;
+            const rawX = Selection.event.x;
+            const rawY = Selection.event.y;
+
+            let x = this.inkChart.x.invert(rawX);
+            let y = this.inkChart.y.invert(rawY);
+
+            let func = getIFrameFunction(this.iframe, this.constrain, ['x', 'y']);
+            let constrained = func(x, y);
+
+            // console.log(x,y,constrained[0], constrained[1]);
+
+
 
             this._node
-                .attr("cx", x)
-                .attr("cy", y);
+                .attr("cx", this.inkChart.x(constrained[0]))
+                .attr("cy", this.inkChart.y(constrained[1]));
 
-            this.dispatch(x, y);
+            this.dispatch(constrained[0], constrained[1]);
         }).on('end', () => {
             this.dragging = false;
             bodyClassList.remove(CURSOR_MOVE_CLASS);
