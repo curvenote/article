@@ -73,6 +73,7 @@ import * as ink from 'ink-components';
     * [ink-equation](https://www.webcomponents.org/element/ink-components/elements/ink-equation)
     * [ink-figure](https://www.webcomponents.org/element/ink-components/elements/ink-figure)
     * [ink-code](https://www.webcomponents.org/element/ink-components/elements/ink-code)
+    * [ink-demo](https://www.webcomponents.org/element/ink-components/elements/ink-demo)
     * [ink-outline](https://www.webcomponents.org/element/ink-components/elements/ink-outline)
     * [ink-aside](https://www.webcomponents.org/element/ink-components/elements/ink-aside)
     * [ink-callout](https://www.webcomponents.org/element/ink-components/elements/ink-callout)

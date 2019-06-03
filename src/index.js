@@ -9,7 +9,7 @@ import { InkChart, InkChartCircle, InkChartPath, InkChartText, InkChartNode, Ink
 
 import { InkOutline } from './InkOutline.js';
 import { InkFigure } from './InkFigure.js';
-import { InkCode } from './InkCode.js';
+import { InkCode, InkDemo } from './InkCode.js';
 import { InkEquation } from './InkEquation.js';
 import { InkAside, InkCallout, InkQuote, InkCard, H2More, InkByline } from './InkSimple.js';
 import { CvItem, CvAward } from './InkCV.js';
@@ -36,6 +36,7 @@ export {
     InkOutline,
     InkFigure,
     InkCode,
+    InkDemo,
     InkEquation,
     InkAside,
     InkCallout,
