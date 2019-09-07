@@ -190,6 +190,7 @@ class InkCard extends LitElement {
             date: String,
             width: String,
             src: String,
+            contain: {type:Boolean, reflect:true},
         };
     }
     constructor() {
@@ -199,6 +200,7 @@ class InkCard extends LitElement {
         this.date = '';
         this.src = '';
         this.width = null;
+        this.contain = false;
     }
     setFromSrc(){
         if(!this.src){
@@ -243,7 +245,7 @@ class InkCard extends LitElement {
                     text-decoration: none;
                 }
                 .image{
-                    background-size: cover;
+                    background-size: ${ this.contain ? 'contain' : 'cover' };
                     background-position: center;
                     background-repeat: no-repeat;
                     width: 100%;
