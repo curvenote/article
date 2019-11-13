@@ -1,6 +1,7 @@
 import { LitElement, html } from 'lit-element';
 import date from 'date-and-time';
 import { SERVER_DATE_FORMAT } from './constants.js';
+import { isLinkExternal } from './InkAnchor.js';
 
 
 class InkAside extends LitElement {
@@ -235,6 +236,9 @@ class InkCard extends LitElement {
 
         return html`
             <style>
+                :host{
+                    text-align: left;
+                }
                 .card{
                     display: inline-block;
                     width: ${ this.width || '230px'};
@@ -286,7 +290,7 @@ class InkCard extends LitElement {
                     float: right;
                 }
             </style>
-            <a class="card" title="${ this.title }" href="${ this.url }">
+            <a class="card" title="${ this.title }" href="${ this.url }" target="${isLinkExternal(this.url)? '_blank' : '_self'}">
                 <div class="image" style="background-image: url('${ this.imgSrc }')"></div>
                 <div class="date">${ d }</div>
                 <div class="title">${ this.title }</div>

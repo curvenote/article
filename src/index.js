@@ -11,6 +11,7 @@ import { InkOutline } from './InkOutline.js';
 import { InkFigure } from './InkFigure.js';
 import { InkCode, InkDemo } from './InkCode.js';
 import { InkEquation } from './InkEquation.js';
+import { InkAnchor } from './InkAnchor.js';
 import { InkAside, InkCallout, InkQuote, InkCard, H2More, InkByline } from './InkSimple.js';
 import { CvItem, CvAward } from './InkCV.js';
 
@@ -44,6 +45,7 @@ export {
     InkCard,
     H2More,
     InkByline,
+    InkAnchor,
     CvItem,
     CvAward,
 }
