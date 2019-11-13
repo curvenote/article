@@ -84,6 +84,7 @@ import * as ink from 'ink-components';
     * [ink-span](https://www.webcomponents.org/element/ink-components/elements/ink-span)
     * [ink-p](https://www.webcomponents.org/element/ink-components/elements/ink-p)
     * [ink-div](https://www.webcomponents.org/element/ink-components/elements/ink-div)
+    * [ink-a](https://www.webcomponents.org/element/ink-components/elements/ink-a)
 * Resume elements
     * [cv-item](https://www.webcomponents.org/element/ink-components/elements/cv-item)
     * [cv-award](https://www.webcomponents.org/element/ink-components/elements/cv-award)
