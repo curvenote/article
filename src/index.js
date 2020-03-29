@@ -5,7 +5,7 @@ import { InkVarList } from './InkVarList.js';
 import { InkDisplay, InkRange, InkDynamic } from './InkDynamic.js';
 import { InkSpan, InkP, InkDiv } from './InkVisible.js'
 import { InkButton, InkAction } from './InkButton.js';
-import { InkChart, InkChartCircle, InkChartPath, InkChartText, InkChartNode, InkChartEqn } from './InkChart.js'
+import { InkChart, InkChartCircle, InkChartPath, InkChartText, InkChartImage, InkChartNode, InkChartEqn } from './InkChart.js'
 
 import { InkOutline } from './InkOutline.js';
 import { InkFigure } from './InkFigure.js';
@@ -32,6 +32,7 @@ export {
     InkChartCircle,
     InkChartPath,
     InkChartText,
+    InkChartImage,
     InkChartNode,
     InkChartEqn,
     InkOutline,

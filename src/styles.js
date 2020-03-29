@@ -51,6 +51,7 @@ var bricksTheme = html`
   }
   p {
     text-align: justify;
+    overflow-wrap: break-word;
   }
   emph {
     font-style: italic;

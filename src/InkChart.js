@@ -489,6 +489,79 @@ class InkChartText extends InkChartObject {
 customElements.define('ink-chart-text', InkChartText);
 
 
+class InkChartImage extends InkChartObject {
+    static get properties() {
+        return {
+            ...propDef('x', Number),
+            ...propDef('y', Number),
+            ...propDef('width', Number),
+            ...propDef('height', Number),
+            ...propDef('href', String),
+            ...super.properties,
+        };
+    }
+
+    setDefaults() {
+        super.setDefaults();
+        this.x = 0.5;
+        this.y = 0.5;
+        this.width = 100;
+        this.height = 100;
+        this.href = '';
+    }
+
+    get x() { return getProp(this, 'x'); }
+    set x(val) { return setProp(this, 'x', val); }
+    get xFunction() { return getPropFunction(this, 'x'); }
+
+    get y() { return getProp(this, 'y'); }
+    set y(val) { return setProp(this, 'y', val); }
+    get yFunction() { return getPropFunction(this, 'y'); }
+
+    get width() { return getProp(this, 'width'); }
+    set width(val) { return setProp(this, 'width', val); }
+    get widthFunction() { return getPropFunction(this, 'width'); }
+
+    get height() { return getProp(this, 'height'); }
+    set height(val) { return setProp(this, 'height', val); }
+    get heightFunction() { return getPropFunction(this, 'height'); }
+
+    get href() { return getProp(this, 'href'); }
+    set href(val) { return setProp(this, 'href', val); }
+    get hrefFunction() { return getPropFunction(this, 'href'); }
+
+    renderSVG(chart){
+        if(!this.visible){
+            return svg``;
+        }
+        let x = chart.x(this.x);
+        let y = chart.y(this.y);
+        let width = chart.x(this.width) - chart.x(0);
+        let height = chart.y(0) - chart.y(this.height);
+
+
+        // function img(id, src, xLoc, yLoc, wLoc, hLoc){
+        //     if(imgs[id] !== undefined){imgs[id].img.remove();}
+        //     let img = chart.append("svg:image")
+        //         .attr("xlink:href", src)
+        //         .attr("id", id)
+        //         .attr("x", x(xLoc))
+        //         .attr("y", y(yLoc + hLoc))
+        //         .attr("width", x(wLoc) - x(0))
+        //         .attr("height", y(0) - y(hLoc));
+        //     imgs[id] = {img:img, src:src, rawData:{x:xLoc, y:yLoc, width:wLoc, height:hLoc}};
+
+        return svg`<image x="${x}" y="${y}" width="${width}" height="${height}" href="${this.href}" preserveAspectRatio="none"></image>`
+    }
+
+}
+
+
+
+
+customElements.define('ink-chart-image', InkChartImage);
+
+
 class InkChartNode extends InkChartObject {
     static get properties() {
         return {
@@ -598,19 +671,4 @@ class InkChartNode extends InkChartObject {
 customElements.define('ink-chart-node', InkChartNode);
 
 
-        // function img(id, src, xLoc, yLoc, wLoc, hLoc){
-        //     if(imgs[id] !== undefined){imgs[id].img.remove();}
-        //     let img = chart.append("svg:image")
-        //         .attr("xlink:href", src)
-        //         .attr("id", id)
-        //         .attr("x", x(xLoc))
-        //         .attr("y", y(yLoc + hLoc))
-        //         .attr("width", x(wLoc) - x(0))
-        //         .attr("height", y(0) - y(hLoc));
-        //     imgs[id] = {img:img, src:src, rawData:{x:xLoc, y:yLoc, width:wLoc, height:hLoc}};
-
-
-
-
-
-export { InkChart, InkChartCircle, InkChartPath, InkChartText, InkChartNode, InkChartEqn };
+export { InkChart, InkChartCircle, InkChartPath, InkChartText, InkChartImage, InkChartNode, InkChartEqn };

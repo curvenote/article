@@ -1,1 +1,1 @@
-export var SERVER_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ssZ';
+export var SERVER_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSSZ';

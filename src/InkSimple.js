@@ -58,8 +58,7 @@ class InkCallout extends LitElement {
     firstUpdated() {
     }
     render() {
-        return html`
-            <style>
+        return html`<style>
                 :host{
                     display: block;
                     padding: 5px 20px;
@@ -85,9 +84,7 @@ class InkCallout extends LitElement {
                 :host(.danger) {
                     border-left-color: #CA4F44;
                 }
-            </style>
-            <slot></slot>
-        `;
+            </style><slot></slot>`;
     }
 }
 
