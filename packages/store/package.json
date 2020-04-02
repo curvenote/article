@@ -1,0 +1,49 @@
+{
+  "name": "@iooxa/ink-store",
+  "version": "0.1.9",
+  "description": "Scientific web components for interactive scientific writing, reactive documents and explorable explanations.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "keywords": [
+    "explorable explanations",
+    "web components",
+    "writing"
+  ],
+  "author": "rowanc1",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint src/**.ts -c .eslintrc.json",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iooxa/ink.git"
+  },
+  "devDependencies": {
+    "typescript": "^3.8.3",
+    "@types/jest": "^25.1.4",
+    "jest": "^25.2.4",
+    "ts-jest": "^25.3.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-typescript": "^6.3.1",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.19.0",
+    "eslint-plugin-react-hooks": "^2.5.1",
+    "@typescript-eslint/eslint-plugin": "^2.26.0",
+    "@types/uuid": "^7.0.2"
+  },
+  "dependencies": {
+    "redux": "^4.0.5",
+    "uuid": "^7.0.3"
+  },
+  "bugs": {
+    "url": "https://github.com/iooxa/ink/issues"
+  },
+  "homepage": "https://components.ink",
+  "sideEffects": false
+}
