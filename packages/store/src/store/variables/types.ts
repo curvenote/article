@@ -14,12 +14,14 @@ export enum VariableKinds{
 export type VariableTypes = string | number | null;
 
 export interface DefineVariable{
-  name: string;
+  id: string;
   type: VariableKinds;
-  value: VariableTypes;
-  format: string;
+  scope: string;
+  name: string;
   description: string;
-  valueFunction: string;
+  format: string;
+  value: VariableTypes;
+  func: string;
 }
 
 export interface Variable extends DefineVariable{
@@ -50,11 +52,7 @@ export type VariablesState = {
 
 export interface CreateVariable {
   type: typeof CREATE_VARIABLE;
-  payload: {
-    scope: string;
-    variable: DefineVariable;
-    previous: string;
-  }
+  payload: DefineVariable;
 }
 
 export interface UpdateVariableValue {

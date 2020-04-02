@@ -13,7 +13,7 @@ function getScopedVariables(state: ScopedVariableState): VariablesForExecution {
     derived: Object.fromEntries(
       Object.entries(state.variables)
         .filter(([, variable]) => variable.derived)
-        .map(([key, variable]) => [key, variable.valueFunction]),
+        .map(([key, variable]) => [key, variable.func]),
     ),
     transforms: { ...state.transforms },
   };

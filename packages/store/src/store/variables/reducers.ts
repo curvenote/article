@@ -1,6 +1,6 @@
 import {
   VariablesState, VariablesActionTypes,
-  DefineVariable, Variable, VariableKinds, VariableTypes,
+  DefineVariable, Variable, VariableTypes,
   ScopedVariableState,
   CREATE_VARIABLE, REMOVE_VARIABLE,
   UPDATE_VARIABLE_VALUE,
@@ -8,24 +8,15 @@ import {
 } from './types';
 import { RETURN_VARIABLES } from '../comms/types';
 import { setVariables } from '../../utils';
+import { convertValue } from './utils';
 
 const initialState: VariablesState = {
   scopes: {},
 };
 
-function convertValue(value: VariableTypes, type: VariableKinds): VariableTypes {
-  switch (type) {
-    case VariableKinds.number:
-      return Number(value);
-    case VariableKinds.string:
-      return value;
-    default:
-      return value;
-  }
-}
 
 function includeCurrentValue(variable: DefineVariable, current?: VariableTypes): Variable {
-  const derived = variable.valueFunction !== '';
+  const derived = variable.func !== '';
   return {
     ...variable,
     derived,
@@ -40,17 +31,14 @@ const scopedVariableReducer = (
 ): ScopedVariableState => {
   switch (action.type) {
     case CREATE_VARIABLE: {
-      const { previous, variable } = action.payload;
+      const variable = action.payload;
       const newState = {
         ...state,
         variables: {
           ...state?.variables,
-          [variable.name]: includeCurrentValue(variable),
+          [variable.id]: includeCurrentValue(variable),
         },
       };
-      if (previous !== variable.name) {
-        delete newState.variables[previous];
-      }
       return newState;
     }
     case UPDATE_VARIABLE_VALUE: {

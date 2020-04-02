@@ -13,12 +13,14 @@ describe('todos reducer', () => {
 
   it('should create a variable', () => {
     expect(
-      reducer(initialState, actions.createVariable('myScope', 'myScope', {
+      reducer(initialState, actions.defineVariable({
+        id: 'RANDOM-ID',
+        scope: 'myScope',
         name: 'myVar',
         description: '',
         type: VariableKinds.number,
         value: 42,
-        valueFunction: '',
+        func: '',
         format: '.2f',
       })),
     ).toEqual({
@@ -26,15 +28,17 @@ describe('todos reducer', () => {
         myScope: {
           transforms: {},
           variables: {
-            myVar: {
+            'RANDOM-ID': {
+              id: 'RANDOM-ID',
               current: 42,
               derived: false,
               description: '',
               format: '.2f',
+              scope: 'myScope',
               name: 'myVar',
               type: 'Number',
               value: 42,
-              valueFunction: '',
+              func: '',
             },
           },
         },
@@ -44,12 +48,14 @@ describe('todos reducer', () => {
 
   it('should not evaluate the variable', () => {
     expect(
-      reducer(initialState, actions.createVariable('myScope', 'myScope', {
+      reducer(initialState, actions.defineVariable({
+        id: 'RANDOM-ID',
+        scope: 'myScope',
         name: 'myVar',
         description: '',
         type: VariableKinds.number,
         value: null,
-        valueFunction: '1 + 1',
+        func: '1 + 1',
         format: '.2f',
       })),
     ).toEqual({
@@ -57,15 +63,17 @@ describe('todos reducer', () => {
         myScope: {
           transforms: {},
           variables: {
-            myVar: {
+            'RANDOM-ID': {
+              id: 'RANDOM-ID',
               current: null,
               derived: true,
               description: '',
               format: '.2f',
+              scope: 'myScope',
               name: 'myVar',
               type: 'Number',
               value: null,
-              valueFunction: '1 + 1',
+              func: '1 + 1',
             },
           },
         },
