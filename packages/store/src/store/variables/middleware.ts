@@ -4,7 +4,7 @@ import {
   CREATE_TRANSFORM, REMOVE_TRANSFORM,
 } from './types';
 import { evaluateVariables } from '../comms/actions';
-import { getVariables } from '../../utils';
+import { getVariables } from './selectors';
 import { Middleware } from '../types';
 
 const triggerEvaluateMiddleware: Middleware = (
@@ -17,7 +17,7 @@ const triggerEvaluateMiddleware: Middleware = (
       case CREATE_TRANSFORM:
       case REMOVE_TRANSFORM: {
         const id = uuid();
-        const variables = getVariables(store.getState().variables);
+        const variables = getVariables(store.getState());
         store.dispatch(evaluateVariables(id, variables));
         break;
       }

@@ -55,9 +55,13 @@ export function evaluateVariable(
   });
   let derived;
   try {
+    const extractScope = currentKeys.length > 0
+      ? `
+      const { ${currentKeys.join(', ')} } = $variables[$scope];`
+      : '';
+
     const evalString = `
-      "use strict";
-      const { ${currentKeys.join(', ')} } = $variables[$scope];
+      "use strict";${extractScope}
       return function (${argNames.join(', ')}){
         "use strict";
         return ( ${funcString} );

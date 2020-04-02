@@ -3,7 +3,8 @@ import * as actions from './actions';
 import { VariableKinds } from './types';
 
 const initialState = {
-  scopes: {},
+  variables: {},
+  transforms: {},
 };
 
 describe('todos reducer', () => {
@@ -24,23 +25,19 @@ describe('todos reducer', () => {
         format: '.2f',
       })),
     ).toEqual({
-      scopes: {
-        myScope: {
-          transforms: {},
-          variables: {
-            'RANDOM-ID': {
-              id: 'RANDOM-ID',
-              current: 42,
-              derived: false,
-              description: '',
-              format: '.2f',
-              scope: 'myScope',
-              name: 'myVar',
-              type: 'Number',
-              value: 42,
-              func: '',
-            },
-          },
+      transforms: {},
+      variables: {
+        'RANDOM-ID': {
+          id: 'RANDOM-ID',
+          current: 42,
+          derived: false,
+          description: '',
+          format: '.2f',
+          scope: 'myScope',
+          name: 'myVar',
+          type: 'Number',
+          value: 42,
+          func: '',
         },
       },
     });
@@ -59,23 +56,19 @@ describe('todos reducer', () => {
         format: '.2f',
       })),
     ).toEqual({
-      scopes: {
-        myScope: {
-          transforms: {},
-          variables: {
-            'RANDOM-ID': {
-              id: 'RANDOM-ID',
-              current: null,
-              derived: true,
-              description: '',
-              format: '.2f',
-              scope: 'myScope',
-              name: 'myVar',
-              type: 'Number',
-              value: null,
-              func: '1 + 1',
-            },
-          },
+      transforms: {},
+      variables: {
+        'RANDOM-ID': {
+          id: 'RANDOM-ID',
+          current: null,
+          derived: true,
+          description: '',
+          format: '.2f',
+          scope: 'myScope',
+          name: 'myVar',
+          type: 'Number',
+          value: null,
+          func: '1 + 1',
         },
       },
     });

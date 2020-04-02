@@ -35,18 +35,12 @@ export interface CurrentTransform extends Transform{
   error?: EvaluationError;
 }
 
-export type ScopedVariableState = {
-  transforms: {
-    [index: string]: CurrentTransform;
-  }
+export type VariablesState = {
   variables: {
     [index: string]: Variable;
   }
-};
-
-export type VariablesState = {
-  scopes: {
-    [index: string]: ScopedVariableState;
+  transforms: {
+    [index: string]: CurrentTransform;
   }
 };
 

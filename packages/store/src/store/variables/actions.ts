@@ -51,14 +51,7 @@ export function createVariable(
       ...options,
     };
     dispatch(defineVariable({
-      id,
-      scope,
-      name,
-      value,
-      func,
-      description,
-      type,
-      format,
+      id, scope, name, value, func, description, type, format,
     }));
     return id;
   };

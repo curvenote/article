@@ -1,17 +1,18 @@
 import {
-  VariablesState, VariablesActionTypes,
+  VariablesState,
+  VariablesActionTypes,
   DefineVariable, Variable, VariableTypes,
-  ScopedVariableState,
   CREATE_VARIABLE, REMOVE_VARIABLE,
   UPDATE_VARIABLE_VALUE,
   CREATE_TRANSFORM, REMOVE_TRANSFORM,
 } from './types';
 import { RETURN_VARIABLES } from '../comms/types';
-import { setVariables } from '../../utils';
+import { setVariables } from './selectors';
 import { convertValue } from './utils';
 
 const initialState: VariablesState = {
-  scopes: {},
+  variables: {},
+  transforms: {},
 };
 
 
@@ -25,10 +26,10 @@ function includeCurrentValue(variable: DefineVariable, current?: VariableTypes):
   };
 }
 
-const scopedVariableReducer = (
-  state: ScopedVariableState,
+const variablesReducer = (
+  state: VariablesState = initialState,
   action: VariablesActionTypes,
-): ScopedVariableState => {
+): VariablesState => {
   switch (action.type) {
     case CREATE_VARIABLE: {
       const variable = action.payload;
@@ -97,37 +98,8 @@ const scopedVariableReducer = (
       }
       return newState;
     }
-    default:
-      return state;
-  }
-};
-
-
-const variablesReducer = (
-  state = initialState,
-  action: VariablesActionTypes,
-): VariablesState => {
-  switch (action.type) {
-    case CREATE_VARIABLE:
-    case UPDATE_VARIABLE_VALUE:
-    case REMOVE_VARIABLE:
-    case CREATE_TRANSFORM:
-    case REMOVE_TRANSFORM: {
-      const { scope } = action.payload;
-      const newScope = scopedVariableReducer(state.scopes[scope], action);
-      return {
-        ...state,
-        scopes: {
-          ...state.scopes,
-          [scope]: {
-            variables: { ...newScope.variables },
-            transforms: { ...newScope.transforms },
-          },
-        },
-      };
-    }
     case RETURN_VARIABLES: {
-      return setVariables(state, action.payload.variables);
+      return setVariables({ variables: state }, action.payload.variables);
     }
     default:
       return state;
