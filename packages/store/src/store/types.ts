@@ -7,6 +7,7 @@ import {
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 
 import { VariablesState, VariablesActionTypes } from './variables/types';
+import { ComponentsState, ComponentActionTypes } from './components/types';
 import { CommunicationActionTypes } from './comms/types';
 
 export * from './variables/types';
@@ -14,10 +15,12 @@ export * from './comms/types';
 
 export interface State {
   variables: VariablesState;
+  components: ComponentsState;
 }
 
 export type Actions = (
   VariablesActionTypes |
+  ComponentActionTypes |
   CommunicationActionTypes
 );
 

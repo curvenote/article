@@ -3,8 +3,8 @@ import { Transform } from '../comms/types';
 import {
   DefineVariable, VariablesActionTypes,
   VariableTypes,
-  CREATE_VARIABLE, REMOVE_VARIABLE, UPDATE_VARIABLE_VALUE,
-  CREATE_TRANSFORM, REMOVE_TRANSFORM, VariableKinds,
+  DEFINE_VARIABLE, REMOVE_VARIABLE, UPDATE_VARIABLE_VALUE,
+  CREATE_TRANSFORM, REMOVE_TRANSFORM, PropTypes,
 } from './types';
 import { AppThunk, State, Dispatch } from '../types';
 import { getScopeAndName } from './utils';
@@ -12,7 +12,7 @@ import { getVariable } from './selectors';
 
 export function defineVariable(variable: DefineVariable): VariablesActionTypes {
   return {
-    type: CREATE_VARIABLE,
+    type: DEFINE_VARIABLE,
     payload: { ...variable },
   };
 }
@@ -26,7 +26,7 @@ export function removeVariable(id: string): VariablesActionTypes {
 
 export interface CreateVariableOptions{
   description: string;
-  type: VariableKinds;
+  type: PropTypes;
   format: string;
 }
 export interface UpdateVariableOptions extends CreateVariableOptions {
@@ -35,7 +35,7 @@ export interface UpdateVariableOptions extends CreateVariableOptions {
 }
 const createVariableOptionDefaults: CreateVariableOptions = {
   description: '',
-  type: VariableKinds.number,
+  type: PropTypes.number,
   format: '.1f',
 };
 

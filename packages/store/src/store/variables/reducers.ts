@@ -1,14 +1,13 @@
 import {
   VariablesState,
   VariablesActionTypes,
-  DefineVariable, Variable, VariableTypes,
-  CREATE_VARIABLE, REMOVE_VARIABLE,
+  DEFINE_VARIABLE, REMOVE_VARIABLE,
   UPDATE_VARIABLE_VALUE,
   CREATE_TRANSFORM, REMOVE_TRANSFORM,
 } from './types';
 import { RETURN_VARIABLES } from '../comms/types';
 import { setVariables } from './selectors';
-import { convertValue, testScopeAndName } from './utils';
+import { includeCurrentValue, testScopeAndName } from './utils';
 
 const initialState: VariablesState = {
   variables: {},
@@ -16,22 +15,12 @@ const initialState: VariablesState = {
 };
 
 
-function includeCurrentValue(variable: DefineVariable, current?: VariableTypes): Variable {
-  const derived = variable.func !== '';
-  return {
-    ...variable,
-    derived,
-    value: derived ? null : convertValue(variable.value, variable.type),
-    current: derived ? null : convertValue(current ?? variable.value, variable.type),
-  };
-}
-
 const variablesReducer = (
   state: VariablesState = initialState,
   action: VariablesActionTypes,
 ): VariablesState => {
   switch (action.type) {
-    case CREATE_VARIABLE: {
+    case DEFINE_VARIABLE: {
       const variable = action.payload;
       const { scope, name } = variable;
       if (!testScopeAndName(scope, name)) throw new Error('Scope or name has bad characters');
@@ -39,7 +28,7 @@ const variablesReducer = (
         ...state,
         variables: {
           ...state?.variables,
-          [variable.id]: includeCurrentValue(variable),
+          [variable.id]: includeCurrentValue(variable, variable.type),
         },
       };
       return newState;
@@ -64,7 +53,7 @@ const variablesReducer = (
         ...state,
         variables: {
           ...state?.variables,
-          [name]: includeCurrentValue(variable, value),
+          [name]: includeCurrentValue(variable, variable.type, value),
         },
       };
     }
@@ -101,7 +90,7 @@ const variablesReducer = (
       return newState;
     }
     case RETURN_VARIABLES: {
-      return setVariables({ variables: state }, action.payload.variables);
+      return setVariables(state, action.payload.variables);
     }
     default:
       return state;

@@ -96,7 +96,7 @@ function getPropFunction(self, propName){
         self['_' + propName + 'Function'] = undefined;
         return undefined;
     }
-    if(self._xlimFunction === undefined){
+    if (self['_' + propName + 'Function'] === undefined){
         // create the function if it isn't there already
         // console.log(propName, 'Creating function', functionString);
         self['_' + propName + 'Function'] = getIFrameFunction(self.iframe, functionString);

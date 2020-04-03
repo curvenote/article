@@ -1,17 +1,17 @@
 import { v4 as uuid } from 'uuid';
 import {
-  UPDATE_VARIABLE_VALUE, CREATE_VARIABLE, REMOVE_VARIABLE,
+  UPDATE_VARIABLE_VALUE, DEFINE_VARIABLE, REMOVE_VARIABLE,
   CREATE_TRANSFORM, REMOVE_TRANSFORM,
-} from './types';
-import { evaluateVariables } from '../comms/actions';
-import { getVariables } from './selectors';
-import { Middleware } from '../types';
+} from './variables/types';
+import { evaluateVariables } from './comms/actions';
+import { getVariables } from './variables/selectors';
+import { Middleware } from './types';
 
 const triggerEvaluateMiddleware: Middleware = (
   (store) => (next) => (action) => {
     const result = next(action);
     switch (action.type) {
-      case CREATE_VARIABLE:
+      case DEFINE_VARIABLE:
       case REMOVE_VARIABLE:
       case UPDATE_VARIABLE_VALUE:
       case CREATE_TRANSFORM:

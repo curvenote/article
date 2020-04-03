@@ -1,12 +1,12 @@
 import { CommunicationActionTypes, EvaluationError, Transform } from '../comms/types';
 
-export const CREATE_VARIABLE = 'CREATE_VARIABLE';
+export const DEFINE_VARIABLE = 'DEFINE_VARIABLE';
 export const UPDATE_VARIABLE_VALUE = 'UPDATE_VARIABLE_VALUE';
 export const REMOVE_VARIABLE = 'REMOVE_VARIABLE';
 export const CREATE_TRANSFORM = 'CREATE_TRANSFORM';
 export const REMOVE_TRANSFORM = 'REMOVE_TRANSFORM';
 
-export enum VariableKinds{
+export enum PropTypes{
   string = 'String',
   number = 'Number',
 }
@@ -15,7 +15,7 @@ export type VariableTypes = string | number | null;
 
 export interface DefineVariable{
   id: string;
-  type: VariableKinds;
+  type: PropTypes;
   scope: string;
   name: string;
   description: string;
@@ -24,11 +24,13 @@ export interface DefineVariable{
   func: string;
 }
 
-export interface Variable extends DefineVariable{
+export interface CurrentValue {
   derived: boolean;
   current: VariableTypes;
   error?: EvaluationError;
 }
+
+export type Variable = DefineVariable & CurrentValue;
 
 export interface CurrentTransform extends Transform{
   current: VariableTypes;
@@ -45,7 +47,7 @@ export type VariablesState = {
 };
 
 export interface CreateVariable {
-  type: typeof CREATE_VARIABLE;
+  type: typeof DEFINE_VARIABLE;
   payload: DefineVariable;
 }
 

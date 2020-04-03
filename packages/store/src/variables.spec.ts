@@ -1,12 +1,9 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import inkStore, { types } from '.';
 import { getVariable, getVariableByName } from './store/variables/selectors';
 import { updateVariable } from './store/actions';
-
-const rootReducer = combineReducers({
-  variables: inkStore.variablesReducer,
-});
+import rootReducer from './store/reducers';
 
 const store: types.Store = createStore(
   rootReducer,

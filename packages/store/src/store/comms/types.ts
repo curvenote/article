@@ -1,7 +1,7 @@
+import { Dictionary } from '../../utils';
+
 export const EVALUATE_VARIABLES = 'EVALUATE_VARIABLES';
 export const RETURN_VARIABLES = 'RETURN_VARIABLES';
-
-export type Dictionary<T> = { [index: string]: T };
 
 export type Args = { name: string, value: string }[];
 

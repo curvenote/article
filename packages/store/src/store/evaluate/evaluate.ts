@@ -1,11 +1,12 @@
 import {
   ScopedVariables,
-  Dictionary,
   VariablesForExecution,
   ValueOrError,
   Args,
   EvaluationErrorTypes,
 } from '../comms/types';
+import { Dictionary } from '../../utils';
+
 
 export function getScopedVariables(scoped: Dictionary<VariablesForExecution>): ScopedVariables {
   // Create the action to send back

@@ -1,13 +1,13 @@
 import reducer from './reducers';
 import * as actions from './actions';
-import { VariableKinds } from './types';
+import { PropTypes } from './types';
 
 const initialState = {
   variables: {},
   transforms: {},
 };
 
-describe('todos reducer', () => {
+describe('Variables reducer', () => {
   it('should return the initial state', () => {
     expect(reducer(undefined, {} as any)).toEqual(initialState);
   });
@@ -19,7 +19,7 @@ describe('todos reducer', () => {
         scope: 'myScope',
         name: 'myVar',
         description: '',
-        type: VariableKinds.number,
+        type: PropTypes.number,
         value: 42,
         func: '',
         format: '.2f',
@@ -50,7 +50,7 @@ describe('todos reducer', () => {
         scope: 'myScope',
         name: 'myVar',
         description: '',
-        type: VariableKinds.number,
+        type: PropTypes.number,
         value: null,
         func: '1 + 1',
         format: '.2f',

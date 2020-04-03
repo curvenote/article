@@ -4,6 +4,7 @@ import {
 import { VariablesState, Variable } from './types';
 import { State } from '../types';
 import { getScopeAndName } from './utils';
+import { Dictionary } from '../../utils';
 
 export function mount(state: State): VariablesState {
   return state.variables;
@@ -13,11 +14,17 @@ export function getVariable(state: State, id: string): Variable | undefined {
   return mount(state).variables[id];
 }
 
-export function getVariableByName(state: State, scopeAndName: string): Variable | undefined {
-  const { scope, name } = getScopeAndName(scopeAndName);
-  const filtered = Object.entries(mount(state).variables)
+function lookupVariableByName(
+  variables: Dictionary<Variable>, scope: string, name: string,
+): Variable | undefined {
+  const filtered = Object.entries(variables)
     .filter(([, variable]) => variable.scope === scope && variable.name === name);
   return filtered.length > 0 ? filtered[0][1] : undefined;
+}
+
+export function getVariableByName(state: State, scopeAndName: string): Variable | undefined {
+  const { scope, name } = getScopeAndName(scopeAndName);
+  return lookupVariableByName(mount(state).variables, scope, name);
 }
 
 export function getScopes(state: State): string[] {
@@ -64,16 +71,16 @@ function unpackCurrent<T>(state: T, current: ValueOrError): T {
 }
 
 export function setVariables(
-  state: State, scopedVariables: ScopedVariables,
+  state: VariablesState, scopedVariables: ScopedVariables,
 ): VariablesState {
   const newState: VariablesState = {
-    variables: { ...mount(state).variables },
-    transforms: { ...mount(state).transforms },
+    variables: { ...state.variables },
+    transforms: { ...state.transforms },
   };
   Object.entries(scopedVariables).forEach(([scope, variableValues]) => {
     // Loop over constants, derived and transforms
     Object.entries(variableValues.constants).forEach(([name, value]) => {
-      const { id } = getVariableByName(state, `${scope}.${name}`) ?? {};
+      const { id } = lookupVariableByName(state.variables, scope, name) ?? {};
       if (id === undefined) return;
       const variable = newState.variables[id];
       newState.variables[id] = unpackCurrent(
@@ -82,7 +89,7 @@ export function setVariables(
     });
 
     Object.entries(variableValues.derived).forEach(([name, value]) => {
-      const { id } = getVariableByName(state, `${scope}.${name}`) ?? {};
+      const { id } = lookupVariableByName(state.variables, scope, name) ?? {};
       if (id === undefined) return;
       const variable = newState.variables[id];
       newState.variables[id] = unpackCurrent(
@@ -91,7 +98,7 @@ export function setVariables(
     });
 
     Object.entries(variableValues.transforms).forEach(([name, value]) => {
-      const { id } = getVariableByName(state, `${scope}.${name}`) ?? {};
+      const { id } = lookupVariableByName(state.variables, scope, name) ?? {};
       if (id === undefined) return;
       const transform = newState.transforms[id];
       newState.transforms[id] = unpackCurrent(transform, value);

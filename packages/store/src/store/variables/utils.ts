@@ -1,16 +1,31 @@
-import { VariableTypes, VariableKinds } from './types';
+import { VariableTypes, PropTypes, CurrentValue } from './types';
 
 // eslint-disable-next-line import/prefer-default-export
-export function convertValue(value: VariableTypes, type: VariableKinds): VariableTypes {
+export function convertValue(value: VariableTypes, type: PropTypes): VariableTypes {
   switch (type) {
-    case VariableKinds.number:
+    case PropTypes.number:
       return Number(value);
-    case VariableKinds.string:
+    case PropTypes.string:
       return value;
     default:
       return value;
   }
 }
+
+
+export function includeCurrentValue<T extends {
+  value: VariableTypes;
+  func: string;
+}>(obj: T, type: PropTypes, current?: VariableTypes): T & CurrentValue {
+  const derived = obj.func !== '';
+  return {
+    ...obj,
+    derived,
+    value: derived ? null : convertValue(obj.value, type),
+    current: derived ? null : convertValue(current ?? obj.value, type),
+  };
+}
+
 
 export function getScopeAndName(
   scopeAndName: string, defaultScope: string = 'global',
