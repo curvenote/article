@@ -61,8 +61,7 @@ export interface UpdateVariableValue {
 export interface RemoveVariable {
   type: typeof REMOVE_VARIABLE;
   payload: {
-    scope: string;
-    name: string;
+    id: string;
   }
 }
 

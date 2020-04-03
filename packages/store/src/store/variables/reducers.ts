@@ -8,7 +8,7 @@ import {
 } from './types';
 import { RETURN_VARIABLES } from '../comms/types';
 import { setVariables } from './selectors';
-import { convertValue } from './utils';
+import { convertValue, testScopeAndName } from './utils';
 
 const initialState: VariablesState = {
   variables: {},
@@ -33,6 +33,8 @@ const variablesReducer = (
   switch (action.type) {
     case CREATE_VARIABLE: {
       const variable = action.payload;
+      const { scope, name } = variable;
+      if (!testScopeAndName(scope, name)) throw new Error('Scope or name has bad characters');
       const newState = {
         ...state,
         variables: {
@@ -40,6 +42,17 @@ const variablesReducer = (
           [variable.id]: includeCurrentValue(variable),
         },
       };
+      return newState;
+    }
+    case REMOVE_VARIABLE: {
+      const { id } = action.payload;
+      const newState = {
+        ...state,
+        variables: {
+          ...state?.variables,
+        },
+      };
+      delete newState.variables[id];
       return newState;
     }
     case UPDATE_VARIABLE_VALUE: {
@@ -54,17 +67,6 @@ const variablesReducer = (
           [name]: includeCurrentValue(variable, value),
         },
       };
-    }
-    case REMOVE_VARIABLE: {
-      const { name } = action.payload;
-      const newState = {
-        ...state,
-        variables: {
-          ...state?.variables,
-        },
-      };
-      delete newState.variables[name];
-      return newState;
     }
     case CREATE_TRANSFORM: {
       const { previous, transform } = action.payload;

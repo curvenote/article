@@ -9,15 +9,15 @@ export function mount(state: State): VariablesState {
   return state.variables;
 }
 
-export function getVariable(state: State, id: string): Variable | null {
-  return mount(state).variables[id] ?? null;
+export function getVariable(state: State, id: string): Variable | undefined {
+  return mount(state).variables[id];
 }
 
-export function getVariableByName(state: State, scopeAndName: string): Variable | null {
+export function getVariableByName(state: State, scopeAndName: string): Variable | undefined {
   const { scope, name } = getScopeAndName(scopeAndName);
   const filtered = Object.entries(mount(state).variables)
     .filter(([, variable]) => variable.scope === scope && variable.name === name);
-  return filtered.length > 0 ? filtered[0][1] : null;
+  return filtered.length > 0 ? filtered[0][1] : undefined;
 }
 
 export function getScopes(state: State): string[] {

@@ -22,3 +22,9 @@ export function getScopeAndName(
   if (split.length !== 2) throw new Error('name is malformed');
   return { scope: split[0], name: split[1] };
 }
+
+export function testScopeAndName(scope: string, name: string): boolean {
+  // Simple variable names only ....
+  const regex = /^[a-zA-Z_$][0-9a-zA-Z_$]*$/;
+  return regex.test(scope) && regex.test(name);
+}
