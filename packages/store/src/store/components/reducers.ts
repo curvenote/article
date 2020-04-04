@@ -4,8 +4,9 @@ import {
   DefineComponentProperty, ComponentSpec, ComponentProperty,
   DEFINE_COMPONENT_SPEC, DEFINE_COMPONENT,
 } from './types';
+import { RETURN_RESULTS } from '../comms/types';
 import { Dictionary, forEachObject } from '../../utils';
-import { includeCurrentValue, testScopeAndName } from '../variables/utils';
+import { includeCurrentValue, testScopeAndName, unpackCurrent } from '../variables/utils';
 
 const initialState: ComponentsState = {
   specs: {},
@@ -59,6 +60,28 @@ const componentsReducer = (
           [component.id]: component,
         },
       };
+    }
+    case RETURN_RESULTS: {
+      const newState = {
+        ...state,
+        components: {
+          ...state.components,
+        },
+      };
+      Object.entries(action.payload.results.components).forEach(([id, properties]) => {
+        if (newState.components[id] == null) return;
+        Object.entries(properties).forEach(([propName, value]) => {
+          if (newState.components[id].properties[propName] == null) return;
+          newState.components[id] = {
+            ...newState.components[id],
+            properties: {
+              ...newState.components[id].properties,
+              [propName]: unpackCurrent(newState.components[id].properties[propName], value),
+            },
+          };
+        });
+      });
+      return newState;
     }
     default:
       return state;

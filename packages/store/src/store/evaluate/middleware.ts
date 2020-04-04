@@ -1,16 +1,29 @@
-import { EVALUATE_VARIABLES } from '../comms/types';
-import { returnVariables } from '../comms/actions';
+import { EVALUATE } from '../comms/types';
+import { returnResults } from '../comms/actions';
 import { Middleware } from '../types';
 import { evaluate } from './evaluate';
+import { COMPONENT_EVENT, ComponentEventAction } from '../components/types';
 
 const evaluateMiddleware: Middleware = (
   (store) => (next) => (action) => {
     const result = next(action);
     switch (action.type) {
-      case EVALUATE_VARIABLES: {
-        const { id, variables } = action.payload;
-        const evaluated = evaluate(variables);
-        store.dispatch(returnVariables(id, evaluated));
+      case EVALUATE: {
+        const { id } = action.payload;
+        const evaluated = store.dispatch(evaluate());
+        store.dispatch(returnResults(id, evaluated));
+        break;
+      }
+      case COMPONENT_EVENT: {
+        const {
+          id, component, name, values,
+        } = (action as ComponentEventAction).payload;
+        const evaluated = store.dispatch(evaluate({
+          id: component,
+          name,
+          values,
+        }));
+        store.dispatch(returnResults(id, evaluated));
         break;
       }
       default:

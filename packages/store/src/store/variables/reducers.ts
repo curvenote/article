@@ -3,16 +3,11 @@ import {
   VariablesActionTypes,
   DEFINE_VARIABLE, REMOVE_VARIABLE,
   UPDATE_VARIABLE_VALUE,
-  CREATE_TRANSFORM, REMOVE_TRANSFORM,
 } from './types';
-import { RETURN_VARIABLES } from '../comms/types';
-import { setVariables } from './selectors';
-import { includeCurrentValue, testScopeAndName } from './utils';
+import { RETURN_RESULTS } from '../comms/types';
+import { includeCurrentValue, testScopeAndName, unpackCurrent } from './utils';
 
-const initialState: VariablesState = {
-  variables: {},
-  transforms: {},
-};
+const initialState: VariablesState = {};
 
 
 const variablesReducer = (
@@ -26,10 +21,7 @@ const variablesReducer = (
       if (!testScopeAndName(scope, name)) throw new Error('Scope or name has bad characters');
       const newState = {
         ...state,
-        variables: {
-          ...state?.variables,
-          [variable.id]: includeCurrentValue(variable, variable.type),
-        },
+        [variable.id]: includeCurrentValue(variable, variable.type),
       };
       return newState;
     }
@@ -37,60 +29,28 @@ const variablesReducer = (
       const { id } = action.payload;
       const newState = {
         ...state,
-        variables: {
-          ...state?.variables,
-        },
       };
-      delete newState.variables[id];
+      delete newState[id];
       return newState;
     }
     case UPDATE_VARIABLE_VALUE: {
-      const { name, value } = action.payload;
-      const variable = state?.variables[name];
+      const { id, value } = action.payload;
+      const variable = state[id];
       if (variable == null) throw new Error('No variable.');
       if (variable.derived) throw new Error('Cannot update a derived variable.');
       return {
         ...state,
-        variables: {
-          ...state?.variables,
-          [name]: includeCurrentValue(variable, variable.type, value),
-        },
+        [id]: includeCurrentValue(variable, variable.type, value),
       };
     }
-    case CREATE_TRANSFORM: {
-      const { previous, transform } = action.payload;
+    case RETURN_RESULTS: {
       const newState = {
         ...state,
-        transforms: {
-          ...state?.transforms,
-          [transform.id]: { ...transform, current: null },
-        },
       };
-      if (previous !== transform.id) {
-        delete newState.transforms[previous];
-      }
+      Object.entries(action.payload.results.variables).forEach(([id, value]) => {
+        newState[id] = unpackCurrent(newState[id], value);
+      });
       return newState;
-    }
-    case REMOVE_TRANSFORM: {
-      const { id, ids } = action.payload;
-      const newState = {
-        ...state,
-        transforms: {
-          ...state?.transforms,
-        },
-      };
-      if (id) {
-        delete newState.transforms[id];
-      }
-      if (ids) {
-        ids.forEach((key) => {
-          delete newState.transforms[key];
-        });
-      }
-      return newState;
-    }
-    case RETURN_VARIABLES: {
-      return setVariables(state, action.payload.variables);
     }
     default:
       return state;

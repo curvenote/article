@@ -1,11 +1,10 @@
 import { v4 as uuid } from 'uuid';
 import {
   UPDATE_VARIABLE_VALUE, DEFINE_VARIABLE, REMOVE_VARIABLE,
-  CREATE_TRANSFORM, REMOVE_TRANSFORM,
 } from './variables/types';
 import { evaluateVariables } from './comms/actions';
-import { getVariables } from './variables/selectors';
 import { Middleware } from './types';
+import { DEFINE_COMPONENT_SPEC, DEFINE_COMPONENT } from './components/types';
 
 const triggerEvaluateMiddleware: Middleware = (
   (store) => (next) => (action) => {
@@ -14,11 +13,10 @@ const triggerEvaluateMiddleware: Middleware = (
       case DEFINE_VARIABLE:
       case REMOVE_VARIABLE:
       case UPDATE_VARIABLE_VALUE:
-      case CREATE_TRANSFORM:
-      case REMOVE_TRANSFORM: {
+      case DEFINE_COMPONENT_SPEC:
+      case DEFINE_COMPONENT: {
         const id = uuid();
-        const variables = getVariables(store.getState());
-        store.dispatch(evaluateVariables(id, variables));
+        store.dispatch(evaluateVariables(id));
         break;
       }
       default:

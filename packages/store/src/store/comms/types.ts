@@ -1,24 +1,7 @@
 import { Dictionary } from '../../utils';
 
-export const EVALUATE_VARIABLES = 'EVALUATE_VARIABLES';
-export const RETURN_VARIABLES = 'RETURN_VARIABLES';
-
-export type Args = { name: string, value: string }[];
-
-export type Transform = {
-  id: string;
-  func: string;
-  args: Args;
-};
-
-export type VariablesForExecution = {
-  constants: Dictionary<any>;
-  derived: Dictionary<string>;
-  transforms: Dictionary<Transform>;
-};
-
-
-export type ScopedVariablesForExecution = Dictionary<VariablesForExecution>;
+export const EVALUATE = 'EVALUATE';
+export const RETURN_RESULTS = 'RETURN_RESULTS';
 
 export enum EvaluationErrorTypes {
   evaluation,
@@ -33,31 +16,28 @@ export type EvaluationError = {
 
 export type ValueOrError = { value?: any, error?: EvaluationError };
 
-export type Variables = {
-  constants: Dictionary<ValueOrError>;
-  transforms: Dictionary<ValueOrError>;
-  derived: Dictionary<ValueOrError>;
+export type Results = {
+  variables: Dictionary<ValueOrError>;
+  components: Dictionary<Dictionary<ValueOrError>>;
+  event: ValueOrError;
 };
 
-export type ScopedVariables = Dictionary<Variables>;
-
 export interface EvaluateVariables {
-  type: typeof EVALUATE_VARIABLES;
+  type: typeof EVALUATE;
   payload: {
     id: string;
-    variables: ScopedVariablesForExecution;
   }
 }
 
-export interface ReturnVariables {
-  type: typeof RETURN_VARIABLES;
+export interface ReturnResults {
+  type: typeof RETURN_RESULTS;
   payload: {
     id: string;
-    variables: ScopedVariables;
+    results: Results;
   }
 }
 
 export type CommunicationActionTypes = (
   EvaluateVariables |
-  ReturnVariables
+  ReturnResults
 );

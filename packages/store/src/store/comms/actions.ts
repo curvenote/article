@@ -1,29 +1,21 @@
 import {
   CommunicationActionTypes,
-  EVALUATE_VARIABLES, RETURN_VARIABLES,
-  ScopedVariablesForExecution, ScopedVariables,
+  EVALUATE, RETURN_RESULTS,
+  Results,
 } from './types';
 
-export function evaluateVariables(
-  id: string, variables: ScopedVariablesForExecution,
-): CommunicationActionTypes {
+export function evaluateVariables(id: string): CommunicationActionTypes {
   return {
-    type: EVALUATE_VARIABLES,
-    payload: {
-      id,
-      variables,
-    },
+    type: EVALUATE,
+    payload: { id },
   };
 }
 
-export function returnVariables(
-  id: string, variables: ScopedVariables,
+export function returnResults(
+  id: string, results: Results,
 ): CommunicationActionTypes {
   return {
-    type: RETURN_VARIABLES,
-    payload: {
-      id,
-      variables,
-    },
+    type: RETURN_RESULTS,
+    payload: { id, results },
   };
 }

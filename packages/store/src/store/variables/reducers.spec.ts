@@ -2,10 +2,7 @@ import reducer from './reducers';
 import * as actions from './actions';
 import { PropTypes } from './types';
 
-const initialState = {
-  variables: {},
-  transforms: {},
-};
+const initialState = {};
 
 describe('Variables reducer', () => {
   it('should return the initial state', () => {
@@ -25,20 +22,17 @@ describe('Variables reducer', () => {
         format: '.2f',
       })),
     ).toEqual({
-      transforms: {},
-      variables: {
-        'RANDOM-ID': {
-          id: 'RANDOM-ID',
-          current: 42,
-          derived: false,
-          description: '',
-          format: '.2f',
-          scope: 'myScope',
-          name: 'myVar',
-          type: 'Number',
-          value: 42,
-          func: '',
-        },
+      'RANDOM-ID': {
+        id: 'RANDOM-ID',
+        current: 42,
+        derived: false,
+        description: '',
+        format: '.2f',
+        scope: 'myScope',
+        name: 'myVar',
+        type: 'Number',
+        value: 42,
+        func: '',
       },
     });
   });
@@ -56,20 +50,17 @@ describe('Variables reducer', () => {
         format: '.2f',
       })),
     ).toEqual({
-      transforms: {},
-      variables: {
-        'RANDOM-ID': {
-          id: 'RANDOM-ID',
-          current: null,
-          derived: true,
-          description: '',
-          format: '.2f',
-          scope: 'myScope',
-          name: 'myVar',
-          type: 'Number',
-          value: null,
-          func: '1 + 1',
-        },
+      'RANDOM-ID': {
+        id: 'RANDOM-ID',
+        current: null,
+        derived: true,
+        description: '',
+        format: '.2f',
+        scope: 'myScope',
+        name: 'myVar',
+        type: 'Number',
+        value: null,
+        func: '1 + 1',
       },
     });
   });

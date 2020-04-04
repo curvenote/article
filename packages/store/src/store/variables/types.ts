@@ -1,10 +1,8 @@
-import { CommunicationActionTypes, EvaluationError, Transform } from '../comms/types';
+import { CommunicationActionTypes, EvaluationError } from '../comms/types';
 
 export const DEFINE_VARIABLE = 'DEFINE_VARIABLE';
 export const UPDATE_VARIABLE_VALUE = 'UPDATE_VARIABLE_VALUE';
 export const REMOVE_VARIABLE = 'REMOVE_VARIABLE';
-export const CREATE_TRANSFORM = 'CREATE_TRANSFORM';
-export const REMOVE_TRANSFORM = 'REMOVE_TRANSFORM';
 
 export enum PropTypes{
   string = 'String',
@@ -32,18 +30,8 @@ export interface CurrentValue {
 
 export type Variable = DefineVariable & CurrentValue;
 
-export interface CurrentTransform extends Transform{
-  current: VariableTypes;
-  error?: EvaluationError;
-}
-
 export type VariablesState = {
-  variables: {
-    [index: string]: Variable;
-  }
-  transforms: {
-    [index: string]: CurrentTransform;
-  }
+  [index: string]: Variable;
 };
 
 export interface CreateVariable {
@@ -54,8 +42,7 @@ export interface CreateVariable {
 export interface UpdateVariableValue {
   type: typeof UPDATE_VARIABLE_VALUE;
   payload: {
-    scope: string;
-    name: string;
+    id: string;
     value: VariableTypes;
   }
 }
@@ -67,30 +54,9 @@ export interface RemoveVariable {
   }
 }
 
-
-export interface CreateTransform {
-  type: typeof CREATE_TRANSFORM;
-  payload: {
-    scope: string;
-    transform: Transform;
-    previous: string;
-  }
-}
-
-export interface RemoveTransform {
-  type: typeof REMOVE_TRANSFORM;
-  payload: {
-    scope: string;
-    id?: string;
-    ids?: string[];
-  }
-}
-
 export type VariablesActionTypes = (
   CreateVariable |
   UpdateVariableValue |
   RemoveVariable |
-  CreateTransform |
-  RemoveTransform |
   CommunicationActionTypes
 );

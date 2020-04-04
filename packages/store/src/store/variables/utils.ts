@@ -1,4 +1,5 @@
 import { VariableTypes, PropTypes, CurrentValue } from './types';
+import { ValueOrError } from '../comms/types';
 
 // eslint-disable-next-line import/prefer-default-export
 export function convertValue(value: VariableTypes, type: PropTypes): VariableTypes {
@@ -26,6 +27,12 @@ export function includeCurrentValue<T extends {
   };
 }
 
+export function unpackCurrent<T>(state: T, current: ValueOrError): T {
+  // TODO: Check the type of the return value.
+  if (current == null) return { ...state };
+  if (current.error) return { ...state, current: null, error: { ...current.error } };
+  return { ...state, current: current.value ?? null, error: undefined };
+}
 
 export function getScopeAndName(
   scopeAndName: string, defaultScope: string = 'global',

@@ -1,8 +1,10 @@
 import { Dictionary } from '../../utils';
 import { VariableTypes, CurrentValue, PropTypes } from '../variables/types';
+import { CommunicationActionTypes } from '../comms/types';
 
 export const DEFINE_COMPONENT_SPEC = 'DEFINE_COMPONENT_SPEC';
 export const DEFINE_COMPONENT = 'DEFINE_COMPONENT';
+export const COMPONENT_EVENT = 'COMPONENT_EVENT';
 
 export interface ComponentPropertySpec {
   name: string;
@@ -53,17 +55,29 @@ export type ComponentsState = {
   components: Dictionary<Component>;
 };
 
-export interface DefineComponent {
+export interface ComponentEventAction {
+  type: typeof COMPONENT_EVENT;
+  payload: {
+    id: string;
+    component: string;
+    name: string;
+    values: VariableTypes[];
+  };
+}
+
+export interface DefineComponentAction {
   type: typeof DEFINE_COMPONENT_SPEC;
   payload: ComponentSpec;
 }
 
-export interface CreateComponent {
+export interface CreateComponentAction {
   type: typeof DEFINE_COMPONENT;
   payload: NewComponent;
 }
 
 export type ComponentActionTypes = (
-  DefineComponent |
-  CreateComponent
+  DefineComponentAction |
+  CreateComponentAction |
+  ComponentEventAction |
+  CommunicationActionTypes
 );

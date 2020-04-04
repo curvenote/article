@@ -1,10 +1,9 @@
 import { v4 as uuid } from 'uuid';
-import { Transform } from '../comms/types';
 import {
   DefineVariable, VariablesActionTypes,
   VariableTypes,
   DEFINE_VARIABLE, REMOVE_VARIABLE, UPDATE_VARIABLE_VALUE,
-  CREATE_TRANSFORM, REMOVE_TRANSFORM, PropTypes,
+  PropTypes,
 } from './types';
 import { AppThunk, State, Dispatch } from '../types';
 import { getScopeAndName } from './utils';
@@ -101,40 +100,13 @@ export function updateVariable(
 }
 
 export function updateVariableValue(
-  scope: string, name: string, value: VariableTypes,
+  id: string, value: VariableTypes,
 ): VariablesActionTypes {
   return {
     type: UPDATE_VARIABLE_VALUE,
     payload: {
-      scope,
-      name,
+      id,
       value,
-    },
-  };
-}
-
-export function createTransform(
-  scope: string, previous: string, transform: Transform,
-): VariablesActionTypes {
-  return {
-    type: CREATE_TRANSFORM,
-    payload: {
-      scope,
-      transform,
-      previous,
-    },
-  };
-}
-
-export function removeTransform(
-  scope: string, ids: string | string[],
-): VariablesActionTypes {
-  const payload = (typeof ids === 'string') ? { id: ids } : { ids };
-  return {
-    type: REMOVE_TRANSFORM,
-    payload: {
-      scope,
-      ...payload,
     },
   };
 }

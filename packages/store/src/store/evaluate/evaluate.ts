@@ -1,59 +1,24 @@
 import {
-  ScopedVariables,
-  VariablesForExecution,
   ValueOrError,
-  Args,
   EvaluationErrorTypes,
+  Results,
 } from '../comms/types';
 import { Dictionary } from '../../utils';
-
-
-export function getScopedVariables(scoped: Dictionary<VariablesForExecution>): ScopedVariables {
-  // Create the action to send back
-  const variables: ScopedVariables = Object.fromEntries(
-    Object.entries(scoped).map(([name, scope]) => [
-      name,
-      {
-        constants: Object.fromEntries(
-          Object.entries(scope.constants)
-            .map(([key, value]) => [key, { value }]),
-        ),
-        derived: {},
-        transforms: {},
-      },
-    ]),
-  );
-  return variables;
-}
-
-export function getExecutionVariables(
-  scoped: Dictionary<VariablesForExecution>,
-): Dictionary<Dictionary<any>> {
-  // Get the static variables.
-  const variablesForExecution = Object.fromEntries(
-    Object.entries(scoped).map(([name, scope]) => [
-      name,
-      { ...scope.constants },
-    ]),
-  );
-  return variablesForExecution;
-}
+import { getExecutionState } from './selectors';
+import { AppThunk, State } from '../types';
+import { VariableTypes } from '../variables/types';
+import { ExecutionState } from './types';
+import { getScopeAndName } from '../variables/utils';
+import { getVariableByName } from '../variables/selectors';
 
 export function evaluateVariable(
   scopeName: string,
   funcString: string,
-  executionVariables: Dictionary<Dictionary<any>>,
-  args: Args,
+  executionState: Dictionary<Dictionary<any>>,
+  argNames: string[] = [],
+  argValues: VariableTypes[] = [],
 ): ValueOrError {
-  const currentKeys = Object.keys(executionVariables[scopeName]);
-  const argNames = args.map((arg) => arg.name);
-  const argValues = args.map((arg) => {
-    const split = arg.value.split('.');
-    if (split.length > 1) {
-      return executionVariables[split[0]][split[1]];
-    }
-    return executionVariables[scopeName][split[0]];
-  });
+  const currentKeys = Object.keys(executionState[scopeName]);
   let derived;
   try {
     const extractScope = currentKeys.length > 0
@@ -70,8 +35,8 @@ export function evaluateVariable(
     `;
     // eslint-disable-next-line no-new-func
     const func = Function('$variables', '$scope', evalString);
-    // TODO: could potentially clone the executionVariables?
-    derived = func(executionVariables, scopeName)(...argValues);
+    // TODO: could potentially clone the executionState?
+    derived = func(executionState, scopeName)(...argValues);
   } catch (error) {
     return {
       error: { message: error, type: EvaluationErrorTypes.evaluation },
@@ -93,28 +58,88 @@ export function evaluateVariable(
   }
 }
 
+export interface Event {
+  id: string;
+  name: string;
+  values: VariableTypes[];
+}
 
-export function evaluate(scoped: Dictionary<VariablesForExecution>): ScopedVariables {
-  const variables = getScopedVariables(scoped);
-  const executionVariables = getExecutionVariables(scoped);
+function evaluateEvent(state: State, event: Event, executionState: ExecutionState) {
+  const { id, name, values } = event;
 
-  Object.entries(scoped).forEach(([scopeName, scope]) => {
-    // Append the derived variables.
-    Object.entries(scope.derived)
-      .forEach(([name, valueFunction]) => {
-        const result = evaluateVariable(scopeName, valueFunction, executionVariables, []);
-        variables[scopeName].derived[name] = result;
+  const component = state.components.components[id];
+  const spec = state.components.specs[component.spec].events[name];
+  const eventFunc = component.events[name].func;
+
+  return {
+    scope: component.scope,
+    result: evaluateVariable(component.scope, eventFunc, executionState, spec.args, values),
+  };
+}
+
+
+export function evaluate(event?: Event): AppThunk<Results> {
+  return (dispatch, getState) => {
+    // These are the variables that will be returned
+    const results: Results = {
+      variables: {},
+      components: {},
+      event: {},
+    };
+
+    // Get the scopes with current values
+    const executionState = getExecutionState(getState());
+
+    // Process any events
+    if (event !== undefined) {
+      (() => {
+        const { result, scope } = evaluateEvent(getState(), event, executionState);
+        results.event = result;
         if (result.error) return;
-        executionVariables[scopeName][name] = result.value;
+        if (typeof result.value === 'object') {
+          Object.entries(result.value as Dictionary<any>).forEach(([key, value]) => {
+            const { scope: toScope, name } = getScopeAndName(key, scope);
+            const variable = getVariableByName(getState(), `${toScope}.${name}`);
+            // TODO: raise error or something here as the event is not working
+            if (variable == null || variable.derived) return;
+            results.variables[variable.id] = { value };
+            executionState[toScope][name] = value;
+          });
+        }
+      })();
+    }
+
+    // Append the derived variables
+    Object.entries(getState().variables)
+      .filter(([, variable]) => variable.derived)
+      .forEach(([id, variable]) => {
+        const { scope, name } = variable;
+        // You can't self reference
+        delete executionState[scope][name];
+        const result = evaluateVariable(scope, variable.func, executionState);
+        results.variables[id] = result;
+        if (result.error) return;
+        executionState[scope][name] = result.value;
       });
 
-    // Append the derived variables.
-    Object.entries(scope.transforms)
-      .forEach(([name, { func, args }]) => {
-        const result = evaluateVariable(scopeName, func, executionVariables, args);
-        variables[scopeName].transforms[name] = result;
+    // Evaluate the components
+    Object.entries(getState().components.components)
+      .forEach(([id, component]) => {
+        const { scope, name } = component;
+        results.components[id] = {};
+        Object.entries(component.properties)
+          // only the derived properties
+          .filter(([, prop]) => prop.derived)
+          .forEach(([propName, prop]) => {
+            const result = evaluateVariable(scope, prop.func, executionState);
+            results.components[id][propName] = result;
+            if (result.error) return;
+            if (name) {
+              executionState[scope][name][propName] = result.value;
+            }
+          });
       });
-  });
 
-  return variables;
+    return results;
+  };
 }
