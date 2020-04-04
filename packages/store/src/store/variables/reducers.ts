@@ -2,13 +2,11 @@ import {
   VariablesState,
   VariablesActionTypes,
   DEFINE_VARIABLE, REMOVE_VARIABLE,
-  UPDATE_VARIABLE_VALUE,
 } from './types';
 import { RETURN_RESULTS } from '../comms/types';
 import { includeCurrentValue, testScopeAndName, unpackCurrent } from './utils';
 
 const initialState: VariablesState = {};
-
 
 const variablesReducer = (
   state: VariablesState = initialState,
@@ -33,21 +31,12 @@ const variablesReducer = (
       delete newState[id];
       return newState;
     }
-    case UPDATE_VARIABLE_VALUE: {
-      const { id, value } = action.payload;
-      const variable = state[id];
-      if (variable == null) throw new Error('No variable.');
-      if (variable.derived) throw new Error('Cannot update a derived variable.');
-      return {
-        ...state,
-        [id]: includeCurrentValue(variable, variable.type, value),
-      };
-    }
     case RETURN_RESULTS: {
       const newState = {
         ...state,
       };
       Object.entries(action.payload.results.variables).forEach(([id, value]) => {
+        if (newState[id] == null) return;
         newState[id] = unpackCurrent(newState[id], value);
       });
       return newState;

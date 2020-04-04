@@ -1,7 +1,6 @@
 import { CommunicationActionTypes, EvaluationError } from '../comms/types';
 
 export const DEFINE_VARIABLE = 'DEFINE_VARIABLE';
-export const UPDATE_VARIABLE_VALUE = 'UPDATE_VARIABLE_VALUE';
 export const REMOVE_VARIABLE = 'REMOVE_VARIABLE';
 
 export enum PropTypes{
@@ -39,14 +38,6 @@ export interface CreateVariable {
   payload: DefineVariable;
 }
 
-export interface UpdateVariableValue {
-  type: typeof UPDATE_VARIABLE_VALUE;
-  payload: {
-    id: string;
-    value: VariableTypes;
-  }
-}
-
 export interface RemoveVariable {
   type: typeof REMOVE_VARIABLE;
   payload: {
@@ -56,7 +47,6 @@ export interface RemoveVariable {
 
 export type VariablesActionTypes = (
   CreateVariable |
-  UpdateVariableValue |
   RemoveVariable |
   CommunicationActionTypes
 );

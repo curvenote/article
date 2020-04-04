@@ -1,7 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import {
-  UPDATE_VARIABLE_VALUE, DEFINE_VARIABLE, REMOVE_VARIABLE,
-} from './variables/types';
+import { DEFINE_VARIABLE, REMOVE_VARIABLE } from './variables/types';
 import { evaluateVariables } from './comms/actions';
 import { Middleware } from './types';
 import { DEFINE_COMPONENT_SPEC, DEFINE_COMPONENT } from './components/types';
@@ -12,7 +10,6 @@ const triggerEvaluateMiddleware: Middleware = (
     switch (action.type) {
       case DEFINE_VARIABLE:
       case REMOVE_VARIABLE:
-      case UPDATE_VARIABLE_VALUE:
       case DEFINE_COMPONENT_SPEC:
       case DEFINE_COMPONENT: {
         const id = uuid();

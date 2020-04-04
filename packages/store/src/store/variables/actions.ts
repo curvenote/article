@@ -2,7 +2,7 @@ import { v4 as uuid } from 'uuid';
 import {
   DefineVariable, VariablesActionTypes,
   VariableTypes,
-  DEFINE_VARIABLE, REMOVE_VARIABLE, UPDATE_VARIABLE_VALUE,
+  DEFINE_VARIABLE, REMOVE_VARIABLE,
   PropTypes,
 } from './types';
 import { AppThunk, State, Dispatch } from '../types';
@@ -23,20 +23,16 @@ export function removeVariable(id: string): VariablesActionTypes {
   };
 }
 
-export interface CreateVariableOptions{
-  description: string;
-  type: PropTypes;
-  format: string;
-}
-export interface UpdateVariableOptions extends CreateVariableOptions {
-  scope: string;
-  name: string;
-}
-const createVariableOptionDefaults: CreateVariableOptions = {
+const createVariableOptionDefaults = {
   description: '',
   type: PropTypes.number,
   format: '.1f',
 };
+export type CreateVariableOptions = typeof createVariableOptionDefaults;
+export interface UpdateVariableOptions extends CreateVariableOptions {
+  scope: string;
+  name: string;
+}
 
 const variableShortcut = (
   dispatch: Dispatch, getState: () => State, id: string,
@@ -96,17 +92,5 @@ export function updateVariable(
       id, scope, name, value, func, description, type, format,
     }));
     return variableShortcut(dispatch, getState, id);
-  };
-}
-
-export function updateVariableValue(
-  id: string, value: VariableTypes,
-): VariablesActionTypes {
-  return {
-    type: UPDATE_VARIABLE_VALUE,
-    payload: {
-      id,
-      value,
-    },
   };
 }
