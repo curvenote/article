@@ -4,6 +4,7 @@ import { CommunicationActionTypes } from '../comms/types';
 
 export const DEFINE_COMPONENT_SPEC = 'DEFINE_COMPONENT_SPEC';
 export const DEFINE_COMPONENT = 'DEFINE_COMPONENT';
+export const REMOVE_COMPONENT = 'REMOVE_COMPONENT';
 export const COMPONENT_EVENT = 'COMPONENT_EVENT';
 
 export interface ComponentPropertySpec {
@@ -75,9 +76,15 @@ export interface CreateComponentAction {
   payload: NewComponent;
 }
 
+export interface RemoveComponentAction {
+  type: typeof REMOVE_COMPONENT;
+  payload: {id: string};
+}
+
 export type ComponentActionTypes = (
   DefineComponentAction |
   CreateComponentAction |
+  RemoveComponentAction |
   ComponentEventAction |
   CommunicationActionTypes
 );

@@ -11,6 +11,7 @@ import {
   DefineComponentProperty,
   ComponentEvent,
   COMPONENT_EVENT,
+  REMOVE_COMPONENT,
 } from './types';
 import { AppThunk, State, Dispatch } from '../types';
 import { getComponentSpec, getComponent, getComponentState } from './selectors';
@@ -33,6 +34,13 @@ export function defineComponent(component: NewComponent): ComponentActionTypes {
   };
 }
 
+export function removeComponent(id: string): ComponentActionTypes {
+  return {
+    type: REMOVE_COMPONENT,
+    payload: { id },
+  };
+}
+
 function componentShortcut<T extends string | number | symbol>(
   dispatch: Dispatch, getState: () => State, id: string,
 ) {
@@ -48,7 +56,7 @@ function componentShortcut<T extends string | number | symbol>(
     //   options?: Partial<UpdateVariableOptions>,
     //   // eslint-disable-next-line @typescript-eslint/no-use-before-define
     // ) => dispatch(updateVariable(id, value, func, options)),
-    // remove: () => dispatch(removeVariable(id)),
+    remove: () => dispatch(removeComponent(id)),
     dispatchEvent(name: string, values: VariableTypes[]) {
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
       return dispatch(sendComponentEvent(id, name, values));

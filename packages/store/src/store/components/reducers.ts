@@ -2,7 +2,7 @@ import {
   ComponentsState,
   ComponentActionTypes,
   DefineComponentProperty, ComponentSpec, ComponentProperty,
-  DEFINE_COMPONENT_SPEC, DEFINE_COMPONENT,
+  DEFINE_COMPONENT_SPEC, DEFINE_COMPONENT, REMOVE_COMPONENT,
 } from './types';
 import { RETURN_RESULTS } from '../comms/types';
 import { Dictionary, forEachObject } from '../../utils';
@@ -60,6 +60,15 @@ const componentsReducer = (
           [component.id]: component,
         },
       };
+    }
+    case REMOVE_COMPONENT: {
+      const { id } = action.payload;
+      const newState = {
+        ...state,
+        components: { ...state.components },
+      };
+      delete newState.components[id];
+      return newState;
     }
     case RETURN_RESULTS: {
       const newState = {

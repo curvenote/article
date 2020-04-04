@@ -58,5 +58,10 @@ describe('integration', () => {
     expect(x.get()).toBe(4);
     expect(range.state.value).toBe(4);
     expect(range.state.max).toBe(9);
+
+    // Remove it!
+    range.remove();
+    expect(x.get()).toBe(4);
+    expect(range.state).toBeUndefined();
   });
 });
