@@ -3,20 +3,33 @@ import thunkMiddleware from 'redux-thunk';
 import inkStore, { types } from '.';
 import { getVariable, getVariableByName } from './store/variables/selectors';
 import { updateVariable } from './store/actions';
-import rootReducer from './store/reducers';
+import reducer from './store/reducers';
 
-const store: types.Store = createStore(
-  rootReducer,
+const store = createStore(
+  reducer,
   applyMiddleware(
     thunkMiddleware,
     inkStore.triggerEvaluateMiddleware,
     inkStore.evaluateMiddleware,
   ),
-);
+) as types.Store;
 
 describe('integration', () => {
   it('should evaluate the variable', () => {
     const x = store.dispatch(inkStore.actions.createVariable('scope.x', null, '1 + 1'));
+
+    // Ensure that noops do not trigger a state change
+    const store1 = store.getState();
+    const state1 = x.variable;
+    x.set(null, '1 + 1');
+    const store2 = store.getState();
+    const state2 = x.variable;
+    expect(state1 === state2).toBe(true);
+    expect(store1.variables === store2.variables).toBe(true);
+    x.set(null, '0 + 2');
+    const state3 = x.variable;
+    // Just to be sure it isn't giving back the same thing!
+    expect(state1 === state3).toBe(false);
 
     expect(getVariable(store.getState(), x.id)?.current).toEqual(2);
 

@@ -1,5 +1,7 @@
 import { Dictionary } from '../../utils';
-import { VariableTypes, CurrentValue, PropTypes } from '../variables/types';
+import {
+  VariableTypes, CurrentValue, PropTypes, VariableShortcut,
+} from '../variables/types';
 import { CommunicationActionTypes } from '../comms/types';
 
 export const DEFINE_COMPONENT_SPEC = 'DEFINE_COMPONENT_SPEC';
@@ -88,3 +90,29 @@ export type ComponentActionTypes = (
   ComponentEventAction |
   CommunicationActionTypes
 );
+
+export interface CreateComponentOptionDefaults{
+  description: string;
+}
+export interface UpdateComponentOptionDefaults extends CreateComponentOptionDefaults {
+  scope: string;
+  name: string;
+}
+
+export type PartialProps = Partial<Omit<DefineComponentProperty, 'name'>>;
+
+export type ComponentShortcut<T extends string | number | symbol> = {
+  readonly id: string;
+  readonly scope: string | undefined;
+  readonly name: string | undefined;
+  readonly component: Component | undefined;
+  readonly state: Record<T, VariableTypes> | undefined;
+  set: (
+    properties: Dictionary<PartialProps | VariableShortcut>,
+    events?: Dictionary<Omit<ComponentEvent, 'name'>>,
+    options?: UpdateComponentOptionDefaults,
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  ) => ComponentShortcut<T>,
+  remove: () => ComponentActionTypes;
+  dispatchEvent(name: string, values: VariableTypes[]): void;
+};

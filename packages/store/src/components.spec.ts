@@ -13,14 +13,14 @@ const rangeEvents = {
   change: { args: ['value'] },
 };
 
-const store: types.Store = createStore(
+const store = createStore(
   rootReducer,
   applyMiddleware(
     thunkMiddleware,
     ink.triggerEvaluateMiddleware,
     ink.evaluateMiddleware,
   ),
-);
+) as types.Store;
 
 store.dispatch(actions.createComponentSpec(
   'range',
@@ -32,6 +32,7 @@ describe('integration', () => {
   it('should evaluate the variable', () => {
     const x = store.dispatch(ink.actions.createVariable('scope.x', 3));
     const max = store.dispatch(ink.actions.createVariable('scope.max', 9));
+    const otherMax = store.dispatch(ink.actions.createVariable('scope.max2', 8));
 
     const range = store.dispatch(ink.actions.createComponent(
       'range', 'scope.myRange',
@@ -42,22 +43,51 @@ describe('integration', () => {
     expect(range.component?.properties.value.func).toBe('x');
     // You can set through the variable shortcut, which sets to a function
     expect(range.component?.properties.max.func).toBe('max');
-    expect(range.state.min).toBe(1);
+    expect(range.state?.min).toBe(1);
     expect(x.get()).toBe(3);
-    expect(range.state.value).toBe(3);
-    expect(range.state.max).toBe(9);
+    expect(range.state?.value).toBe(3);
+    expect(range.state?.max).toBe(9);
     // Change through event
     range.dispatchEvent('change', [5]);
-    expect(range.state.min).toBe(1);
+    expect(range.state?.min).toBe(1);
     expect(x.get()).toBe(5);
-    expect(range.state.value).toBe(5);
-    expect(range.state.max).toBe(9);
+    expect(range.state?.value).toBe(5);
+    expect(range.state?.max).toBe(9);
     // Change through setting the variable
     x.set(4);
-    expect(range.state.min).toBe(1);
+    expect(range.state?.min).toBe(1);
     expect(x.get()).toBe(4);
-    expect(range.state.value).toBe(4);
-    expect(range.state.max).toBe(9);
+    expect(range.state?.value).toBe(4);
+    expect(range.state?.max).toBe(9);
+
+    // Setting things to something else:
+    range.set({ max: otherMax });
+    expect(range.state?.min).toBe(1);
+    expect(x.get()).toBe(4);
+    expect(range.state?.value).toBe(4);
+    expect(range.state?.max).toBe(8);
+
+    // Ensure that noops do not trigger a state change
+    const store1 = store.getState();
+    const state1 = range.component;
+    max.set(9);
+    otherMax.set(8);
+    range.set(
+      { value: { func: 'x' }, max: otherMax },
+      { change: { func: '{x: value}' } },
+    );
+    const store2 = store.getState();
+    const state2 = range.component;
+    expect(state1).toEqual(state2);
+    expect(state1 === state2).toBe(true);
+    expect(store1.variables === store2.variables).toBe(true);
+    expect(store1.components === store2.components).toBe(true);
+    range.set(
+      { value: { func: 'x + 1' } },
+    );
+    const state3 = range.component;
+    // Just to be sure it isn't giving back the same thing!
+    expect(state1 === state3).toBe(false);
 
     // Remove it!
     range.remove();

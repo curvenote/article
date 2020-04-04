@@ -7,6 +7,7 @@ import {
 import { RETURN_RESULTS } from '../comms/types';
 import { Dictionary, forEachObject } from '../../utils';
 import { includeCurrentValue, testScopeAndName, unpackCurrent } from '../variables/utils';
+import { compareDefine, compareEval } from './utils';
 
 const initialState: ComponentsState = {
   specs: {},
@@ -53,6 +54,8 @@ const componentsReducer = (
         ...newComponent,
         properties: includeCurrentValueInProps(newComponent.properties, spec),
       };
+      const prev = state.components[component.id];
+      if (compareDefine(component, prev)) return state;
       return {
         ...state,
         components: {
@@ -63,6 +66,7 @@ const componentsReducer = (
     }
     case REMOVE_COMPONENT: {
       const { id } = action.payload;
+      if (state.components[id] == null) return state;
       const newState = {
         ...state,
         components: { ...state.components },
@@ -77,19 +81,25 @@ const componentsReducer = (
           ...state.components,
         },
       };
+      const oneChange = { current: false };
       Object.entries(action.payload.results.components).forEach(([id, properties]) => {
         if (newState.components[id] == null) return;
         Object.entries(properties).forEach(([propName, value]) => {
           if (newState.components[id].properties[propName] == null) return;
+          const prev = newState.components[id].properties[propName];
+          const next = unpackCurrent(prev, value);
+          if (compareEval(prev, next)) return;
           newState.components[id] = {
             ...newState.components[id],
             properties: {
               ...newState.components[id].properties,
-              [propName]: unpackCurrent(newState.components[id].properties[propName], value),
+              [propName]: next,
             },
           };
+          oneChange.current = true;
         });
       });
+      if (!oneChange.current) return state;
       return newState;
     }
     default:

@@ -38,8 +38,10 @@
     "@types/uuid": "^7.0.2"
   },
   "dependencies": {
+    "@types/underscore": "^1.9.4",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
+    "underscore": "^1.10.2",
     "uuid": "^7.0.3"
   },
   "bugs": {

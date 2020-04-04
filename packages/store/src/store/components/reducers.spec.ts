@@ -4,7 +4,7 @@ import reducer from './reducers';
 import * as actions from './actions';
 import { PropTypes } from '../variables/types';
 import { getComponentSpec } from './selectors';
-import { ComponentSpec } from './types';
+import { ComponentSpec, ComponentShortcut } from './types';
 
 const initialState = {
   specs: {},
@@ -56,11 +56,11 @@ describe('Components reducer', () => {
     expect(() => store.dispatch(badRange as any)).toThrow();
     // The null max should likely throw?
     // TODO: The scope should be set rather than the var name.
-    const range = store.dispatch(actions.createComponent('range', 'hi', { min: { value: 2 }, max: { value: null } }, {}) as any) as actions.ComponentShortcut<keyof typeof rangeProps>;
+    const range = store.dispatch(actions.createComponent('range', 'hi', { min: { value: 2 }, max: { value: null } }, {}) as any) as ComponentShortcut<keyof typeof rangeProps>;
 
     expect(range.scope).toBe('global');
     expect(range.name).toBe('hi');
-    expect(range.state.min).toBe(2);
-    expect(range.state.max).toBe(100);
+    expect(range.state?.min).toBe(2);
+    expect(range.state?.max).toBe(100);
   });
 });

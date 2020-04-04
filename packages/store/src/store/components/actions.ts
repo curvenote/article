@@ -12,12 +12,16 @@ import {
   ComponentEvent,
   COMPONENT_EVENT,
   REMOVE_COMPONENT,
+  ComponentShortcut,
+  PartialProps,
+  CreateComponentOptionDefaults,
+  UpdateComponentOptionDefaults,
+  ComponentProperty,
 } from './types';
 import { AppThunk, State, Dispatch } from '../types';
 import { getComponentSpec, getComponent, getComponentState } from './selectors';
 import { getScopeAndName } from '../variables/utils';
-import { VariableTypes } from '../variables/types';
-import { VariableShortcut } from '../variables/actions';
+import { VariableTypes, VariableShortcut } from '../variables/types';
 
 
 export function defineComponentSpec(componentSpec: ComponentSpec): ComponentActionTypes {
@@ -43,19 +47,17 @@ export function removeComponent(id: string): ComponentActionTypes {
 
 function componentShortcut<T extends string | number | symbol>(
   dispatch: Dispatch, getState: () => State, id: string,
-) {
+): ComponentShortcut<T> {
   return {
-    id,
+    get id() { return id; },
     get scope() { return getComponent(getState(), id)?.scope; },
     get name() { return getComponent(getState(), id)?.name; },
     get component() { return getComponent(getState(), id) ?? undefined; },
     get state() { return getComponentState<T>(getState(), id); },
-    // set: (
-    //   value: VariableTypes,
-    //   func?: string,
-    //   options?: Partial<UpdateVariableOptions>,
-    //   // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    // ) => dispatch(updateVariable(id, value, func, options)),
+    set: (properties, events, options) => (
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      dispatch(updateComponent(id, properties, events, options)) as ComponentShortcut<T>
+    ),
     remove: () => dispatch(removeComponent(id)),
     dispatchEvent(name: string, values: VariableTypes[]) {
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
@@ -63,11 +65,6 @@ function componentShortcut<T extends string | number | symbol>(
     },
   };
 }
-
-export type ComponentShortcut<T extends string | number | symbol> = (
-  ReturnType<typeof componentShortcut> &
-  {state: Record<T, VariableTypes>}
-);
 
 export function createComponentSpec(
   name: string,
@@ -108,13 +105,52 @@ const createComponentOptionDefaults = {
   description: '',
 };
 
-type PartialProps = Partial<Omit<DefineComponentProperty, 'name'>>;
+function processPropertiesAndEvents<T extends string | number | symbol>(
+  spec: ComponentSpec,
+  scope: string,
+  properties: Record<T, PartialProps | VariableShortcut>,
+  events: Dictionary<Omit<ComponentEvent, 'name'>>,
+) {
+  Object.keys(properties).forEach((propName) => {
+    if (spec.properties[propName] == null) throw new Error(`Component prop ${propName} is not defined.`);
+  });
+  const props = forEachObject(
+    spec.properties,
+    ([propName, propSpec]): [string, DefineComponentProperty] => {
+      const prop = (properties as any)[propName] as PartialProps | VariableShortcut | undefined;
+      // If it is a variable schortcut:
+      if (prop && 'variable' in prop) {
+        return [propName, {
+          name: propName,
+          value: prop.get() ?? propSpec.default,
+          // Note this will *not* change if the name of the variable changes:
+          func: (scope === prop.scope ? prop.name : `${prop.scope}.${prop.name}`) ?? '',
+        }];
+      }
+      // Specified a partial property {value?, func?}:
+      return [propName, {
+        name: propName,
+        value: prop?.value ?? propSpec.default,
+        func: prop?.func ?? '',
+      }];
+    },
+  );
+  const evts = forEachObject(events, ([evtName, evt]) => {
+    const newEvt: ComponentEvent = {
+      ...evt,
+      name: evtName,
+    };
+    return [evtName, newEvt];
+  });
+  return { props, evts };
+}
+
 export function createComponent<T extends string | number | symbol>(
   specName: string,
   componentNameAndScope: string,
   properties: Record<T, PartialProps | VariableShortcut>,
   events: Dictionary<Omit<ComponentEvent, 'name'>>,
-  options?: typeof createComponentOptionDefaults,
+  options?: CreateComponentOptionDefaults,
 ): AppThunk<ComponentShortcut<keyof typeof properties>> {
   return (dispatch, getState) => {
     const spec = getComponentSpec(getState(), specName);
@@ -125,39 +161,42 @@ export function createComponent<T extends string | number | symbol>(
       ...createComponentOptionDefaults,
       ...options,
     };
-    Object.keys(properties).forEach((propName) => {
-      if (spec.properties[propName] == null) throw new Error(`Component prop ${propName} is not defined.`);
-    });
-    const props = forEachObject(
-      spec.properties,
-      ([propName, propSpec]): [string, DefineComponentProperty] => {
-        const prop = (properties as any)[propName] as PartialProps | VariableShortcut | undefined;
-        // If it is a variable schortcut:
-        if (prop && 'variable' in prop) {
-          return [propName, {
-            name: propName,
-            value: prop.get() ?? propSpec.default,
-            // Note this will *not* change if the name of the variable changes:
-            func: (scope === prop.scope ? prop.name : `${prop.scope}.${prop.name}`) ?? '',
-          }];
-        }
-        // Specified a partial property {value?, func?}:
-        return [propName, {
-          name: propName,
-          value: prop?.value ?? propSpec.default,
-          func: prop?.func ?? '',
-        }];
+    const { props, evts } = processPropertiesAndEvents(spec, scope, properties, events);
+    dispatch(defineComponent({
+      spec: specName, scope, name, description, events: evts, properties: props, id,
+    }));
+    return componentShortcut(dispatch, getState, id) as ComponentShortcut<keyof typeof properties>;
+  };
+}
+
+export function updateComponent(
+  id: string,
+  properties: Dictionary<PartialProps | VariableShortcut>,
+  events?: Dictionary<Omit<ComponentEvent, 'name'>>,
+  options?: UpdateComponentOptionDefaults,
+): AppThunk<ComponentShortcut<keyof typeof properties>> {
+  return (dispatch, getState) => {
+    const component = getComponent(getState(), id);
+    const spec = getComponentSpec(getState(), component?.spec as string);
+    if (component == null || spec == null) throw new Error('Component or ComponentSpec is not defined.');
+    const { description, scope, name } = {
+      ...component,
+      ...options,
+    };
+    const { props, evts } = processPropertiesAndEvents(
+      spec,
+      scope,
+      {
+        ...component.properties as Record<keyof typeof properties, ComponentProperty>,
+        ...properties,
+      },
+      {
+        ...component.events,
+        ...events,
       },
     );
-    const evts = forEachObject(events, ([evtName, evt]) => {
-      const newEvt: ComponentEvent = {
-        ...evt,
-        name: evtName,
-      };
-      return [evtName, newEvt];
-    });
     dispatch(defineComponent({
-      spec: specName, id, scope, name, description, events: evts, properties: props,
+      spec: component.spec, scope, name, description, events: evts, properties: props, id,
     }));
     return componentShortcut(dispatch, getState, id) as ComponentShortcut<keyof typeof properties>;
   };

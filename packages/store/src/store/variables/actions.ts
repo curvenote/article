@@ -4,6 +4,9 @@ import {
   VariableTypes,
   DEFINE_VARIABLE, REMOVE_VARIABLE,
   PropTypes,
+  VariableShortcut,
+  UpdateVariableOptions,
+  CreateVariableOptions,
 } from './types';
 import { AppThunk, State, Dispatch } from '../types';
 import { getScopeAndName } from './utils';
@@ -28,30 +31,19 @@ const createVariableOptionDefaults = {
   type: PropTypes.number,
   format: '.1f',
 };
-export type CreateVariableOptions = typeof createVariableOptionDefaults;
-export interface UpdateVariableOptions extends CreateVariableOptions {
-  scope: string;
-  name: string;
-}
 
 const variableShortcut = (
   dispatch: Dispatch, getState: () => State, id: string,
-) => ({
-  id,
+): VariableShortcut => ({
+  get id() { return id; },
   get scope() { return getVariable(getState(), id)?.scope; },
   get name() { return getVariable(getState(), id)?.name; },
   get variable() { return getVariable(getState(), id) ?? undefined; },
   get: () => getVariable(getState(), id)?.current,
-  set: (
-    value: VariableTypes,
-    func?: string,
-    options?: Partial<UpdateVariableOptions>,
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  ) => dispatch(updateVariable(id, value, func, options)),
+  set: (value, func, options) => dispatch(updateVariable(id, value, func, options)),
   remove: () => dispatch(removeVariable(id)),
 });
-
-export type VariableShortcut = ReturnType<typeof variableShortcut>;
 
 export function createVariable(
   variableNameAndScope: string,
@@ -67,7 +59,7 @@ export function createVariable(
       ...options,
     };
     dispatch(defineVariable({
-      id, scope, name, value, func, description, type, format,
+      scope, name, value, func, description, type, format, id,
     }));
     return variableShortcut(dispatch, getState, id);
   };
@@ -89,7 +81,7 @@ export function updateVariable(
       ...options,
     };
     dispatch(defineVariable({
-      id, scope, name, value, func, description, type, format,
+      scope, name, value, func, description, type, format, id,
     }));
     return variableShortcut(dispatch, getState, id);
   };

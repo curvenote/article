@@ -50,3 +50,27 @@ export type VariablesActionTypes = (
   RemoveVariable |
   CommunicationActionTypes
 );
+
+// For the actions
+export type CreateVariableOptions = {
+  description: string;
+  type: PropTypes;
+  format: string;
+};
+export interface UpdateVariableOptions extends CreateVariableOptions {
+  scope: string;
+  name: string;
+}
+export type VariableShortcut = {
+  readonly id: string;
+  readonly scope: string | undefined;
+  readonly name: string | undefined;
+  readonly variable: Variable | undefined;
+  get: () => string | number | null | undefined;
+  set: (
+    value: VariableTypes,
+    func?: string | undefined,
+    options?: Partial<UpdateVariableOptions>,
+  ) => VariableShortcut;
+  remove: () => VariablesActionTypes;
+};

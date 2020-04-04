@@ -24,8 +24,8 @@ export type Actions = (
   CommunicationActionTypes
 );
 
-export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, State, null, Action<string>>;
-export type Dispatch = ThunkDispatch<State, null, Action<string>>;
+export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, State, null, Action<Actions['type']>>;
+export type Dispatch = ThunkDispatch<State, null, Action<Actions['type']>>;
 export type Store = RStore<State, Actions> & { dispatch: Dispatch; };
 export type Middleware = RMiddleware<{}, State, Dispatch>;
 export type Reducer = RReducer<State, Actions>;
