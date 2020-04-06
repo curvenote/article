@@ -1,0 +1,11 @@
+ink-var {
+  display: none;
+}
+/* This is for ink-dynamic when dragging */
+body.ink-drag-horz{
+  cursor: col-resize;
+}
+ink-dynamic {
+  color: #46f;
+  border-bottom: 1px dashed #46f;
+}
