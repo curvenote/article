@@ -8,6 +8,8 @@ import { ComponentProperty } from '../components/types';
 // eslint-disable-next-line import/prefer-default-export
 export function convertValue(value: VariableTypes, type: PropTypes): VariableTypes {
   switch (type) {
+    case PropTypes.boolean:
+      return Boolean(value);
     case PropTypes.number:
       return Number(value);
     case PropTypes.string:

@@ -11,6 +11,7 @@ import { ComponentsState, ComponentActionTypes } from './components/types';
 import { CommunicationActionTypes } from './comms/types';
 
 export * from './variables/types';
+export * from './components/types';
 export * from './comms/types';
 
 export interface State {

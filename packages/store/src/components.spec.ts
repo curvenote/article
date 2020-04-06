@@ -92,6 +92,6 @@ describe('integration', () => {
     // Remove it!
     range.remove();
     expect(x.get()).toBe(4);
-    expect(range.state).toBeUndefined();
+    expect(range.state).toEqual({});
   });
 });

@@ -69,4 +69,19 @@ describe('integration', () => {
     expect(y.variable).toBeUndefined();
     expect(() => y.set(42)).toThrow();
   });
+
+  it('should return NaN and Infinity', () => {
+    const nan = store.dispatch(inkStore.actions.createVariable('scope.nan', NaN));
+    expect(nan.get()).toBeNaN();
+    nan.set(null, 'NaN');
+    expect(nan.get()).toBeNaN();
+    nan.set(Infinity);
+    expect(nan.get()).toBe(Infinity);
+    nan.set(null, 'Infinity');
+    expect(nan.get()).toBe(Infinity);
+    nan.set(-Infinity);
+    expect(nan.get()).toBe(-Infinity);
+    nan.set(null, '-Infinity');
+    expect(nan.get()).toBe(-Infinity);
+  });
 });

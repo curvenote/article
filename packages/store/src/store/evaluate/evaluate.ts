@@ -10,6 +10,7 @@ import { VariableTypes } from '../variables/types';
 import { ExecutionState } from './types';
 import { getScopeAndName } from '../variables/utils';
 import { getVariableByName } from '../variables/selectors';
+import serialize from './serialize';
 
 export function evaluateVariable(
   scopeName: string,
@@ -46,11 +47,7 @@ export function evaluateVariable(
     return { value: undefined };
   }
   try {
-    return {
-      // TODO: this should be better.
-      // e.g. arrays?
-      value: JSON.parse(JSON.stringify(derived)),
-    };
+    return { value: serialize(derived) };
   } catch (error) {
     return {
       error: { message: error, type: EvaluationErrorTypes.serialize },

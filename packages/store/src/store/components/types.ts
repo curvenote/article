@@ -11,6 +11,7 @@ export const COMPONENT_EVENT = 'COMPONENT_EVENT';
 
 export interface ComponentPropertySpec {
   name: string;
+  description?: string;
   type: PropTypes;
   default: VariableTypes;
   funcOnly: boolean;
@@ -29,9 +30,9 @@ export interface ComponentSpec{
   events: Dictionary<ComponentEventSpec>;
 }
 
-export interface DefineComponentProperty {
+export interface DefineComponentProperty<T = VariableTypes> {
   name: string;
-  value: VariableTypes;
+  value: T;
   func: string;
 }
 
@@ -101,18 +102,27 @@ export interface UpdateComponentOptionDefaults extends CreateComponentOptionDefa
 
 export type PartialProps = Partial<Omit<DefineComponentProperty, 'name'>>;
 
-export type ComponentShortcut<T extends string | number | symbol> = {
+export type ComponentShortcut<T> = {
   readonly id: string;
   readonly scope: string | undefined;
   readonly name: string | undefined;
   readonly component: Component | undefined;
-  readonly state: Record<T, VariableTypes> | undefined;
+  readonly state: T;
   set: (
     properties: Dictionary<PartialProps | VariableShortcut>,
     events?: Dictionary<Omit<ComponentEvent, 'name'>>,
-    options?: UpdateComponentOptionDefaults,
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    options?: Partial<UpdateComponentOptionDefaults>,
   ) => ComponentShortcut<T>,
   remove: () => ComponentActionTypes;
   dispatchEvent(name: string, values: VariableTypes[]): void;
 };
+
+export interface DefineComponentSpec{
+  name: string;
+  properties: Dictionary<
+  Partial<Omit<ComponentPropertySpec, 'name' | 'type' | 'default'>> &
+  Required<Pick<ComponentPropertySpec, 'type' | 'default'>>
+  >;
+  events: Dictionary<Omit<ComponentEventSpec, 'name'>>;
+  description?: string;
+}

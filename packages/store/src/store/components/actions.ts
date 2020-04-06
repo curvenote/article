@@ -13,10 +13,8 @@ import {
   COMPONENT_EVENT,
   REMOVE_COMPONENT,
   ComponentShortcut,
-  PartialProps,
   CreateComponentOptionDefaults,
   UpdateComponentOptionDefaults,
-  ComponentProperty,
 } from './types';
 import { AppThunk, State, Dispatch } from '../types';
 import { getComponentSpec, getComponent, getComponentState } from './selectors';
@@ -45,7 +43,7 @@ export function removeComponent(id: string): ComponentActionTypes {
   };
 }
 
-function componentShortcut<T extends string | number | symbol>(
+function componentShortcut<T extends {}>(
   dispatch: Dispatch, getState: () => State, id: string,
 ): ComponentShortcut<T> {
   return {
@@ -82,6 +80,7 @@ export function createComponentSpec(
       const newProp: ComponentPropertySpec = {
         ...prop,
         name: propName,
+        description: prop.description ?? '',
         args: prop.args ?? [],
         funcOnly: prop.funcOnly ?? false,
       };
@@ -105,10 +104,12 @@ const createComponentOptionDefaults = {
   description: '',
 };
 
-function processPropertiesAndEvents<T extends string | number | symbol>(
+function processPropertiesAndEvents<T>(
   spec: ComponentSpec,
   scope: string,
-  properties: Record<T, PartialProps | VariableShortcut>,
+  properties: {
+    [P in keyof T]: PartialProps<T[P]> | VariableShortcut<T[P]>
+  },
   events: Dictionary<Omit<ComponentEvent, 'name'>>,
 ) {
   Object.keys(properties).forEach((propName) => {
@@ -145,13 +146,19 @@ function processPropertiesAndEvents<T extends string | number | symbol>(
   return { props, evts };
 }
 
-export function createComponent<T extends string | number | symbol>(
+
+type PartialProps<K = VariableTypes> = Partial<Omit<DefineComponentProperty<K>, 'name'>>;
+
+
+export function createComponent<T>(
   specName: string,
   componentNameAndScope: string,
-  properties: Record<T, PartialProps | VariableShortcut>,
-  events: Dictionary<Omit<ComponentEvent, 'name'>>,
+  properties: {
+    [P in keyof T]: PartialProps<T[P]> | VariableShortcut<T[P]>
+  },
+  events?: Dictionary<Omit<ComponentEvent, 'name'>>,
   options?: CreateComponentOptionDefaults,
-): AppThunk<ComponentShortcut<keyof typeof properties>> {
+): AppThunk<ComponentShortcut<T>> {
   return (dispatch, getState) => {
     const spec = getComponentSpec(getState(), specName);
     if (spec == null) throw new Error('Component spec is not defined.');
@@ -161,20 +168,22 @@ export function createComponent<T extends string | number | symbol>(
       ...createComponentOptionDefaults,
       ...options,
     };
-    const { props, evts } = processPropertiesAndEvents(spec, scope, properties, events);
+    const { props, evts } = processPropertiesAndEvents(spec, scope, properties, events ?? {});
     dispatch(defineComponent({
       spec: specName, scope, name, description, events: evts, properties: props, id,
     }));
-    return componentShortcut(dispatch, getState, id) as ComponentShortcut<keyof typeof properties>;
+    return componentShortcut(dispatch, getState, id);
   };
 }
 
-export function updateComponent(
+export function updateComponent<T>(
   id: string,
-  properties: Dictionary<PartialProps | VariableShortcut>,
+  properties: {
+    [P in keyof T]: PartialProps<T[P]> | VariableShortcut<T[P]>
+  },
   events?: Dictionary<Omit<ComponentEvent, 'name'>>,
-  options?: UpdateComponentOptionDefaults,
-): AppThunk<ComponentShortcut<keyof typeof properties>> {
+  options?: Partial<UpdateComponentOptionDefaults>,
+): AppThunk<ComponentShortcut<T>> {
   return (dispatch, getState) => {
     const component = getComponent(getState(), id);
     const spec = getComponentSpec(getState(), component?.spec as string);
@@ -187,7 +196,7 @@ export function updateComponent(
       spec,
       scope,
       {
-        ...component.properties as Record<keyof typeof properties, ComponentProperty>,
+        ...component.properties,
         ...properties,
       },
       {
@@ -198,7 +207,7 @@ export function updateComponent(
     dispatch(defineComponent({
       spec: component.spec, scope, name, description, events: evts, properties: props, id,
     }));
-    return componentShortcut(dispatch, getState, id) as ComponentShortcut<keyof typeof properties>;
+    return componentShortcut(dispatch, getState, id) as ComponentShortcut<T>;
   };
 }
 

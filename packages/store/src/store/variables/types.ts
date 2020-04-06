@@ -6,9 +6,10 @@ export const REMOVE_VARIABLE = 'REMOVE_VARIABLE';
 export enum PropTypes{
   string = 'String',
   number = 'Number',
+  boolean = 'Boolean',
 }
 
-export type VariableTypes = string | number | null;
+export type VariableTypes = string | number | boolean | null;
 
 export interface DefineVariable{
   id: string;
@@ -61,14 +62,14 @@ export interface UpdateVariableOptions extends CreateVariableOptions {
   scope: string;
   name: string;
 }
-export type VariableShortcut = {
+export type VariableShortcut<T = VariableTypes> = {
   readonly id: string;
   readonly scope: string | undefined;
   readonly name: string | undefined;
   readonly variable: Variable | undefined;
-  get: () => string | number | null | undefined;
+  get: () => T | undefined;
   set: (
-    value: VariableTypes,
+    value: T,
     func?: string | undefined,
     options?: Partial<UpdateVariableOptions>,
   ) => VariableShortcut;
