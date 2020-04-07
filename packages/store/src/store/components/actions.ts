@@ -1,25 +1,27 @@
 import { v4 as uuid } from 'uuid';
-import { Dictionary, forEachObject } from '../../utils';
+import { forEachObject } from '../utils';
 import {
   ComponentActionTypes,
   DEFINE_COMPONENT_SPEC,
   ComponentSpec,
   DEFINE_COMPONENT,
   NewComponent,
-  ComponentPropertySpec,
-  ComponentEventSpec,
   DefineComponentProperty,
   ComponentEvent,
   COMPONENT_EVENT,
   REMOVE_COMPONENT,
-  ComponentShortcut,
   CreateComponentOptionDefaults,
   UpdateComponentOptionDefaults,
+  DefineComponentPropertySpec,
+  DefineComponentEventSpec,
+  PartialProps,
 } from './types';
 import { AppThunk, State, Dispatch } from '../types';
 import { getComponentSpec, getComponent, getComponentState } from './selectors';
 import { getScopeAndName } from '../variables/utils';
-import { VariableTypes, VariableShortcut } from '../variables/types';
+import { VariableTypes } from '../variables/types';
+import { getComponentSpecFromDefinition } from './utils';
+import { ComponentShortcut, VariableShortcut } from '../shortcuts';
 
 
 export function defineComponentSpec(componentSpec: ComponentSpec): ComponentActionTypes {
@@ -43,7 +45,7 @@ export function removeComponent(id: string): ComponentActionTypes {
   };
 }
 
-function componentShortcut<T extends {}>(
+function componentShortcut<T extends Record<string, VariableTypes>>(
   dispatch: Dispatch, getState: () => State, id: string,
 ): ComponentShortcut<T> {
   return {
@@ -56,8 +58,12 @@ function componentShortcut<T extends {}>(
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
       dispatch(updateComponent(id, properties, events, options)) as ComponentShortcut<T>
     ),
+    setProperties: (properties) => (
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      dispatch(updateComponent(id, properties)) as ComponentShortcut<T>
+    ),
     remove: () => dispatch(removeComponent(id)),
-    dispatchEvent(name: string, values: VariableTypes[]) {
+    dispatchEvent(name: string, values: VariableTypes[] = []) {
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
       return dispatch(sendComponentEvent(id, name, values));
     },
@@ -66,36 +72,16 @@ function componentShortcut<T extends {}>(
 
 export function createComponentSpec(
   name: string,
-  properties: Dictionary<
-  Partial<Omit<ComponentPropertySpec, 'name' | 'type' | 'default'>> &
-  Required<Pick<ComponentPropertySpec, 'type' | 'default'>>
-  >,
-  events: Dictionary<Omit<ComponentEventSpec, 'name'>>,
+  properties: Record<string, DefineComponentPropertySpec>,
+  events: Record<string, DefineComponentEventSpec>,
   description: string = '',
 ): AppThunk<ComponentSpec> {
   return (dispatch, getState) => {
-    const spec = getComponentSpec(getState(), name);
-    if (spec != null) throw new Error('Component spec is already defined.');
-    const props = forEachObject(properties, ([propName, prop]) => {
-      const newProp: ComponentPropertySpec = {
-        ...prop,
-        name: propName,
-        description: prop.description ?? '',
-        args: prop.args ?? [],
-        funcOnly: prop.funcOnly ?? false,
-      };
-      return [propName, newProp];
+    if (getComponentSpec(getState(), name) != null) throw new Error('Component spec is already defined.');
+    const spec = getComponentSpecFromDefinition({
+      name, properties, events, description,
     });
-    const evts = forEachObject(events, ([evtName, evt]) => {
-      const newEvt: ComponentEventSpec = {
-        ...evt,
-        name: evtName,
-      };
-      return [evtName, newEvt];
-    });
-    dispatch(defineComponentSpec({
-      name, description, properties: props, events: evts,
-    }));
+    dispatch(defineComponentSpec(spec));
     return getComponentSpec(getState(), name) as ComponentSpec;
   };
 }
@@ -104,13 +90,13 @@ const createComponentOptionDefaults = {
   description: '',
 };
 
-function processPropertiesAndEvents<T>(
+function processPropertiesAndEvents<T extends Record<string, VariableTypes>>(
   spec: ComponentSpec,
   scope: string,
   properties: {
     [P in keyof T]: PartialProps<T[P]> | VariableShortcut<T[P]>
   },
-  events: Dictionary<Omit<ComponentEvent, 'name'>>,
+  events: Record<string, Omit<ComponentEvent, 'name'>>,
 ) {
   Object.keys(properties).forEach((propName) => {
     if (spec.properties[propName] == null) throw new Error(`Component prop ${propName} is not defined.`);
@@ -147,16 +133,13 @@ function processPropertiesAndEvents<T>(
 }
 
 
-type PartialProps<K = VariableTypes> = Partial<Omit<DefineComponentProperty<K>, 'name'>>;
-
-
-export function createComponent<T>(
+export function createComponent<T extends Record<string, VariableTypes>>(
   specName: string,
   componentNameAndScope: string,
   properties: {
     [P in keyof T]: PartialProps<T[P]> | VariableShortcut<T[P]>
   },
-  events?: Dictionary<Omit<ComponentEvent, 'name'>>,
+  events?: Record<string, Omit<ComponentEvent, 'name'>>,
   options?: CreateComponentOptionDefaults,
 ): AppThunk<ComponentShortcut<T>> {
   return (dispatch, getState) => {
@@ -176,12 +159,12 @@ export function createComponent<T>(
   };
 }
 
-export function updateComponent<T>(
+export function updateComponent<T extends Record<string, VariableTypes>>(
   id: string,
   properties: {
     [P in keyof T]: PartialProps<T[P]> | VariableShortcut<T[P]>
   },
-  events?: Dictionary<Omit<ComponentEvent, 'name'>>,
+  events?: Record<string, Omit<ComponentEvent, 'name'>>,
   options?: Partial<UpdateComponentOptionDefaults>,
 ): AppThunk<ComponentShortcut<T>> {
   return (dispatch, getState) => {
@@ -225,14 +208,14 @@ function componentEvent(
 export function sendComponentEvent(
   componentId: string,
   name: string,
-  values: VariableTypes[],
+  values: VariableTypes[] = [],
 ): AppThunk {
   return (dispatch, getState) => {
     const component = getComponent(getState(), componentId);
     const spec = getComponentSpec(getState(), component!.spec);
-    if (component == null || spec == null) throw new Error('Component is not defined');
-    if (spec.events[name] == null) throw new Error('Event name is not defined');
-    if (spec.events[name].args.length !== values.length) throw new Error('Event value mismatch with spec');
+    if (component == null || spec == null) throw new Error(`Component "${component?.spec}" is not defined`);
+    if (spec.events[name] == null) throw new Error(`Event name "${name}" is not defined`);
+    if (spec.events[name].args.length !== values.length) throw new Error(`Event values length (${values.length}) mismatch with spec: ${JSON.stringify(spec.events[name].args)}`);
     const id = uuid();
     dispatch(componentEvent(id, componentId, name, values));
   };

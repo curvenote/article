@@ -62,16 +62,3 @@ export interface UpdateVariableOptions extends CreateVariableOptions {
   scope: string;
   name: string;
 }
-export type VariableShortcut<T = VariableTypes> = {
-  readonly id: string;
-  readonly scope: string | undefined;
-  readonly name: string | undefined;
-  readonly variable: Variable | undefined;
-  get: () => T | undefined;
-  set: (
-    value: T,
-    func?: string | undefined,
-    options?: Partial<UpdateVariableOptions>,
-  ) => VariableShortcut;
-  remove: () => VariablesActionTypes;
-};

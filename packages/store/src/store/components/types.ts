@@ -1,6 +1,5 @@
-import { Dictionary } from '../../utils';
 import {
-  VariableTypes, CurrentValue, PropTypes, VariableShortcut,
+  VariableTypes, CurrentValue, PropTypes,
 } from '../variables/types';
 import { CommunicationActionTypes } from '../comms/types';
 
@@ -14,8 +13,11 @@ export interface ComponentPropertySpec {
   description?: string;
   type: PropTypes;
   default: VariableTypes;
-  funcOnly: boolean;
   args: string[];
+  has: {
+    value: boolean;
+    func: boolean;
+  };
 }
 
 export interface ComponentEventSpec {
@@ -23,11 +25,17 @@ export interface ComponentEventSpec {
   args: string[];
 }
 
+// type, default are required, name not included, all other optional
+export type DefineComponentPropertySpec = Partial<Omit<ComponentPropertySpec, 'name' | 'type' | 'default'>> &
+Required<Pick<ComponentPropertySpec, 'type' | 'default'>>;
+// name not included
+export type DefineComponentEventSpec = Omit<ComponentEventSpec, 'name'>;
+
 export interface ComponentSpec{
   name: string;
   description: string;
-  properties: Dictionary<ComponentPropertySpec>;
-  events: Dictionary<ComponentEventSpec>;
+  properties: Record<string, ComponentPropertySpec>;
+  events: Record<string, ComponentEventSpec>;
 }
 
 export interface DefineComponentProperty<T = VariableTypes> {
@@ -49,14 +57,14 @@ export interface Component {
   scope: string;
   name: string;
   description: string;
-  properties: Dictionary<ComponentProperty>;
-  events: Dictionary<ComponentEvent>;
+  properties: Record<string, ComponentProperty>;
+  events: Record<string, ComponentEvent>;
 }
-export type NewComponent = Omit<Component, 'properties'> & { properties: Dictionary<DefineComponentProperty> };
+export type NewComponent = Omit<Component, 'properties'> & { properties: Record<string, DefineComponentProperty> };
 
 export type ComponentsState = {
-  specs: Dictionary<ComponentSpec>;
-  components: Dictionary<Component>;
+  specs: Record<string, ComponentSpec>;
+  components: Record<string, Component>;
 };
 
 export interface ComponentEventAction {
@@ -100,29 +108,11 @@ export interface UpdateComponentOptionDefaults extends CreateComponentOptionDefa
   name: string;
 }
 
-export type PartialProps = Partial<Omit<DefineComponentProperty, 'name'>>;
-
-export type ComponentShortcut<T> = {
-  readonly id: string;
-  readonly scope: string | undefined;
-  readonly name: string | undefined;
-  readonly component: Component | undefined;
-  readonly state: T;
-  set: (
-    properties: Dictionary<PartialProps | VariableShortcut>,
-    events?: Dictionary<Omit<ComponentEvent, 'name'>>,
-    options?: Partial<UpdateComponentOptionDefaults>,
-  ) => ComponentShortcut<T>,
-  remove: () => ComponentActionTypes;
-  dispatchEvent(name: string, values: VariableTypes[]): void;
-};
+export type PartialProps<K = VariableTypes> = Partial<Omit<DefineComponentProperty<K>, 'name'>>;
 
 export interface DefineComponentSpec{
   name: string;
-  properties: Dictionary<
-  Partial<Omit<ComponentPropertySpec, 'name' | 'type' | 'default'>> &
-  Required<Pick<ComponentPropertySpec, 'type' | 'default'>>
-  >;
-  events: Dictionary<Omit<ComponentEventSpec, 'name'>>;
+  properties: Record<string, DefineComponentPropertySpec>;
+  events: Record<string, DefineComponentEventSpec>;
   description?: string;
 }

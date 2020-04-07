@@ -5,8 +5,9 @@ import {
 } from './types';
 import { RETURN_RESULTS } from '../comms/types';
 import {
-  includeCurrentValue, testScopeAndName, unpackCurrent, compareDefine, compareEval,
+  includeCurrentValue, testScopeAndName, unpackCurrent,
 } from './utils';
+import { compareDefine, compareEval } from '../utils';
 
 const initialState: VariablesState = {};
 

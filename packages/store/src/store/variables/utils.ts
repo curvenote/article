@@ -1,15 +1,14 @@
-import { isEqual } from 'underscore';
+import { DEFAULT_SCOPE } from '../../constants';
 import {
-  VariableTypes, PropTypes, CurrentValue, Variable,
+  VariableTypes, PropTypes, CurrentValue,
 } from './types';
 import { ValueOrError } from '../comms/types';
-import { ComponentProperty } from '../components/types';
 
-// eslint-disable-next-line import/prefer-default-export
 export function convertValue(value: VariableTypes, type: PropTypes): VariableTypes {
   switch (type) {
     case PropTypes.boolean:
-      return Boolean(value);
+      // eslint-disable-next-line no-nested-ternary
+      return value === 'true' ? true : (value === 'false' ? false : Boolean(value));
     case PropTypes.number:
       return Number(value);
     case PropTypes.string:
@@ -41,7 +40,7 @@ export function unpackCurrent<T>(state: T, current: ValueOrError): T {
 }
 
 export function getScopeAndName(
-  scopeAndName: string, defaultScope: string = 'global',
+  scopeAndName: string, defaultScope: string = DEFAULT_SCOPE,
 ): {scope: string, name: string} {
   const split = scopeAndName.split('.');
   if (split.length === 1) {
@@ -55,23 +54,4 @@ export function testScopeAndName(scope: string, name: string): boolean {
   // Simple variable names only ....
   const regex = /^[a-zA-Z_$][0-9a-zA-Z_$]*$/;
   return regex.test(scope) && regex.test(name);
-}
-
-export function compareDefine(
-  prev: Variable | ComponentProperty,
-  next: Variable | ComponentProperty,
-) {
-  const one = { ...prev };
-  const two = { ...next };
-  delete one.current;
-  delete two.current;
-  delete one.error;
-  delete two.error;
-  return isEqual(one, two);
-}
-
-export function compareEval(prev: CurrentValue, next: CurrentValue) {
-  const one = { value: prev.current, error: prev.error };
-  const two = { value: next.current, error: next.error };
-  return isEqual(one, two);
 }

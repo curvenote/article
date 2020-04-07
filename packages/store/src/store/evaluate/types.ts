@@ -1,3 +1,2 @@
-import { Dictionary } from '../../utils';
 
-export type ExecutionState = Dictionary<Dictionary<any>>;
+export type ExecutionState = Record<string, Record<string, any>>;

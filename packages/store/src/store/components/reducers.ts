@@ -5,19 +5,22 @@ import {
   DEFINE_COMPONENT_SPEC, DEFINE_COMPONENT, REMOVE_COMPONENT,
 } from './types';
 import { RETURN_RESULTS } from '../comms/types';
-import { Dictionary, forEachObject } from '../../utils';
+import { forEachObject, compareEval } from '../utils';
 import { includeCurrentValue, testScopeAndName, unpackCurrent } from '../variables/utils';
-import { compareDefine, compareEval } from './utils';
+import { compareComponentDefine } from './utils';
+import InkVarSpec from '../variables/varSpec';
 
 const initialState: ComponentsState = {
-  specs: {},
+  specs: {
+    var: InkVarSpec,
+  },
   components: {},
 };
 
 const includeCurrentValueInProps = (
-  props: Dictionary<DefineComponentProperty>,
+  props: Record<string, DefineComponentProperty>,
   spec: ComponentSpec,
-): Dictionary<ComponentProperty> => (
+): Record<string, ComponentProperty> => (
   forEachObject(spec.properties, ([propName, propSpec]) => {
     const prop = {
       ...props[propName],
@@ -55,7 +58,7 @@ const componentsReducer = (
         properties: includeCurrentValueInProps(newComponent.properties, spec),
       };
       const prev = state.components[component.id];
-      if (compareDefine(component, prev)) return state;
+      if (compareComponentDefine(component, prev)) return state;
       return {
         ...state,
         components: {

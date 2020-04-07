@@ -4,13 +4,16 @@ import {
   VariableTypes,
   DEFINE_VARIABLE, REMOVE_VARIABLE,
   PropTypes,
-  VariableShortcut,
   UpdateVariableOptions,
   CreateVariableOptions,
 } from './types';
-import { AppThunk, State, Dispatch } from '../types';
+import {
+  AppThunk, State, Dispatch, PartialProps,
+} from '../types';
 import { getScopeAndName } from './utils';
-import { getVariable } from './selectors';
+import { getVariable, getVariableState, getVariableAsComponent } from './selectors';
+import { DEFAULT_FORMAT } from '../../constants';
+import { VariableShortcut } from '../shortcuts';
 
 export function defineVariable(variable: DefineVariable): VariablesActionTypes {
   return {
@@ -29,21 +32,27 @@ export function removeVariable(id: string): VariablesActionTypes {
 const createVariableOptionDefaults = {
   description: '',
   type: PropTypes.number,
-  format: '.1f',
+  format: DEFAULT_FORMAT,
 };
 
-const variableShortcut = (
+function variableShortcut<T extends VariableTypes>(
   dispatch: Dispatch, getState: () => State, id: string,
-): VariableShortcut => ({
-  get id() { return id; },
-  get scope() { return getVariable(getState(), id)?.scope; },
-  get name() { return getVariable(getState(), id)?.name; },
-  get variable() { return getVariable(getState(), id) ?? undefined; },
-  get: () => getVariable(getState(), id)?.current,
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  set: (value, func, options) => dispatch(updateVariable(id, value, func, options)),
-  remove: () => dispatch(removeVariable(id)),
-});
+): VariableShortcut<T> {
+  return {
+    get id() { return id; },
+    get scope() { return getVariable(getState(), id)?.scope; },
+    get name() { return getVariable(getState(), id)?.name; },
+    get state() { return getVariableState<T>(getState(), id); },
+    get component() { return getVariableAsComponent(getState(), id) ?? undefined; },
+    get variable() { return getVariable(getState(), id) ?? undefined; },
+    get: () => getVariable(getState(), id)?.current as T,
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    set: (value, func, options) => dispatch(updateVariable(id, value, func, options)),
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    setProperties: (properties) => dispatch(updateVariableProperties<T>(id, properties)),
+    remove: () => dispatch(removeVariable(id)),
+  };
+}
 
 export function createVariable(
   variableNameAndScope: string,
@@ -65,12 +74,12 @@ export function createVariable(
   };
 }
 
-export function updateVariable(
+export function updateVariable<T extends VariableTypes>(
   id: string,
-  value: VariableTypes,
+  value: T,
   func: string = '',
   options?: Partial<UpdateVariableOptions>,
-): AppThunk<VariableShortcut> {
+): AppThunk<VariableShortcut<T>> {
   return (dispatch, getState) => {
     const variable = getVariable(getState(), id);
     if (variable == null) throw new Error('Variable does not exist.');
@@ -80,6 +89,44 @@ export function updateVariable(
       ...variable,
       ...options,
     };
+    dispatch(defineVariable({
+      scope, name, value, func, description, type, format, id,
+    }));
+    return variableShortcut(dispatch, getState, id);
+  };
+}
+
+
+// This is to be consistent with the component setter
+export function updateVariableProperties<T extends VariableTypes>(
+  id: string,
+  properties: Record<string, PartialProps | VariableShortcut>,
+): AppThunk<VariableShortcut<T>> {
+  return (dispatch, getState) => {
+    const variable = getVariable(getState(), id);
+    if (variable == null) throw new Error('Variable does not exist.');
+
+    Object.entries(properties).forEach(([key, prop]) => {
+      if ('variable' in prop) throw new Error(`Cannot use variable to set a variable: ${key}`);
+    });
+
+    const {
+      scope: pScope,
+      name: pName,
+      value: pValue,
+      description: pDescription,
+      type: pType,
+      format: pFormat,
+    } = properties as Record<string, PartialProps>;
+
+    const value = pValue?.value ?? variable.value;
+    const func = pValue?.func ?? variable.func;
+    const name = (pName?.value ?? variable.name) as string;
+    const scope = (pScope?.value ?? variable.scope) as string;
+    const description = (pDescription?.value ?? variable.description) as string;
+    const type = (pType?.value ?? variable.type) as PropTypes;
+    const format = (pFormat?.value ?? variable.format) as string;
+
     dispatch(defineVariable({
       scope, name, value, func, description, type, format, id,
     }));

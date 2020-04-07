@@ -1,6 +1,6 @@
 import { State as FullState } from '../types';
 import { ComponentSpec, Component, ComponentProperty } from './types';
-import { forEachObject, Dictionary } from '../../utils';
+import { forEachObject } from '../utils';
 
 type State = Pick<FullState, 'components'>;
 
@@ -16,7 +16,7 @@ export function getComponentState<T extends {}>(state: State, id: string): T {
   const component = getComponent(state, id);
   const spec = getComponentSpec(state, component?.spec as string);
   if (component == null || spec == null) return {} as T;
-  const props: Dictionary<ComponentProperty> = component.properties;
+  const props: Record<string, ComponentProperty> = component.properties;
   const values = forEachObject(spec.properties, ([propName, propSpec]) => (
     [propName, props[propName].current ?? propSpec.default]
   ));

@@ -3,7 +3,6 @@ import {
   EvaluationErrorTypes,
   Results,
 } from '../comms/types';
-import { Dictionary } from '../../utils';
 import { getExecutionState } from './selectors';
 import { AppThunk, State } from '../types';
 import { VariableTypes } from '../variables/types';
@@ -15,7 +14,7 @@ import serialize from './serialize';
 export function evaluateVariable(
   scopeName: string,
   funcString: string,
-  executionState: Dictionary<Dictionary<any>>,
+  executionState: Record<string, Record<string, any>>,
   argNames: string[] = [],
   argValues: VariableTypes[] = [],
 ): ValueOrError {
@@ -94,7 +93,7 @@ export function evaluate(event?: Event): AppThunk<Results> {
         results.event = result;
         if (result.error) return;
         if (typeof result.value === 'object') {
-          Object.entries(result.value as Dictionary<any>).forEach(([key, value]) => {
+          Object.entries(result.value as Record<string, any>).forEach(([key, value]) => {
             const { scope: toScope, name } = getScopeAndName(key, scope);
             const variable = getVariableByName(getState(), `${toScope}.${name}`);
             // TODO: raise error or something here as the event is not working

@@ -4,12 +4,9 @@ import reducer from './reducers';
 import * as actions from './actions';
 import { PropTypes } from '../variables/types';
 import { getComponentSpec } from './selectors';
-import { ComponentSpec, ComponentShortcut } from './types';
-
-const initialState = {
-  specs: {},
-  components: {},
-};
+import { ComponentSpec } from './types';
+import { DEFAULT_SCOPE } from '../../constants';
+import { ComponentShortcut } from '../shortcuts';
 
 const store = createStore(
   combineReducers({ components: reducer }),
@@ -28,10 +25,6 @@ const rangeEvents = {
 };
 
 describe('Components reducer', () => {
-  it('should return the initial state', () => {
-    expect(reducer(undefined, {} as any)).toEqual(initialState);
-  });
-
   it('should create component specs', () => {
     const range = store.dispatch(actions.createComponentSpec(
       'range',
@@ -42,7 +35,7 @@ describe('Components reducer', () => {
     const rangeState = getComponentSpec(store.getState(), 'range');
     expect(rangeState).toBeTruthy();
     expect(range.properties.min.name).toBe('min');
-    expect(range.properties.min.funcOnly).toBe(false);
+    expect(range.properties.min.has.func).toBe(true);
     expect(range.properties.min.default).toBe(0);
     expect(range.properties.something).toBeUndefined();
   });
@@ -58,7 +51,7 @@ describe('Components reducer', () => {
     // TODO: The scope should be set rather than the var name.
     const range = store.dispatch(actions.createComponent('range', 'hi', { min: { value: 2 }, max: { value: null } }, {}) as any) as ComponentShortcut<Record<keyof typeof rangeProps, number>>;
 
-    expect(range.scope).toBe('global');
+    expect(range.scope).toBe(DEFAULT_SCOPE);
     expect(range.name).toBe('hi');
     expect(range.state?.min).toBe(2);
     expect(range.state?.max).toBe(100);

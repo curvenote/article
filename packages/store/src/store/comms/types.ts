@@ -1,5 +1,3 @@
-import { Dictionary } from '../../utils';
-
 export const EVALUATE = 'EVALUATE';
 export const RETURN_RESULTS = 'RETURN_RESULTS';
 
@@ -17,8 +15,8 @@ export type EvaluationError = {
 export type ValueOrError = { value?: any, error?: EvaluationError };
 
 export type Results = {
-  variables: Dictionary<ValueOrError>;
-  components: Dictionary<Dictionary<ValueOrError>>;
+  variables: Record<string, ValueOrError>;
+  components: Record<string, Record<string, ValueOrError>>;
   event: ValueOrError;
 };
 
