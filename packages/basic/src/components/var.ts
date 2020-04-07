@@ -1,65 +1,37 @@
-/* eslint-disable no-underscore-dangle */
 import { html } from 'lit-element';
-import { actions, types } from '@iooxa/ink-store';
+import { actions, types, InkVarSpec } from '@iooxa/ink-store';
 import { store } from '../provider';
 import { formatter } from '../utils';
-import { BaseSubscribe } from './base';
+import { BaseSubscribe, withInk } from './base';
 
+@withInk(InkVarSpec)
 class InkVar extends BaseSubscribe {
-  static get properties() {
-    return {
-      name: { type: String, reflect: true },
-      value: { type: String, reflect: true },
-      valueFunction: { type: String, reflect: true, attribute: ':value' },
-      format: { type: String, reflect: true },
-      description: { type: String, reflect: true },
-    };
-  }
-
-  ink: types.VariableShortcut | null = null;
-
-  name = '';
-
-  value = '';
-
-  valueFunction = '';
-
-  format = '.1f';
-
-  description = '';
-
   connectedCallback() {
     super.connectedCallback();
-    const {
-      scope, name, description, value, valueFunction, format,
-    } = this;
-    this.ink = store.dispatch(actions.createVariable(`${scope}.${name}`, value, valueFunction, {
-      description,
-      type: types.PropTypes.number,
-      format,
-    }));
+    const { scope } = this;
+    const name = this.getAttribute('name') as string;
+    this.ink = store.dispatch(actions.createVariable(
+      `${scope}.${name}`,
+      this.getAttribute('value') ?? InkVarSpec.properties.value.default,
+      this.getAttribute(':value') ?? '',
+      {
+        description: this.getAttribute('description') ?? '',
+        type: this.getAttribute('type') as types.PropTypes ?? InkVarSpec.properties.type.default,
+        format: this.getAttribute('format') ?? InkVarSpec.properties.format.default as types.PropTypes,
+      },
+    ));
     this.subscribe(this.ink.id);
-  }
-
-  updated(changedProperties: Map<string, string>) {
-    const {
-      scope, name, description, value, valueFunction, format,
-    } = this;
-    if (changedProperties == null || changedProperties.size === 0) return;
-    this.ink?.set(value, valueFunction, {
-      scope: scope ?? 'global',
-      name,
-      description,
-      type: types.PropTypes.number,
-      format,
-    });
   }
 
   render() {
     const {
       name, current, func, format, derived,
-    } = this.ink?.variable ?? {};
-    return html`<span>${name} := ${derived ? html`<code>${func} = ${current}</code>` : formatter(current, format)}</span>`;
+    } = this.ink?.state;
+    const formatted = formatter(current, format);
+    if (derived) {
+      return html`<div><code>function ${name}() { return ${func}; }</code> = ${formatted}</div>`;
+    }
+    return html`<div>${name} = ${formatted}</div>`;
   }
 }
 

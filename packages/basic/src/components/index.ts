@@ -4,6 +4,10 @@ import InkVar from './var';
 import InkDisplay from './display';
 import InkRange from './range';
 import InkDynamic from './dynamic';
+import InkAction from './action';
+import InkButton from './button';
+import InkSwitch from './switch';
+import InkVisible from './visible';
 
 
 function registerComponent(name: string, component: any) {
@@ -20,6 +24,10 @@ export const register = () => {
   registerComponent('ink-display', InkDisplay);
   registerComponent('ink-dynamic', InkDynamic);
   registerComponent('ink-range', InkRange);
+  registerComponent('ink-action', InkAction);
+  registerComponent('ink-button', InkButton);
+  registerComponent('ink-switch', InkSwitch);
+  registerComponent('ink-visible', InkVisible);
 };
 
 export {
@@ -27,4 +35,8 @@ export {
   InkDisplay,
   InkDynamic,
   InkRange,
+  InkAction,
+  InkButton,
+  InkSwitch,
+  InkVisible,
 };

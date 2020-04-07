@@ -1,6 +1,8 @@
 /* eslint-disable max-classes-per-file */
 import { LitElement, PropertyDeclaration, PropertyValues } from 'lit-element';
-import { types, actions, selectors } from '@iooxa/ink-store';
+import {
+  types, actions, selectors, DEFAULT_SCOPE, utils,
+} from '@iooxa/ink-store';
 import { Unsubscribe } from 'redux';
 import { store } from '../provider';
 
@@ -10,7 +12,7 @@ interface Constructable<T> {
 }
 
 export class BaseSubscribe extends LitElement {
-  ink: types.VariableShortcut | any | null = null;
+  ink: any | null = null;
 
   #scope?: Element;
 
@@ -18,8 +20,7 @@ export class BaseSubscribe extends LitElement {
     const closestScope = this.closest('ink-scope');
     // Always use the *first* scope found. Important on removeVariable.
     if (closestScope != null) this.#scope = closestScope;
-    // TODO: Should be 'global' from a constant
-    return (this.#scope ?? closestScope)?.getAttribute('name') ?? 'global';
+    return (this.#scope ?? closestScope)?.getAttribute('name') ?? DEFAULT_SCOPE;
   }
 
   disconnectedCallback() {
@@ -43,7 +44,7 @@ export class BaseSubscribe extends LitElement {
 export class BaseComponent<T extends types.DefineComponentSpec> extends BaseSubscribe {
   ink: types.ComponentShortcut<{ [P in keyof T['properties']]: (T['properties'])[P]['default'] }> | null = null;
 
-  static spec: types.DefineComponentSpec | null = null;
+  static spec: types.ComponentSpec | null = null;
 
   connectedCallback() {
     super.connectedCallback();
@@ -99,15 +100,16 @@ The wrapper inserts:
 export function withInk<
 T extends types.DefineComponentSpec,
 C extends Constructable<BaseComponent<T>>
-  >(spec: T, additionalProperties: { [key: string]: PropertyDeclaration } = {}) {
+  >(specDefinition: T, additionalProperties: { [key: string]: PropertyDeclaration } = {}) {
   return (ComponentClass: C) => {
     const litProperties = { ...additionalProperties };
 
-    Object.entries(spec.properties).forEach(([key, prop]) => {
-      // Add the properties
-      litProperties[key] = { type: String };
-      litProperties[`${key}Function`] = { type: String, attribute: `:${key}` };
+    const spec = utils.getComponentSpecFromDefinition(specDefinition);
 
+    // Add the properties
+    Object.entries(spec.properties).forEach(([key, prop]) => {
+      if (!prop.has.value) return;
+      litProperties[key] = { type: String };
       Object.defineProperty(ComponentClass.prototype, key, {
         get() {
           return this.ink?.state?.[key];
@@ -116,15 +118,20 @@ C extends Constructable<BaseComponent<T>>
           if (value == null) {
             this.removeAttribute(key);
             const prevFunc = this.ink.component.properties[key].func;
-            this.ink?.set({ [key]: { value: value ?? prop.default, func: prevFunc } });
+            this.ink?.setProperties({ [key]: { value: value ?? prop.default, func: prevFunc } });
           } else {
             this.setAttribute(key, String(value));
             this.removeAttribute(`:${key}`);
-            this.ink?.set({ [key]: { value: value ?? prop.default, func: '' } });
+            this.ink?.setProperties({ [key]: { value: value ?? prop.default, func: '' } });
           }
         },
       });
+    });
 
+    // Add the property functions
+    Object.entries(spec.properties).forEach(([key, prop]) => {
+      if (!prop.has.func) return;
+      litProperties[`${key}Function`] = { type: String, attribute: `:${key}` };
       Object.defineProperty(ComponentClass.prototype, `${key}Function`, {
         get() {
           return this.ink?.component.properties[key].func;
@@ -136,7 +143,7 @@ C extends Constructable<BaseComponent<T>>
             this.setAttribute(`:${key}`, String(value).trim());
           }
           const prevValue = this.ink.component.properties[key].value;
-          this.ink?.set({ [key]: { value: prevValue, func: String(value ?? '').trim() } });
+          this.ink?.setProperties({ [key]: { value: prevValue, func: String(value ?? '').trim() } });
         },
       });
     });

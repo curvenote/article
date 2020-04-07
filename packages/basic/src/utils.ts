@@ -1,13 +1,12 @@
 import { format } from 'd3-format';
-import { types } from '@iooxa/ink-store';
-
-export const DEFAULT_FORMAT = '.1f';
+import { types, DEFAULT_FORMAT } from '@iooxa/ink-store';
 
 // eslint-disable-next-line import/prefer-default-export
 export function formatter(
   value: any, formatString?: string, variable?: types.Variable,
 ) {
   if (typeof value === 'string') { return value; }
+  if (typeof value === 'boolean') { return value ? 'true' : 'false'; }
   try {
     return format(formatString ?? variable?.format ?? DEFAULT_FORMAT)(value);
   } catch (error) {

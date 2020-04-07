@@ -1,5 +1,5 @@
 import { html, PropertyValues } from 'lit-element';
-import { types } from '@iooxa/ink-store';
+import { types, DEFAULT_FORMAT } from '@iooxa/ink-store';
 import { formatter } from '../utils';
 import { BaseComponent, withInk, onBindChange } from './base';
 
@@ -8,7 +8,7 @@ export const InkDisplaySpec = {
   description: 'Inline display of values',
   properties: {
     value: { type: types.PropTypes.number, default: NaN },
-    format: { type: types.PropTypes.string, default: '.1f' },
+    format: { type: types.PropTypes.string, default: DEFAULT_FORMAT },
   },
   events: {},
 };

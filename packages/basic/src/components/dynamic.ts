@@ -3,7 +3,7 @@ import {
 } from 'lit-element';
 import { drag, DragBehavior } from 'd3-drag';
 import { select, event } from 'd3-selection';
-import { types } from '@iooxa/ink-store';
+import { types, DEFAULT_FORMAT } from '@iooxa/ink-store';
 import { BaseComponent, withInk, onBindChange } from './base';
 import { formatter } from '../utils';
 
@@ -18,7 +18,7 @@ export const InkDynamicSpec = {
     max: { type: types.PropTypes.number, default: 100 },
     step: { type: types.PropTypes.number, default: 1 },
     sensitivity: { type: types.PropTypes.number, default: 1, description: 'Higher the sensitivity, the faster the scroll' },
-    format: { type: types.PropTypes.string, default: '.1f' },
+    format: { type: types.PropTypes.string, default: DEFAULT_FORMAT },
     periodic: { type: types.PropTypes.boolean, default: false },
   },
   events: {
@@ -50,7 +50,7 @@ class InkDynamic extends BaseComponent<typeof InkDynamicSpec> {
       event.sourceEvent.preventDefault();
       event.sourceEvent.stopPropagation();
       this.#dragging = true; // Hides the "drag" tool-tip
-      const { value } = this.ink?.state ?? {};
+      const { value } = this.ink!.state;
       this.#prevValue = Number(value); // Start out with the actual value
       bodyClassList.add(CURSOR_DRAG_CLASS);
     }).on('end', () => {
@@ -65,7 +65,7 @@ class InkDynamic extends BaseComponent<typeof InkDynamicSpec> {
 
       const {
         step, min, max, sensitivity, periodic,
-      } = (this.ink!.state);
+      } = this.ink!.state;
 
       // By default the sensitivity is 1value == 5px
       const valuePerPixel = sensitivity / 5;
@@ -110,7 +110,7 @@ class InkDynamic extends BaseComponent<typeof InkDynamicSpec> {
   }
 
   render() {
-    const { value, format } = (this.ink?.state ?? {}) as { value: number, format: string };
+    const { value, format } = this.ink!.state;
     return html`<span class="dynamic">${formatter(value, format)}<slot></slot></span><div class="help" style="${this.#dragging ? 'display:none' : ''}">drag</div>`;
   }
 }

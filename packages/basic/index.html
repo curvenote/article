@@ -15,17 +15,18 @@
 
 <h2>Tangled Cookies</h2>
 
-<ink-scope name="hi">
+<ink-scope name="untangle">
+    <ink-var name="hide" value="false" type="Boolean"></ink-var>
     <p>
         <code>ink.js</code> is heavily inspired by <a href="http://worrydream.com/Tangle/guide.html">tangle.js</a>, updated to be use web-components!
         This means you can declaratively write your variables and how to display them in <code>html</code> markup.
-        To get an idea of what that looks like, let's take the canonical example of <emph>Tangled Cookies</emph> - a simple reactive document to encourage you to not eat more than <ink-action bind="{cookies:42, hide:false}">42 cookies</ink-action> in one day.
+        To get an idea of what that looks like, let's take the canonical example of <emph>Tangled Cookies</emph> - a simple reactive document to encourage you to not eat more than <ink-action :click="{'demo1.cookies':42, 'demo2.cookies':42, hide:false}">42 cookies</ink-action> in one day.
     </p>
 
-    <ink-var name="hide" value="1"></ink-var>
+    <ink-switch bind="hide"></ink-switch>
 
-    <ink-button bind="{hide: !hide}" :text="(!hide ? 'Hide' : 'Show') + ' Advanced Example'" style="float: right; margin-right: 5px;"></ink-button>
-    <ink-div :visible="!!hide">
+    <ink-button :click="{hide: !hide}" :text="`${(hide ? 'Hide' : 'Show')} Advanced Example`" style="float: right; margin-right: 5px;"></ink-button>
+    <ink-visible :visible="!hide">
         <ink-scope name="demo1">
             <ink-demo>
                 <ink-var name="cookies" value="3" format=".4"></ink-var>
@@ -35,9 +36,9 @@
                 </p>
             </ink-demo>
         </ink-scope>
-    </ink-div>
+    </ink-visible>
 
-    <ink-div :visible="!hide">
+    <ink-visible :visible="hide">
         <ink-scope name="demo2">
             <ink-demo>
                 <ink-var name="cookies" value="3" format=".4"></ink-var>
@@ -54,15 +55,15 @@
                 </p>
                 <ink-range bind="cookies" min="2" max="100"></ink-range>
 <script type="text/javascript">
-function logToConsole(value) {
-    console.log("Working! x=" + value);
+function logToConsole(value, calories) {
+    console.log("Working! value=", value, "calories=", calories);
     return {cookies: value}
 }
 </script>
-                <ink-range :value="cookies" :change="logToConsole(value)" min="2" max="100"></ink-range>
+                <ink-range :value="cookies" :change="logToConsole(value, calories)" min="2" max="100"></ink-range>
             </ink-demo>
         </ink-scope>
-    </ink-div>
+    </ink-visible>
 </ink-scope>
 
 

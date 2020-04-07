@@ -9,3 +9,9 @@ ink-dynamic {
   color: #46f;
   border-bottom: 1px dashed #46f;
 }
+
+ink-action {
+  cursor: pointer;
+  color: #46f;
+  border-bottom: 1px solid #46f;
+}

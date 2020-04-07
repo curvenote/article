@@ -2,15 +2,15 @@ import { Unsubscribe } from 'redux';
 import { v4 as uuid } from 'uuid';
 import { types } from '@iooxa/ink-store';
 
-class Ref {
-  #current?: types.Store = undefined;
+class Ref<T = types.Store> {
+  #current?: T = undefined;
 
   get current() {
     if (this.#current === undefined) throw new Error('Must init store.');
     return this.#current;
   }
 
-  set current(store: types.Store) {
+  set current(store: T) {
     this.#current = store;
   }
 }
@@ -43,9 +43,7 @@ function notify(store: types.Store) {
   });
 }
 
-
 export function setup(store: types.Store) {
-  // eslint-disable-next-line no-underscore-dangle
   storeRef.current = store;
   currentState = { variables: store.getState().variables, components: store.getState().components };
   store.subscribe(() => notify(store));
