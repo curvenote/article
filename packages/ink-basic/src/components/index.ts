@@ -1,4 +1,4 @@
-import { actions } from '@iooxa/ink-store';
+import { actions } from '@iooxa/runtime';
 import { store } from '../provider';
 import InkVar from './var';
 import InkDisplay from './display';

@@ -1,5 +1,5 @@
 import { html } from 'lit-element';
-import { actions, types, InkVarSpec } from '@iooxa/ink-store';
+import { actions, types, InkVarSpec } from '@iooxa/runtime';
 import { store } from '../provider';
 import { formatter } from '../utils';
 import { BaseSubscribe, withInk } from './base';

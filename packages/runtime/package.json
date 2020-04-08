@@ -1,7 +1,7 @@
 {
-  "name": "@iooxa/ink-store",
-  "version": "0.1.9",
-  "description": "Scientific web components for interactive scientific writing, reactive documents and explorable explanations.",
+  "name": "@iooxa/runtime",
+  "version": "0.2.0",
+  "description": "Runtime for ink-components, evaluate a reactive state for components.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "keywords": [

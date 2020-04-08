@@ -1,5 +1,5 @@
 import { format } from 'd3-format';
-import { types, DEFAULT_FORMAT } from '@iooxa/ink-store';
+import { types, DEFAULT_FORMAT } from '@iooxa/runtime';
 
 // eslint-disable-next-line import/prefer-default-export
 export function formatter(

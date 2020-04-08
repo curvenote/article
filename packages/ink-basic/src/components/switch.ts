@@ -1,6 +1,6 @@
 import '@material/mwc-switch';
 import { html, PropertyValues } from 'lit-element';
-import { types } from '@iooxa/ink-store';
+import { types } from '@iooxa/runtime';
 import { BaseComponent, withInk, onBindChange } from './base';
 import { HTMLElementEvent } from '../types';
 

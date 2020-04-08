@@ -1,5 +1,5 @@
 import { html, PropertyValues } from 'lit-element';
-import { types, DEFAULT_FORMAT } from '@iooxa/ink-store';
+import { types, DEFAULT_FORMAT } from '@iooxa/runtime';
 import { formatter } from '../utils';
 import { BaseComponent, withInk, onBindChange } from './base';
 

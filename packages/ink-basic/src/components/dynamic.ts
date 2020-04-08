@@ -3,7 +3,7 @@ import {
 } from 'lit-element';
 import { drag, DragBehavior } from 'd3-drag';
 import { select, event } from 'd3-selection';
-import { types, DEFAULT_FORMAT } from '@iooxa/ink-store';
+import { types, DEFAULT_FORMAT } from '@iooxa/runtime';
 import { throttle } from 'underscore';
 import { BaseComponent, withInk, onBindChange } from './base';
 import { formatter } from '../utils';

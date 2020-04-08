@@ -1,5 +1,5 @@
 import { html } from 'lit-element';
-import { types } from '@iooxa/ink-store';
+import { types } from '@iooxa/runtime';
 import { BaseComponent, withInk } from './base';
 
 export const InkVisibleSpec = {

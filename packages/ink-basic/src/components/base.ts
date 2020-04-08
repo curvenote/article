@@ -2,7 +2,7 @@
 import { LitElement, PropertyDeclaration, PropertyValues } from 'lit-element';
 import {
   types, actions, selectors, DEFAULT_SCOPE, utils,
-} from '@iooxa/ink-store';
+} from '@iooxa/runtime';
 import { Unsubscribe } from 'redux';
 import { store } from '../provider';
 

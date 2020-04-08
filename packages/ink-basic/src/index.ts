@@ -1,6 +1,6 @@
 import { applyMiddleware, createStore } from 'redux';
 import thunkMiddleware from 'redux-thunk';
-import inkStore, { types } from '@iooxa/ink-store';
+import inkStore, { types } from '@iooxa/runtime';
 import * as components from './components';
 import './index.css';
 

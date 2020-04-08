@@ -1,6 +1,6 @@
 import '@material/mwc-radio';
 import { html, css, PropertyValues } from 'lit-element';
-import { types } from '@iooxa/ink-store';
+import { types } from '@iooxa/runtime';
 import { BaseComponent, withInk, onBindChange } from './base';
 import { getLabelsAndValues } from './utils';
 

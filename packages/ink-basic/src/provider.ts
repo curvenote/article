@@ -1,6 +1,6 @@
 import { Unsubscribe } from 'redux';
 import { v4 as uuid } from 'uuid';
-import { types } from '@iooxa/ink-store';
+import { types } from '@iooxa/runtime';
 
 class Ref<T = types.Store> {
   #current?: T = undefined;
