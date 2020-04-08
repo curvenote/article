@@ -8,7 +8,7 @@ module.exports = {
     usedExports: true,
   },
   entry: {
-    app: './src/index.ts',
+    app: './ink.ts',
   },
   plugins: [
     new CleanWebpackPlugin(),
