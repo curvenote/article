@@ -7,6 +7,10 @@ import InkDynamic from './dynamic';
 import InkAction from './action';
 import InkButton from './button';
 import InkSwitch from './switch';
+import InkCheckbox from './checkbox';
+import InkRadio from './radio';
+import InkSelect from './select';
+import InkInput from './input';
 import InkVisible from './visible';
 
 
@@ -27,6 +31,10 @@ export const register = () => {
   registerComponent('ink-action', InkAction);
   registerComponent('ink-button', InkButton);
   registerComponent('ink-switch', InkSwitch);
+  registerComponent('ink-checkbox', InkCheckbox);
+  registerComponent('ink-radio', InkRadio);
+  registerComponent('ink-select', InkSelect);
+  registerComponent('ink-input', InkInput);
   registerComponent('ink-visible', InkVisible);
 };
 
@@ -38,5 +46,9 @@ export {
   InkAction,
   InkButton,
   InkSwitch,
+  InkCheckbox,
+  InkRadio,
+  InkSelect,
+  InkInput,
   InkVisible,
 };

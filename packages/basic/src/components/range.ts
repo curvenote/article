@@ -1,3 +1,4 @@
+import '@material/mwc-slider';
 import { html, PropertyValues } from 'lit-element';
 import { types } from '@iooxa/ink-store';
 import { BaseComponent, withInk, onBindChange } from './base';
@@ -31,7 +32,9 @@ class InkRange extends BaseComponent<typeof InkRangeSpec> {
       this.ink?.dispatchEvent('change', [newValue]);
     };
 
-    return html`<input type="range" .min="${min}" .step="${step}" .max="${max}" .value="${value}" @input="${changeHandler}">`;
+    const [small, big] = [Math.min(min, max), Math.max(min, max)];
+
+    return html`<mwc-slider min="${small}" step="${step}" max="${big}" value="${value}" @input="${changeHandler}"></mwc-slider>`;
   }
 }
 

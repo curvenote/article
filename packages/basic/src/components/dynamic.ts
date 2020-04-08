@@ -4,6 +4,7 @@ import {
 import { drag, DragBehavior } from 'd3-drag';
 import { select, event } from 'd3-selection';
 import { types, DEFAULT_FORMAT } from '@iooxa/ink-store';
+import { throttle } from 'underscore';
 import { BaseComponent, withInk, onBindChange } from './base';
 import { formatter } from '../utils';
 
@@ -43,6 +44,8 @@ class InkDynamic extends BaseComponent<typeof InkDynamicSpec> {
   firstUpdated(changedProps: PropertyValues) {
     super.firstUpdated(changedProps);
 
+    const throttled = throttle((val: number) => this.ink?.dispatchEvent('change', [val]), 20);
+
     const node = this as Element;
     const bodyClassList = document.getElementsByTagName('BODY')[0].classList;
 
@@ -80,7 +83,7 @@ class InkDynamic extends BaseComponent<typeof InkDynamicSpec> {
       this.#prevValue = newValue;
       // Then round with the step size if it is greater than zero
       const val = (step > 0) ? Math.round(newValue / step) * step : newValue;
-      this.ink?.dispatchEvent('change', [val]);
+      throttled(val);
     });
 
     this.#drag(select(node));

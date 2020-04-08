@@ -29,9 +29,9 @@ class InkVar extends BaseSubscribe {
     } = this.ink?.state;
     const formatted = formatter(current, format);
     if (derived) {
-      return html`<div><code>function ${name}() { return ${func}; }</code> = ${formatted}</div>`;
+      return html`<code>function ${name}() { return ${func}; }</code> = ${formatted}`;
     }
-    return html`<div>${name} = ${formatted}</div>`;
+    return html`${name} = ${formatted}`;
   }
 }
 

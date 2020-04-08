@@ -15,18 +15,24 @@
 
 <h2>Tangled Cookies</h2>
 
+<ink-var name="place" value="somewhere" type="String"></ink-var>
+<ink-radio bind="place" labels="home,work,play"></ink-radio>
+<ink-select bind="place" labels="home,work,play"></ink-select>
+<ink-input bind="place"></ink-input>
+
 <ink-scope name="untangle">
-    <ink-var name="hide" value="false" type="Boolean"></ink-var>
+    <ink-var name="simple" value="false" type="Boolean"></ink-var>
     <p>
         <code>ink.js</code> is heavily inspired by <a href="http://worrydream.com/Tangle/guide.html">tangle.js</a>, updated to be use web-components!
         This means you can declaratively write your variables and how to display them in <code>html</code> markup.
-        To get an idea of what that looks like, let's take the canonical example of <emph>Tangled Cookies</emph> - a simple reactive document to encourage you to not eat more than <ink-action :click="{'demo1.cookies':42, 'demo2.cookies':42, hide:false}">42 cookies</ink-action> in one day.
+        To get an idea of what that looks like, let's take the canonical example of <emph>Tangled Cookies</emph> - a simple reactive document to encourage you to not eat more than <ink-action :click="{'demo1.cookies':42, 'demo2.cookies':42, simple:false}">42 cookies</ink-action> in one day.
     </p>
 
-    <ink-switch bind="hide"></ink-switch>
+    <ink-switch bind="simple" label="Simple"></ink-switch>
+    <ink-checkbox bind="simple" label="Simple Example"></ink-checkbox>
 
-    <ink-button :click="{hide: !hide}" :text="`${(hide ? 'Hide' : 'Show')} Advanced Example`" style="float: right; margin-right: 5px;"></ink-button>
-    <ink-visible :visible="!hide">
+    <ink-button :click="{simple: !simple}" :label="`${(simple ? 'Show' : 'Hide')} Advanced Example`" style="float: right; margin-right: 5px;"></ink-button>
+    <ink-visible :visible="simple">
         <ink-scope name="demo1">
             <ink-demo>
                 <ink-var name="cookies" value="3" format=".4"></ink-var>
@@ -38,7 +44,7 @@
         </ink-scope>
     </ink-visible>
 
-    <ink-visible :visible="hide">
+    <ink-visible :visible="!simple">
         <ink-scope name="demo2">
             <ink-demo>
                 <ink-var name="cookies" value="3" format=".4"></ink-var>
