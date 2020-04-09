@@ -1,8 +1,10 @@
 import { applyMiddleware, createStore } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import inkStore, { types, setup } from '@iooxa/runtime';
+import * as basic from '@iooxa/ink-basic';
+import '@iooxa/ink-basic/dist/ink.css';
 import * as components from './src/components';
-import './src/index.css';
+import './styles/index.css';
 
 declare global {
   interface Window {
@@ -15,7 +17,7 @@ declare global {
 
 window.ink = {
   ...window.ink,
-  components: { ...window.ink?.components, ...components },
+  components: { ...window.ink?.components, ...basic, ...components },
   store: createStore(
     inkStore.reducer,
     applyMiddleware(
@@ -27,4 +29,5 @@ window.ink = {
 };
 
 setup(window.ink.store);
+basic.register();
 components.register();

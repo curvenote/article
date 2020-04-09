@@ -15,7 +15,8 @@ export const InkVisibleSpec = {
 class InkVisible extends BaseComponent<typeof InkVisibleSpec> {
   render() {
     const { visible } = this.ink!.state;
-    return html`<div ?hidden=${!visible}><slot></slot></div>`;
+    this.hidden = !visible;
+    return html`<slot></slot>`;
   }
 }
 

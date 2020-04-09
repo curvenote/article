@@ -1,10 +1,9 @@
 /* eslint-disable max-classes-per-file */
 import { LitElement, PropertyDeclaration, PropertyValues } from 'lit-element';
 import {
-  types, actions, selectors, DEFAULT_SCOPE, utils,
+  types, actions, selectors, DEFAULT_SCOPE, utils, provider,
 } from '@iooxa/runtime';
 import { Unsubscribe } from 'redux';
-import { store } from '../provider';
 
 
 interface Constructable<T> {
@@ -30,7 +29,7 @@ export class BaseSubscribe extends LitElement {
 
   subscribe(id: string) {
     this.unsubscribe();
-    this.#unsubscribe = store.subscribe(id, () => this.requestUpdate());
+    this.#unsubscribe = provider.subscribe(id, () => this.requestUpdate());
     return this.#unsubscribe;
   }
 
@@ -66,7 +65,7 @@ export class BaseComponent<T extends types.DefineComponentSpec> extends BaseSubs
         func: this.getAttribute(`:${key}`) ?? '',
       };
     });
-    const component = store.dispatch(actions.createComponent(spec.name, `${scope}.${name}Component`, initializeProperties, initializeEvents));
+    const component = provider.dispatch(actions.createComponent(spec.name, `${scope}.${name}Component`, initializeProperties, initializeEvents));
     this.ink = component as unknown as types.ComponentShortcut<{ [P in keyof T['properties']]: (T['properties'])[P]['default'] }>;
     this.subscribe(this.ink.id);
   }
@@ -187,7 +186,7 @@ export function onBindChange(
   if (!updated.has('bind')) return;
   const { spec } = component.constructor as typeof BaseComponent;
   const { bind } = component as any;
-  const variable = selectors.getVariableByName(store.getState(), `${component.scope}.${bind}`);
+  const variable = selectors.getVariableByName(provider.getState(), `${component.scope}.${bind}`);
   const props: any = {
     value: { value: null, func: bind },
   };

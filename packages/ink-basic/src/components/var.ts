@@ -1,6 +1,7 @@
 import { html } from 'lit-element';
-import { actions, types, InkVarSpec } from '@iooxa/runtime';
-import { store } from '../provider';
+import {
+  actions, types, InkVarSpec, provider,
+} from '@iooxa/runtime';
 import { formatter } from '../utils';
 import { BaseSubscribe, withInk } from './base';
 
@@ -10,7 +11,7 @@ class InkVar extends BaseSubscribe {
     super.connectedCallback();
     const { scope } = this;
     const name = this.getAttribute('name') as string;
-    this.ink = store.dispatch(actions.createVariable(
+    this.ink = provider.dispatch(actions.createVariable(
       `${scope}.${name}`,
       this.getAttribute('value') ?? InkVarSpec.properties.value.default,
       this.getAttribute(':value') ?? '',

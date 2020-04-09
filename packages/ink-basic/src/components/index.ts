@@ -1,5 +1,4 @@
-import { actions } from '@iooxa/runtime';
-import { store } from '../provider';
+import { actions, provider } from '@iooxa/runtime';
 import InkVar from './var';
 import InkDisplay from './display';
 import InkRange from './range';
@@ -15,7 +14,7 @@ import InkVisible from './visible';
 
 
 function registerComponent(name: string, component: any) {
-  store.dispatch(actions.createComponentSpec(
+  provider.dispatch(actions.createComponentSpec(
     component.spec!.name,
     component.spec!.properties,
     component.spec!.events,

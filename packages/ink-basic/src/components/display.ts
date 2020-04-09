@@ -19,7 +19,9 @@ class InkDisplay extends BaseComponent<typeof InkDisplaySpec> {
 
   render() {
     const { value, format } = this.ink!.state;
-    return html`${formatter(value, format)}`;
+    const formatted = formatter(value, format);
+    this.textContent = formatted;
+    return html`<slot></slot>`;
   }
 }
 
