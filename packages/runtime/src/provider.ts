@@ -25,11 +25,11 @@ function subscribe(id: string | null, listener: () => void): Unsubscribe {
   return () => delete subscriptions[key];
 }
 
-let currentState: State;
+let currentState: State['ink'];
 function notify(store: Store) {
   const previousState = currentState;
-  const state = store.getState();
-  currentState = { variables: state.variables, components: state.components };
+  const inkState = store.getState().ink;
+  currentState = { variables: inkState.variables, components: inkState.components };
   if (
     previousState.variables === currentState.variables
     && previousState.components === currentState.components
@@ -49,7 +49,8 @@ function notify(store: Store) {
 
 export function setup(store: Store) {
   storeRef.current = store;
-  currentState = { variables: store.getState().variables, components: store.getState().components };
+  const inkState = store.getState().ink;
+  currentState = { variables: inkState.variables, components: inkState.components };
   store.subscribe(() => notify(store));
 }
 

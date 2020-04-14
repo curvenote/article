@@ -1,16 +1,16 @@
 import { EVALUATE } from '../comms/types';
 import { returnResults } from '../comms/actions';
 import { Middleware } from '../types';
-import { evaluate } from './evaluate';
+import { dangerouslyEvaluateState } from './actions';
 import { COMPONENT_EVENT, ComponentEventAction } from '../components/types';
 
-const evaluateMiddleware: Middleware = (
+const dangerousEvaluatationMiddleware: Middleware = (
   (store) => (next) => (action) => {
     const result = next(action);
     switch (action.type) {
       case EVALUATE: {
         const { id } = action.payload;
-        const evaluated = store.dispatch(evaluate());
+        const evaluated = store.dispatch(dangerouslyEvaluateState());
         store.dispatch(returnResults(id, evaluated));
         break;
       }
@@ -18,7 +18,7 @@ const evaluateMiddleware: Middleware = (
         const {
           id, component, name, values,
         } = (action as ComponentEventAction).payload;
-        const evaluated = store.dispatch(evaluate({
+        const evaluated = store.dispatch(dangerouslyEvaluateState({
           id: component,
           name,
           values,
@@ -33,4 +33,4 @@ const evaluateMiddleware: Middleware = (
   }
 );
 
-export default evaluateMiddleware;
+export default dangerousEvaluatationMiddleware;

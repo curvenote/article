@@ -16,8 +16,10 @@ export * from './comms/types';
 export * from './shortcuts';
 
 export interface State {
-  variables: VariablesState;
-  components: ComponentsState;
+  ink: {
+    variables: VariablesState;
+    components: ComponentsState;
+  }
 }
 
 export type Actions = (

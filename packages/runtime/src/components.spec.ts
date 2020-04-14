@@ -1,7 +1,7 @@
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, combineReducers } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import ink, { types, actions } from '.';
-import rootReducer from './store/reducers';
+import reducer from './store/reducers';
 import { PropTypes } from './store/types';
 
 const rangeProps = {
@@ -14,11 +14,11 @@ const rangeEvents = {
 };
 
 const store = createStore(
-  rootReducer,
+  combineReducers({ ink: reducer }),
   applyMiddleware(
     thunkMiddleware,
-    ink.triggerEvaluateMiddleware,
-    ink.evaluateMiddleware,
+    ink.triggerEvaluate,
+    ink.dangerousEvaluatation,
   ),
 ) as types.Store;
 
@@ -80,8 +80,8 @@ describe('integration', () => {
     const state2 = range.component;
     expect(state1).toEqual(state2);
     expect(state1 === state2).toBe(true);
-    expect(store1.variables === store2.variables).toBe(true);
-    expect(store1.components === store2.components).toBe(true);
+    expect(store1.ink.variables === store2.ink.variables).toBe(true);
+    expect(store1.ink.components === store2.ink.components).toBe(true);
     range.set(
       { value: { func: 'x + 1' } },
     );

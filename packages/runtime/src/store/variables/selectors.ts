@@ -1,14 +1,15 @@
-import { Variable, VariableTypes } from './types';
-import { State } from '../types';
+import { Variable, VariableTypes, VariablesState } from './types';
 import { getScopeAndName } from './utils';
 import { Component } from '../components/types';
 
+type State = { ink: { variables: VariablesState } };
+
 export function getVariable(state: State, id: string): Variable | undefined {
-  return state.variables[id];
+  return state.ink.variables[id];
 }
 
 export function getVariableAsComponent(state: State, id: string): Component | undefined {
-  const variable = state.variables[id];
+  const variable = state.ink.variables[id];
   if (variable == null) return undefined;
   return {
     id: variable.id,
@@ -39,7 +40,7 @@ export function getVariableAsComponent(state: State, id: string): Component | un
 
 export function getVariableByName(state: State, scopeAndName: string): Variable | undefined {
   const { scope, name } = getScopeAndName(scopeAndName);
-  const filtered = Object.entries(state.variables)
+  const filtered = Object.entries(state.ink.variables)
     .filter(([, variable]) => variable.scope === scope && variable.name === name);
   return filtered.length > 0 ? filtered[0][1] : undefined;
 }

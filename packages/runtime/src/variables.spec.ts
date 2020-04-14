@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, combineReducers } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import inkStore, { types } from '.';
 import { getVariable, getVariableByName } from './store/variables/selectors';
@@ -6,11 +6,11 @@ import { updateVariable } from './store/actions';
 import reducer from './store/reducers';
 
 const store = createStore(
-  reducer,
+  combineReducers({ ink: reducer }),
   applyMiddleware(
     thunkMiddleware,
-    inkStore.triggerEvaluateMiddleware,
-    inkStore.evaluateMiddleware,
+    inkStore.triggerEvaluate,
+    inkStore.dangerousEvaluatation,
   ),
 ) as types.Store;
 
@@ -25,7 +25,7 @@ describe('integration', () => {
     const store2 = store.getState();
     const state2 = x.variable;
     expect(state1 === state2).toBe(true);
-    expect(store1.variables === store2.variables).toBe(true);
+    expect(store1.ink.variables === store2.ink.variables).toBe(true);
     x.set(null, '0 + 2');
     const state3 = x.variable;
     // Just to be sure it isn't giving back the same thing!

@@ -1,15 +1,16 @@
-import { State as FullState } from '../types';
-import { ComponentSpec, Component, ComponentProperty } from './types';
+import {
+  ComponentsState, ComponentSpec, Component, ComponentProperty,
+} from './types';
 import { forEachObject } from '../utils';
 
-type State = Pick<FullState, 'components'>;
+type State = { ink: { components: ComponentsState } };
 
 export const getComponentSpec = (state: State, name: string): ComponentSpec | undefined => (
-  state.components.specs[name] ?? undefined
+  state.ink.components.specs[name] ?? undefined
 );
 
 export const getComponent = (state: State, id: string): Component | undefined => (
-  state.components.components[id] ?? undefined
+  state.ink.components.components[id] ?? undefined
 );
 
 export function getComponentState<T extends {}>(state: State, id: string): T {

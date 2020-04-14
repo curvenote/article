@@ -4,7 +4,7 @@ import {
   Results,
 } from './types';
 
-export function evaluateVariables(id: string): CommunicationActionTypes {
+export function evaluate(id: string): CommunicationActionTypes {
   return {
     type: EVALUATE,
     payload: { id },

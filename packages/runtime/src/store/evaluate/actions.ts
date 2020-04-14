@@ -11,7 +11,7 @@ import { getScopeAndName } from '../variables/utils';
 import { getVariableByName } from '../variables/selectors';
 import serialize from './serialize';
 
-export function evaluateVariable(
+export function dangerouslyEvaluateVariable(
   scopeName: string,
   funcString: string,
   executionState: Record<string, Record<string, any>>,
@@ -63,18 +63,20 @@ export interface Event {
 function evaluateEvent(state: State, event: Event, executionState: ExecutionState) {
   const { id, name, values } = event;
 
-  const component = state.components.components[id];
-  const spec = state.components.specs[component.spec].events[name];
+  const component = state.ink.components.components[id];
+  const spec = state.ink.components.specs[component.spec].events[name];
   const eventFunc = component.events[name].func;
 
   return {
     scope: component.scope,
-    result: evaluateVariable(component.scope, eventFunc, executionState, spec.args, values),
+    result: dangerouslyEvaluateVariable(
+      component.scope, eventFunc, executionState, spec.args, values,
+    ),
   };
 }
 
 
-export function evaluate(event?: Event): AppThunk<Results> {
+export function dangerouslyEvaluateState(event?: Event): AppThunk<Results> {
   return (dispatch, getState) => {
     // These are the variables that will be returned
     const results: Results = {
@@ -106,20 +108,20 @@ export function evaluate(event?: Event): AppThunk<Results> {
     }
 
     // Append the derived variables
-    Object.entries(getState().variables)
+    Object.entries(getState().ink.variables)
       .filter(([, variable]) => variable.derived)
       .forEach(([id, variable]) => {
         const { scope, name } = variable;
         // You can't self reference
         delete executionState[scope][name];
-        const result = evaluateVariable(scope, variable.func, executionState);
+        const result = dangerouslyEvaluateVariable(scope, variable.func, executionState);
         results.variables[id] = result;
         if (result.error) return;
         executionState[scope][name] = result.value;
       });
 
     // Evaluate the components
-    Object.entries(getState().components.components)
+    Object.entries(getState().ink.components.components)
       .forEach(([id, component]) => {
         const { scope, name } = component;
         results.components[id] = {};
@@ -127,7 +129,7 @@ export function evaluate(event?: Event): AppThunk<Results> {
           // only the derived properties
           .filter(([, prop]) => prop.derived)
           .forEach(([propName, prop]) => {
-            const result = evaluateVariable(scope, prop.func, executionState);
+            const result = dangerouslyEvaluateVariable(scope, prop.func, executionState);
             results.components[id][propName] = result;
             if (result.error) return;
             if (name) {

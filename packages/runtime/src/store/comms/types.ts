@@ -20,7 +20,7 @@ export type Results = {
   event: ValueOrError;
 };
 
-export interface EvaluateVariables {
+export interface Evaluate {
   type: typeof EVALUATE;
   payload: {
     id: string;
@@ -36,6 +36,6 @@ export interface ReturnResults {
 }
 
 export type CommunicationActionTypes = (
-  EvaluateVariables |
+  Evaluate |
   ReturnResults
 );
