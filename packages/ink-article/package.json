@@ -1,5 +1,5 @@
 {
-  "name": "@iooxa/ink-basic",
+  "name": "@iooxa/ink-article",
   "version": "0.2.0",
   "description": "Scientific web components for interactive scientific writing, reactive documents and explorable explanations.",
   "main": "dist/index.js",
