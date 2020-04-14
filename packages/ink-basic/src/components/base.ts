@@ -116,7 +116,7 @@ C extends Constructable<BaseComponent<T>>
         set(value: string) {
           if (value == null) {
             this.removeAttribute(key);
-            const prevFunc = this.ink.component.properties[key].func;
+            const prevFunc = this.ink?.component.properties[key].func;
             this.ink?.setProperties({ [key]: { value: value ?? prop.default, func: prevFunc } });
           } else {
             this.setAttribute(key, String(value));
@@ -141,7 +141,7 @@ C extends Constructable<BaseComponent<T>>
           } else {
             this.setAttribute(`:${key}`, String(value).trim());
           }
-          const prevValue = this.ink.component.properties[key].value;
+          const prevValue = this.ink?.component.properties[key].value;
           this.ink?.setProperties({ [key]: { value: prevValue, func: String(value ?? '').trim() } });
         },
       });
@@ -184,8 +184,10 @@ export function onBindChange(
   updated: PropertyValues, component: BaseComponent<any>, eventKey?: string,
 ) {
   if (!updated.has('bind')) return;
-  const { spec } = component.constructor as typeof BaseComponent;
   const { bind } = component as any;
+  if (bind == null || bind === '') return;
+
+  const { spec } = component.constructor as typeof BaseComponent;
   const variable = selectors.getVariableByName(provider.getState(), `${component.scope}.${bind}`);
   const props: any = {
     value: { value: null, func: bind },

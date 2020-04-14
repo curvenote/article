@@ -1,6 +1,6 @@
-import { applyMiddleware, createStore } from 'redux';
+import { applyMiddleware, createStore, combineReducers } from 'redux';
 import thunkMiddleware from 'redux-thunk';
-import inkStore, { types, setup } from '@iooxa/runtime';
+import ink, { types, setup } from '@iooxa/runtime';
 import * as components from './src/components';
 import './src/index.css';
 
@@ -17,13 +17,13 @@ window.ink = {
   ...window.ink,
   components: { ...window.ink?.components, ...components },
   store: createStore(
-    inkStore.reducer,
+    combineReducers({ ink: ink.reducer }),
     applyMiddleware(
       thunkMiddleware,
-      inkStore.triggerEvaluateMiddleware,
-      inkStore.evaluateMiddleware,
+      ink.triggerEvaluate,
+      ink.dangerousEvaluatation,
     ),
-  ),
+  ) as types.Store,
 };
 
 setup(window.ink.store);

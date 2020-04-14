@@ -5,7 +5,7 @@ import { types, DEFAULT_FORMAT } from '@iooxa/runtime';
 export function formatter(
   value: any, formatString?: string, variable?: types.Variable,
 ) {
-  if (typeof value === 'string') { return value === '' ? value : `"${value}"`; }
+  if (typeof value === 'string') { return value; }
   if (typeof value === 'boolean') { return value ? 'true' : 'false'; }
   try {
     return format(formatString ?? variable?.format ?? DEFAULT_FORMAT)(value);

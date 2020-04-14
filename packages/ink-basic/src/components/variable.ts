@@ -26,13 +26,15 @@ class InkVar extends BaseSubscribe {
 
   render() {
     const {
-      name, current, func, format, derived,
-    } = this.ink?.state;
-    const formatted = formatter(current, format);
+      name, value, current, func, format, derived,
+    } = this.ink!.state;
+    // TODO: show error if name is not defined
+    const formatted = (typeof current === 'string') ? `"${current}"` : formatter(current, format);
     if (derived) {
       return html`<code>function ${name}() { return ${func}; }</code> = ${formatted}`;
     }
-    return html`${name} = ${formatted}`;
+    const formattedValue = formatter(value, format);
+    return html`${name} = ${formattedValue}, Current: ${formatted}`;
   }
 }
 

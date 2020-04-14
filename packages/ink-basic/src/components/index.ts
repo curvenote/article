@@ -1,5 +1,5 @@
 import { actions, provider } from '@iooxa/runtime';
-import InkVar from './var';
+import InkVar from './variable';
 import InkDisplay from './display';
 import InkRange from './range';
 import InkDynamic from './dynamic';

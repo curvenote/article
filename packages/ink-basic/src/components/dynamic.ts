@@ -5,6 +5,7 @@ import { drag, DragBehavior } from 'd3-drag';
 import { select, event } from 'd3-selection';
 import { types, DEFAULT_FORMAT } from '@iooxa/runtime';
 import { throttle } from 'underscore';
+import { THROTTLE_SKIP } from '../types';
 import { BaseComponent, withInk, onBindChange } from './base';
 import { formatter } from '../utils';
 
@@ -18,9 +19,10 @@ export const InkDynamicSpec = {
     min: { type: types.PropTypes.number, default: 0 },
     max: { type: types.PropTypes.number, default: 100 },
     step: { type: types.PropTypes.number, default: 1 },
-    sensitivity: { type: types.PropTypes.number, default: 1, description: 'Higher the sensitivity, the faster the scroll' },
+    sensitivity: { type: types.PropTypes.number, default: 1, description: 'Higher the sensitivity, the faster the scroll.' },
     format: { type: types.PropTypes.string, default: DEFAULT_FORMAT },
     periodic: { type: types.PropTypes.boolean, default: false },
+    after: { type: types.PropTypes.string, default: '', description: 'Text to follow the formatted value, which remains dynamic.' },
   },
   events: {
     change: { args: ['value'] },
@@ -44,7 +46,11 @@ class InkDynamic extends BaseComponent<typeof InkDynamicSpec> {
   firstUpdated(changedProps: PropertyValues) {
     super.firstUpdated(changedProps);
 
-    const throttled = throttle((val: number) => this.ink?.dispatchEvent('change', [val]), 20);
+    if (this.innerText) {
+      this.setAttribute('after', this.innerText);
+    }
+
+    const throttled = throttle((val: number) => this.ink?.dispatchEvent('change', [val]), THROTTLE_SKIP);
 
     const node = this as Element;
     const bodyClassList = document.getElementsByTagName('BODY')[0].classList;
@@ -70,6 +76,7 @@ class InkDynamic extends BaseComponent<typeof InkDynamicSpec> {
         step, min, max, sensitivity, periodic,
       } = this.ink!.state;
 
+      // TODO: Sensitivity should be calculated based on range to px.
       // By default the sensitivity is 1value == 5px
       const valuePerPixel = sensitivity / 5;
 
@@ -92,29 +99,32 @@ class InkDynamic extends BaseComponent<typeof InkDynamicSpec> {
   static get styles() {
     return css`
       :host{
-          display: inline-block;
-          position: relative;
+        display: inline-block;
+        position: relative;
       }
       .dynamic{
-          cursor: col-resize;
+        cursor: col-resize;
       }
       .help{
-          left: calc(50% - 9px);
-          top: -1.1em;
-          position: absolute;
-          font-size: 70%;
-          display: none;
-          user-select: none;
+        left: calc(50% - 13px);
+        top: -1.1em;
+        position: absolute;
+        display: none;
+        user-select: none;
+        font-size: 9px;
+        font-family: sans-serif;
+        text-transform: uppercase;
+        font-weight: 400;
       }
       :host(:hover) .help{
-          display: block;
+        display: block;
       }
     `;
   }
 
   render() {
-    const { value, format } = this.ink!.state;
-    return html`<span class="dynamic">${formatter(value, format)}<slot></slot></span><div class="help" style="${this.#dragging ? 'display:none' : ''}">drag</div>`;
+    const { value, format, after } = this.ink!.state;
+    return html`<span class="dynamic">${formatter(value, format)} ${after}<slot hidden></slot></span><div class="help" style="${this.#dragging ? 'display:none' : ''}">drag</div>`;
   }
 }
 
