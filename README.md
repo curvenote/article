@@ -1,7 +1,7 @@
 # Ink Components
 
 [![Ink Components on npm](https://img.shields.io/npm/v/ink-components.svg)](https://www.npmjs.com/package/ink-components)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/rowanc1/ink-components/blob/master/LICENSE)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/ink-components/ink-components/blob/master/LICENSE)
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/ink-components)
 
 

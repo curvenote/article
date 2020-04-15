@@ -1,13 +1,14 @@
 {
   "name": "@iooxa/runtime",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Runtime for ink-components, evaluate a reactive state for components.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "keywords": [
     "explorable explanations",
     "web components",
-    "writing"
+    "writing",
+    "redux"
   ],
   "author": "rowanc1",
   "license": "MIT",
