@@ -1,9 +1,22 @@
-import { html } from 'lit-element';
+article {
+  margin: auto;
+  padding-left: 10px;
+  padding-right: 250px;
+  position: relative;
+  width: calc( max( min( 100vw , 790px ), 500px ) );
+}
+@media screen and (max-width: 1050px) {
+  article {
+    width: calc(100vw - 250px);
+  }
+}
+@media screen and (max-width: 600px) {
+  article {
+    width: calc(100vw - 30px);
+  }
+}
 
-var katexCSS = html`<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.css" integrity="sha384-xNwWFq3SIvM4dq/1RUyWumk8nj/0KFg4TOnNcfzUU4X2gNn3WoRML69gO7waf3xh" crossorigin="anonymous">`;
-
-var bricksTheme = html`
-<style type="text/css">
+article {
   a {
     color: #1E88E5;
     text-decoration: none;
@@ -18,14 +31,16 @@ var bricksTheme = html`
   }
 
   code{
-    border-radius: 15px;
+    border-radius: 5px;
     border: 1px solid #E4E4E4;
     background-color: #FAFAFA;
-    padding: 0 5px;
+    padding: 0 3px;
   }
+
   h1:first-of-type{
     border-bottom: 1px solid #333;
   }
+
   blockquote{
     padding: 10px 20px;
     margin: 20px 0;
@@ -50,14 +65,22 @@ var bricksTheme = html`
     margin-left: 180px;
   }
   p {
+    display: block;
     text-align: justify;
     overflow-wrap: break-word;
+    font-size: 17px;
+    line-height: 1.8;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: #4D4D4D;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
   }
-  emph {
+  em {
     font-style: italic;
   }
   strong {
-      color: black;
+    color: black;
   }
   .ink-drag-horz{
     cursor: col-resize;
@@ -80,7 +103,4 @@ var bricksTheme = html`
   td{
     padding-left: 8px;
   }
-</style>
-`;
-
-export { katexCSS, bricksTheme };
+}
