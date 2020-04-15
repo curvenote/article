@@ -1,8 +1,9 @@
 {
   "name": "@iooxa/ink-article",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Scientific web components for interactive scientific writing, reactive documents and explorable explanations.",
   "main": "dist/index.js",
+  "unpkg": "dist/ink.min.js",
   "types": "dist/index.d.ts",
   "keywords": [
     "explorable explanations",
