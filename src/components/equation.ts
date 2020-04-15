@@ -25,7 +25,7 @@ const litProps = {
 
 @withInk(InkEquationSpec, litProps)
 class InkEquation extends BaseComponent<typeof InkEquationSpec> {
-  inline = true;
+  inline = false;
 
   aligned = false;
 
@@ -55,7 +55,6 @@ class InkEquation extends BaseComponent<typeof InkEquationSpec> {
   static get styles() {
     return css`
       :host{
-        display: inline-block;
         white-space: normal;
       }
       .katex-html{
@@ -86,7 +85,7 @@ class InkEquation extends BaseComponent<typeof InkEquationSpec> {
     } else {
       element.innerText = '$…$';
     }
-    return html`<div>${unsafeHTML(element.innerHTML)}<slot ?hidden=${!editing}></slot>${katexCSS}</div>`;
+    return html`${katexCSS}${unsafeHTML(element.innerHTML)}<slot ?hidden=${!editing}></slot>`;
   }
 }
 

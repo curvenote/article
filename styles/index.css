@@ -1,0 +1,163 @@
+article {
+  margin: auto;
+  padding-left: 10px;
+  padding-right: 250px;
+  position: relative;
+  width: calc( max( min( 100vw , 790px ), 500px ) );
+}
+
+@media screen and (max-width: 1050px) {
+  article {
+    width: calc(100vw - 250px);
+  }
+}
+@media screen and (max-width: 600px) {
+  article {
+    width: calc(100vw - 30px);
+  }
+}
+article a {
+  color: #1E88E5;
+  text-decoration: none;
+  font-weight: 500;
+}
+article a:hover {
+  text-decoration: underline;
+}
+article h1, article h2, article h3, article h4, article h5 {
+  font-family: "Oswald", sans-serif;
+}
+article code {
+  border-radius: 5px;
+  border: 1px solid #E4E4E4;
+  background-color: #FAFAFA;
+  padding: 0 3px;
+}
+article h1:first-of-type {
+  border-bottom: 1px solid #333;
+}
+article blockquote {
+  padding: 10px 20px;
+  margin: 20px 0;
+  border-left: 5px solid #eee;
+  color: #31708f;
+  font-size: 17.5px;
+  font-weight: 300;
+  line-height: 1.25;
+  text-align: justify;
+}
+article dl dt {
+  float: left;
+  width: 160px;
+  overflow: hidden;
+  clear: left;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+article dl dd {
+  margin-left: 180px;
+}
+article p {
+  display: block;
+  text-align: justify;
+  overflow-wrap: break-word;
+  font-size: 17px;
+  line-height: 1.8;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  color: #4D4D4D;
+  font-family: "Roboto", sans-serif;
+  font-weight: 300;
+}
+article em {
+  font-style: italic;
+}
+article strong {
+  color: black;
+}
+article .ink-drag-horz {
+  cursor: col-resize;
+}
+article .ink-drag-move {
+  cursor: move;
+}
+article table {
+  width: 100%;
+  border-collapse: collapse;
+}
+article thead {
+  font-size: 105%;
+  border-bottom: 1px solid #333;
+  color: black;
+}
+article tbody {
+  border-left: 1px solid #333;
+}
+article td {
+  padding-left: 8px;
+}
+
+article aside {
+  position: absolute;
+  right: 5px;
+  width: 230px;
+  margin-top: -30px;
+  font-size: 12px;
+  color: #aaa;
+  font-family: "Roboto", sans-serif;
+  text-align: left;
+}
+
+@media screen and (max-width: 600px) {
+  article aside {
+    position: static;
+    float: right;
+    right: inherit;
+    width: 50%;
+    margin: 15px;
+  }
+}
+article aside.callout {
+  position: unset;
+  left: unset;
+  width: unset;
+  float: unset;
+  margin: unset;
+  margin-top: unset;
+  display: block;
+  padding: 5px 20px;
+  margin: 20px 0;
+  border: 1px solid #AAAAAA;
+  border-left-width: 5px;
+  border-radius: 3px;
+  font-size: inherit;
+  color: #000;
+  border-left-color: #4285F4;
+}
+
+article aside.callout.active {
+  border-left-color: #AAAAAA;
+}
+
+article aside.callout.success {
+  border-left-color: #9EC667;
+}
+
+article aside.callout.info {
+  border-left-color: #4285F4;
+}
+
+article aside.callout.warning {
+  border-left-color: #F3B300;
+}
+
+article aside.callout.danger {
+  border-left-color: #CA4F44;
+}
+
+ink-var {
+  display: none;
+}
+
+/*# sourceMappingURL=index.css.map */
