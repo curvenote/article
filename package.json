@@ -18,8 +18,9 @@
     "test": "jest",
     "lint": "eslint src/**.ts -c .eslintrc.json",
     "start": "webpack-dev-server --open --config webpack.dev.js",
+    "clean": "rm -rf dist || true; rm -f styles/index.css*;",
     "watch-css": "sass --watch styles/index.scss styles/index.css",
-    "build-css": "sass styles/index.scss styles/index.css; cp styles/index.css dist/ink.css",
+    "build-css": "mkdir -p dist; sass styles/index.scss styles/index.css; cp styles/index.css dist/ink.css",
     "build-dev": "webpack --config webpack.dev.js",
     "build": "npm run build-css; webpack --config webpack.prod.js; tsc; rm -rf dist/src"
   },

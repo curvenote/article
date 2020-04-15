@@ -1,6 +1,3 @@
 dist/
 node_modules/
-
-
-packages/ink-article/styles/index.css
-packages/ink-article/styles/index.css.map
+styles/index.css*
