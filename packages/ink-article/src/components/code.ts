@@ -131,6 +131,7 @@ class InkCode extends LitElement {
         cursor: pointer;
         background: #e0e0e0;
         outline: none;
+        user-select: none;
       }
       pre{
         margin: 0;

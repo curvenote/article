@@ -46,6 +46,7 @@ class InkDynamic extends BaseComponent<typeof InkDynamicSpec> {
   firstUpdated(changedProps: PropertyValues) {
     super.firstUpdated(changedProps);
 
+    // Set innerText if it is there to the after property:
     if (this.innerText) {
       this.setAttribute('after', this.innerText);
     }
@@ -101,6 +102,7 @@ class InkDynamic extends BaseComponent<typeof InkDynamicSpec> {
       :host{
         display: inline-block;
         position: relative;
+        white-space: normal;
       }
       .dynamic{
         cursor: col-resize;

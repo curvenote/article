@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import thunkMiddleware from 'redux-thunk';
-import inkStore, { types } from '.';
+import ink, { types, actions } from '.';
 import { getVariable, getVariableByName } from './store/variables/selectors';
 import { updateVariable } from './store/actions';
 import reducer from './store/reducers';
@@ -9,14 +9,14 @@ const store = createStore(
   combineReducers({ ink: reducer }),
   applyMiddleware(
     thunkMiddleware,
-    inkStore.triggerEvaluate,
-    inkStore.dangerousEvaluatation,
+    ink.triggerEvaluate,
+    ink.dangerousEvaluatation,
   ),
 ) as types.Store;
 
 describe('integration', () => {
   it('should evaluate the variable', () => {
-    const x = store.dispatch(inkStore.actions.createVariable('scope.x', null, '1 + 1'));
+    const x = store.dispatch(actions.createVariable('scope.x', null, '1 + 1'));
 
     // Ensure that noops do not trigger a state change
     const store1 = store.getState();
@@ -34,7 +34,7 @@ describe('integration', () => {
     expect(getVariable(store.getState(), x.id)?.current).toEqual(2);
 
     const name2 = 'scope.y';
-    const y = store.dispatch(inkStore.actions.createVariable(name2, null, 'x + 1'));
+    const y = store.dispatch(actions.createVariable(name2, null, 'x + 1'));
     expect(getVariableByName(store.getState(), name2)?.current).toEqual(3);
     expect(y.scope).toEqual(name2.split('.')[0]);
     expect(y.name).toEqual(name2.split('.')[1]);
@@ -71,7 +71,7 @@ describe('integration', () => {
   });
 
   it('should return NaN and Infinity', () => {
-    const nan = store.dispatch(inkStore.actions.createVariable('scope.nan', NaN));
+    const nan = store.dispatch(actions.createVariable('scope.nan', NaN));
     expect(nan.get()).toBeNaN();
     nan.set(null, 'NaN');
     expect(nan.get()).toBeNaN();

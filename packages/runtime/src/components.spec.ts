@@ -30,11 +30,10 @@ store.dispatch(actions.createComponentSpec(
 
 describe('integration', () => {
   it('should evaluate the variable', () => {
-    const x = store.dispatch(ink.actions.createVariable('scope.x', 3));
-    const max = store.dispatch(ink.actions.createVariable('scope.max', 9));
-    const otherMax = store.dispatch(ink.actions.createVariable('scope.max2', 8));
-
-    const range = store.dispatch(ink.actions.createComponent(
+    const x = store.dispatch(actions.createVariable('scope.x', 3));
+    const max = store.dispatch(actions.createVariable('scope.max', 9));
+    const otherMax = store.dispatch(actions.createVariable('scope.max2', 8));
+    const range = store.dispatch(actions.createComponent(
       'range', 'scope.myRange',
       { value: { func: 'x' }, min: { value: 1 }, max },
       { change: { func: '{x: value}' } },
