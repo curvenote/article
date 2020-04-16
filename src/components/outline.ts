@@ -88,7 +88,7 @@ class InkOutline extends BaseComponent<typeof InkOutlineSpec> {
     });
     // If there are not enough, don't show it.
     this.#headers = headerData.length <= 1 ? [] : headerData;
-    headers.forEach((header) => this.#intersectionObserver?.observe(header));
+    headerData.forEach(({ element }) => this.#intersectionObserver?.observe(element));
     this.requestUpdate();
   }
 
