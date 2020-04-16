@@ -4,10 +4,10 @@
     <title><%= htmlWebpackPlugin.options.title %></title>
 </head>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,700&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans|Noto+Serif:400,400i,700,700i&display=swap" type="text/css" />
 <body>
 <article id="myArticle">
-    <h1>Welcome to Ink Article</h1>
+    <h1 id="welcome">Welcome to Ink Article</h1>
     <ink-outline for="myArticle"></ink-outline>
     <p>This is a paragraph, kinda simple. <code>code</code></p>
     <aside class="callout">Hello world</aside>
@@ -22,6 +22,14 @@
             [ 5,  6,  7,  8,  9],
             [10, 11, 12, 13, 14]])
     </ink-code>
+
+    <blockquote>
+      <p>I would have written a shorter letter, but I did not have the time.</p>
+      <footer>
+        <cite>Blaise Pascal</cite>
+        <time datetime="1656-12-04">December 4, 1656</time>
+      </footer>
+    </blockquote>
 
     <h2>And Equations</h2>
     <ink-demo>
