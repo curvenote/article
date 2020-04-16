@@ -12,14 +12,28 @@ export const InkOutlineSpec = {
 
 const litProps = {
   for: { type: String, reflect: true },
+  open: { type: String, reflect: true },
 };
 
 interface Header {
   id: string;
   level: number;
   title: string;
-  element: Element;
+  element: HTMLHeadingElement;
 }
+
+const handleClick = (header: Header) => {
+  const element = document.getElementById(header.id);
+  if (!element) {
+    return;
+  }
+  if (history.replaceState) {
+    history.replaceState(null, header.title, `#${header.id}`);
+  } else {
+    location.hash = `#${header.id}`;
+  }
+  element.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+};
 
 @withInk(InkOutlineSpec, litProps)
 class InkOutline extends BaseComponent<typeof InkOutlineSpec> {
@@ -29,6 +43,8 @@ class InkOutline extends BaseComponent<typeof InkOutlineSpec> {
 
   #onScreen: Set<Element> = new Set();
 
+  open = false;
+
   firstUpdated() {
     const element = document.getElementById((this as any).for);
     if (element == null) {
@@ -36,7 +52,7 @@ class InkOutline extends BaseComponent<typeof InkOutlineSpec> {
       console.warn(`ink-outline: No element was found for ID="${(this as any).for}"`);
       return;
     }
-    const headers = element?.querySelectorAll('H1, H2, H3, H4, H5, H6');
+    const headers: NodeListOf<HTMLHeadingElement> = element?.querySelectorAll('H1, H2, H3, H4, H5, H6');
     if (headers == null || headers.length < 3) {
       // No need for an outline!
       this.#headers = [];
@@ -53,14 +69,17 @@ class InkOutline extends BaseComponent<typeof InkOutlineSpec> {
 
     const headerData: Header[] = [];
     headers.forEach((header) => {
-      const id = title2name(header.textContent ?? '');
+      const id = header.id || title2name(header.textContent ?? '');
       if (!header.id) header.setAttribute('id', id);
-      headerData.push({
+      const data = {
         id,
         level: parseInt(header.tagName[1], 10) - 1,
         title: header.textContent ?? '',
         element: header,
-      });
+      };
+      headerData.push(data);
+      // TODO: Eventually remove this?
+      header.addEventListener('click', () => handleClick(data));
     });
     this.#headers = headerData;
     headers.forEach((header) => observer.observe(header));
@@ -75,6 +94,7 @@ class InkOutline extends BaseComponent<typeof InkOutlineSpec> {
         overflow: hidden;
         transition: all 200ms;
         user-select: none;
+        box-shadow: rgba(0, 0, 0, 0.1) 6px 0px 5px -7px inset;
       }
       .header{
         position: relative;
@@ -85,7 +105,7 @@ class InkOutline extends BaseComponent<typeof InkOutlineSpec> {
         width: 150px;
         text-overflow: ellipsis;
         overflow: hidden;
-        font-family: "Roboto", sans-serif;
+        font-family: var(--ink-font, sans-serif);
         white-space: nowrap;
         opacity: 0;
         transition: all 200ms;
@@ -102,42 +122,26 @@ class InkOutline extends BaseComponent<typeof InkOutlineSpec> {
       .tick.highlight{
         border-bottom: 2px solid var(--mdc-theme-primary, #46f);
       }
-      .header:hover .tick{
-        border-bottom: 2px solid var(--mdc-theme-primary, #46f);
-      }
       .header:hover{
         color: var(--mdc-theme-primary, #46f);
         cursor: pointer;
       }
-      nav:hover{
+      .open, nav:hover{
         width: 200px;
         background: linear-gradient(to right, white, transparent);
         border-left: 4px solid var(--mdc-theme-primary, #46f);
       }
-      nav:hover .text{
+      .open .text, nav:hover .text{
         opacity: 1;
         margin-left: -17px;
       }
-      nav:hover .tick{
+      .open .tick, nav:hover .tick{
         left: -30px;
       }
     `;
   }
 
   render() {
-    const handleClick = (e: Event, header: Header) => {
-      const element = document.getElementById(header.id);
-      if (!element) {
-        return;
-      }
-      if (history.pushState) {
-        history.pushState(null, header.title, `#${header.id}`);
-      } else {
-        location.hash = `#${header.id}`;
-      }
-      element.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
-    };
-
     const highlight = (header: Header) => {
       const onScreen = this.#onScreen.has(header.element);
       const lastSeen = this.#lastSeen === header.element;
@@ -145,18 +149,16 @@ class InkOutline extends BaseComponent<typeof InkOutlineSpec> {
     };
 
     return html`
-      <nav>
+      <nav class="${this.open ? 'open' : ''}">
         ${this.#headers.map((header, index) => html`
           <div
             class="header"
-            @click="${(e: Event) => handleClick(e, header)}"
-            style="
-              padding-left:calc(28px + ${header.level}px * 7);
-            "
+            @click="${() => handleClick(header)}"
+            style="padding-left:calc(28px + ${header.level}px * 7);"
             title="${header.title}"
           >
-            <div class="tick${highlight(header) ? ' highlight' : ''}" style="width:calc(25px - ${header.level}px*4.5);">&nbsp;</div>
-            <div class="text" style="${index === 0 ? 'font-size: 13px;' : ''}">${header.title}</div>
+            <div class="tick${highlight(header) ? ' highlight' : ''}" style="width:calc(25px - ${header.level}px*4.5);"></div>
+            <div class="text" style="${index === 0 ? 'font-size: 13px;' : ''}">${index === 0 ? 'Contents' : header.title}</div>
           </div>
         `)}
       </nav>`;
