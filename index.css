@@ -1,0 +1,9 @@
+body {
+  --mdc-theme-primary: #E99F4B;
+  --mdc-theme-secondary: #46f;
+}
+ink-outline {
+  position: fixed;
+  top: 46px;
+  left: calc(50vw + 530px);
+}
