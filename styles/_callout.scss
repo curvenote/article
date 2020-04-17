@@ -11,9 +11,11 @@ article aside.callout{
   border: 1px solid #AAAAAA;
   border-left-width: 5px;
   border-radius: 3px;
+  border-left-color: #4285F4;
+}
+article aside.callout, article aside.callout p {
   font-size: inherit;
   color: #000;
-  border-left-color: #4285F4;
 }
 
 article aside.callout.active{ border-left-color: #AAAAAA; }

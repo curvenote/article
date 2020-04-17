@@ -55,6 +55,11 @@ article {
     border-bottom: 1px solid #333;
   }
 
+  dl {
+    color: #4D4D4D;
+    font-family: var(--ink-font, sans-serif);
+    line-height: 1.4;
+  }
   dl dt{
     float: left;
     width: 160px;

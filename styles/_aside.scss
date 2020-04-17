@@ -3,6 +3,8 @@ article aside{
   right: 5px;
   width: 230px;
   margin-top: -30px;
+}
+article aside, article aside p {
   font-size: 12px;
   color: #aaa;
   font-family: var(--ink-font, sans-serif);
