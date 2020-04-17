@@ -26,8 +26,22 @@ article {
     text-decoration: underline;
   }
 
-  h1, h2, h3, h4, h5{
-    font-family: 'Oswald', sans-serif;
+  h1, h2, h3, h4, h5, h6{
+    font-family: var(--ink-font-headers, serif);
+
+    &::before {
+      content: '#';
+      cursor: pointer;
+      position: absolute;
+      left: -7px;
+      color: #929292;
+      opacity: 0;
+      padding-right: 10px;
+      transition: all 200ms;
+    }
+    &:hover::before {
+      opacity: 1;
+    }
   }
 
   code{
@@ -39,17 +53,6 @@ article {
 
   h1:first-of-type{
     border-bottom: 1px solid #333;
-  }
-
-  blockquote{
-    padding: 10px 20px;
-    margin: 20px 0;
-    border-left: 5px solid #eee;
-    color: #31708f;
-    font-size: 17.5px;
-    font-weight: 300;
-    line-height: 1.25;
-    text-align: justify;
   }
 
   dl dt{
@@ -73,7 +76,7 @@ article {
     margin-top: 20px;
     margin-bottom: 20px;
     color: #4D4D4D;
-    font-family: 'Roboto', sans-serif;
+    font-family: var(--ink-font, sans-serif);
     font-weight: 300;
   }
   em {

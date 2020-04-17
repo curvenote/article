@@ -5,6 +5,7 @@ import * as basic from '@iooxa/ink-basic';
 import '@iooxa/ink-basic/dist/ink.css';
 import * as components from './src/components';
 import './styles/index.css';
+import './index.css';
 
 declare global {
   interface Window {

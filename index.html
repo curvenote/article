@@ -3,15 +3,16 @@
 <head>
     <title><%= htmlWebpackPlugin.options.title %></title>
 </head>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans|Noto+Serif:400,400i,700,700i&display=swap" type="text/css" />
 <body>
-<article>
-    <h1>Welcome to Ink Article</h1>
+<article id="myArticle">
+    <h1 id="welcome">Welcome to Ink Article</h1>
+    <ink-outline for="myArticle"></ink-outline>
     <p>This is a paragraph, kinda simple. <code>code</code></p>
     <aside class="callout">Hello world</aside>
 
-
+    <h2>There is code</h2>
     <aside>The default aside happens, on the side!</aside>
     <ink-code language="python">
       >>> import numpy as np
@@ -22,6 +23,15 @@
             [10, 11, 12, 13, 14]])
     </ink-code>
 
+    <blockquote>
+      <p>I would have written a shorter letter, but I did not have the time.</p>
+      <footer>
+        <cite>Blaise Pascal</cite>
+        <time datetime="1656-12-04">December 4, 1656</time>
+      </footer>
+    </blockquote>
+
+    <h2>And Equations</h2>
     <ink-demo>
       <script>
         function prod(x, y) {
@@ -70,6 +80,12 @@
       </ink-equation>
     </ink-demo>
 
+    <h2>And Demos</h2>
+
+    <h3>And something small</h3>
+    <h4>And something smaller</h4>
+    <h5>And something even smaller</h5>
+    <h6>And something tiny</h6>
     <ink-demo>
       <ink-var name="m" value="1"></ink-var>
       <ink-var name="b" value="1"></ink-var>

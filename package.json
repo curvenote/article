@@ -40,6 +40,7 @@
     "eslint": "^6.8.0",
     "eslint-config-airbnb-typescript": "^6.3.1",
     "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-jest": "^23.8.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^2.5.1",
@@ -58,14 +59,16 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
-    "@iooxa/runtime": "^0.2.1",
     "@iooxa/ink-basic": "^0.2.1",
+    "@iooxa/runtime": "^0.2.1",
     "highlight.js": "^9.18.1",
     "katex": "^0.11.1",
     "lit-element": "^2.3.1",
     "lit-html": "^1.2.1",
     "redux": "^4.0.5",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "scroll-into-view-if-needed": "^2.2.24",
+    "underscore": "^1.10.2"
   },
   "bugs": {
     "url": "https://github.com/iooxa/ink-article/issues"

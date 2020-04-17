@@ -2,6 +2,7 @@ import { actions, provider } from '@iooxa/runtime';
 import InkEquation from './equation';
 import InkCode from './code';
 import InkDemo from './demo';
+import InkOutline from './outline';
 
 
 function registerComponent(name: string, component: any) {
@@ -16,12 +17,14 @@ function registerComponent(name: string, component: any) {
 }
 
 export const register = () => {
+  registerComponent('ink-outline', InkOutline);
   registerComponent('ink-equation', InkEquation);
   registerComponent('ink-code', InkCode);
   registerComponent('ink-demo', InkDemo);
 };
 
 export {
+  InkOutline,
   InkEquation,
   InkCode,
   InkDemo,
