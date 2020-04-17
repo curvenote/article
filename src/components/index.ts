@@ -7,7 +7,7 @@ import InkOutline from './outline';
 
 function registerComponent(name: string, component: any) {
   if (component.spec) {
-    provider.dispatch(actions.createComponentSpec(
+    provider.dispatch(actions.createSpec(
       component.spec!.name,
       component.spec!.properties,
       component.spec!.events,
