@@ -12,6 +12,61 @@
     <p>This is a paragraph, kinda simple. <code>code</code></p>
     <aside class="callout">Hello world</aside>
 
+    <ink-scope name="display">
+      <h2>Display Variables</h2>
+      <ink-var name="x" value="1"></ink-var>
+      <ink-var name="y" value="5"></ink-var>
+      <ink-var name="xSquared" :value="x * x" description="The square of x."></ink-var>
+
+
+      <p>To display an element create an <code>ink-display</code>, which will just render the named variable as text.</p>
+
+      <ink-code language="html" compact>&lt;ink-display name="x"&gt;&lt;/ink-display&gt;</ink-code>
+
+      <p>
+        This is a number that is dynamic: <ink-display bind="x"></ink-display>.<br>
+        Try setting the value of $x$ with the range input: <ink-range bind="x" max="5"></ink-range>
+      </p>
+
+      <p>
+        You can also <code>transform</code> the value of a variable before you format it.
+        For example, you might want to say that the admission to a park is <code>'free'</code> when the <ink-action
+          :click="{x:0}">value == 0</ink-action>.
+        </p>
+        <aside><p>The <code>:transform</code> uses a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_Operator">Conditional Operator</a> from javascript.</p></aside>
+      <ink-demo>
+        <p>
+          The park admission is
+          <ink-display :value="x" :transform="(value > 0)? value : 'free'" format="$.2f"></ink-display>.
+        </p>
+      </ink-demo>
+      <p>
+        You can also use this <code>transform</code> to say that the park admission is
+        <ink-dynamic bind="x"
+          :transform="['free','real cheap','cheap','costly','expensive','real expensive'][Math.min(Math.max(value,0),5)]"
+          max="5"></ink-dynamic>.<br>
+        This is also quite useful if you want to use the transform to index into an array <ink-dynamic bind="x"
+          :transform="['&#128525;','&#128516;','&#128522;','&#128528;','&#128530;','&#128532;'][Math.min(Math.max(value,0),5)]"
+          max="5"></ink-dynamic>, in this case emoji array - but it could be numeric too!
+      </p>
+
+      <aside class="callout">
+        <p>
+          Properties of <code>ink-display</code>:
+          <dl>
+            <dt><code>name</code></dt>
+            <dd>The variable to name to in the state.</dd>
+            <dt><code>format</code></dt>
+            <dd>A d3-format string. See the <a href="https://github.com/d3/d3-format" target="_blank">documentation</a>.</dd>
+            <dt><code>transform</code></dt>
+            <dd>Allows you to change or transform the value before formating: <code>format(transform(value))</code>. If the
+              value is a string after transformation, it will not be formatted.</dd>
+          </dl>
+        </p>
+      </aside>
+
+    </ink-scope>
+
     <h2>There is code</h2>
     <aside>The default aside happens, on the side!</aside>
     <ink-code language="python">
