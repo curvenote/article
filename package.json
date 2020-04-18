@@ -1,6 +1,6 @@
 {
   "name": "@iooxa/ink-article",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Scientific web components for interactive scientific writing, reactive documents and explorable explanations.",
   "main": "dist/index.js",
   "unpkg": "dist/ink.min.js",
@@ -20,7 +20,7 @@
     "lint": "eslint src/**.ts -c .eslintrc.json",
     "start": "webpack-dev-server --open --config webpack.dev.js",
     "clean": "rm -rf dist || true; rm -f styles/index.css*;",
-    "link": "npm link; npm link @iooxa/runtime;npm link @iooxa/ink-basic",
+    "link": "npm link; npm link @iooxa/runtime;npm link @iooxa/ink-basic;npm link @iooxa/ink-chart",
     "watch-css": "sass --watch styles/index.scss styles/index.css",
     "build-css": "mkdir -p dist; sass styles/index.scss styles/index.css; cp styles/index.css dist/ink.css",
     "build-dev": "webpack --config webpack.dev.js",
@@ -34,6 +34,7 @@
     "@types/highlight.js": "^9.12.3",
     "@types/jest": "^25.1.4",
     "@types/katex": "^0.11.0",
+    "@types/underscore": "^1.9.4",
     "@typescript-eslint/eslint-plugin": "^2.28.0",
     "@typescript-eslint/parser": "^2.28.0",
     "clean-webpack-plugin": "^3.0.0",
@@ -60,6 +61,7 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
+    "@iooxa/ink-chart": "^0.0.1",
     "@iooxa/ink-basic": "^0.2.2",
     "@iooxa/runtime": "^0.2.2",
     "highlight.js": "^9.18.1",

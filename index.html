@@ -141,6 +141,13 @@
     <h4>And something smaller</h4>
     <h5>And something even smaller</h5>
     <h6>And something tiny</h6>
+    <aside>
+      <ink-chart width="250" height="250" xAxisLocation="origin" yAxisLocation="origin" xlim="[-10,10]" ylim="[-10,10]">
+        <ink-chart-eqn eqn="m*x + b" :listen="[m, b]"></ink-chart-eqn>
+        <ink-chart-node x="0" :y="b" :drag="{b: y}"></ink-chart-node>
+        <ink-chart-node x="5" :y="m*5 + b" :drag="{m: (y - b) / 5}"></ink-chart-node>
+      </ink-chart>
+    </aside>
     <ink-demo>
       <ink-var name="m" value="1"></ink-var>
       <ink-var name="b" value="1"></ink-var>

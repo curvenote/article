@@ -2,7 +2,9 @@ import { applyMiddleware, createStore, combineReducers } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import ink, { types, setup } from '@iooxa/runtime';
 import * as basic from '@iooxa/ink-basic';
+import * as chart from '@iooxa/ink-chart';
 import '@iooxa/ink-basic/dist/ink.css';
+import '@iooxa/ink-chart/dist/ink.css';
 import * as components from './src/components';
 import './styles/index.css';
 import './index.css';
@@ -31,4 +33,5 @@ window.ink = {
 
 setup(window.ink.store);
 basic.register();
+chart.register();
 components.register();
