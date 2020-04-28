@@ -93,7 +93,7 @@ class Outline extends BaseComponent<typeof OutlineSpec> {
     const element = document.getElementById((this as any).for) ?? document.querySelectorAll('article')?.[0];
     if (element == null) {
       // eslint-disable-next-line no-console
-      console.warn(`ink-outline: No <article>, or element was found for ID="${(this as any).for}"`);
+      console.warn(`r-outline: No <article>, or element was found for ID="${(this as any).for}"`);
       return;
     }
     this.#outlineTarget = element;
@@ -126,7 +126,7 @@ class Outline extends BaseComponent<typeof OutlineSpec> {
       width: 150px;
       text-overflow: ellipsis;
       overflow: hidden;
-      font-family: var(--ink-font, sans-serif);
+      font-family: var(--iooxa-font, sans-serif);
       white-space: nowrap;
       opacity: 0;
       transition: all 200ms;

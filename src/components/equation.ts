@@ -36,7 +36,7 @@ class Equation extends BaseComponent<typeof EquationSpec> {
       const { math } = this.$runtime!.component.properties;
       const slot = this.shadowRoot!.querySelectorAll('slot')[0];
       slot.hidden = false;
-      // innerText reads the *visible* content and plays with ink-display and ink-visible
+      // innerText reads the *visible* content and plays with r-display and r-visible
       const text = this.innerText ?? '';
       slot.hidden = !this.editing;
       if (math.value === text) return;

@@ -35,7 +35,7 @@ article {
   }
 
   h1, h2, h3, h4, h5, h6{
-    font-family: var(--ink-font-headers, serif);
+    font-family: var(--iooxa-font-headers, serif);
 
     &::before {
       content: '#';
@@ -65,7 +65,7 @@ article {
 
   dl {
     color: #4D4D4D;
-    font-family: var(--ink-font, sans-serif);
+    font-family: var(--iooxa-font, sans-serif);
     line-height: 1.4;
   }
   dl dt{
@@ -89,7 +89,7 @@ article {
     margin-top: 20px;
     margin-bottom: 20px;
     color: #4D4D4D;
-    font-family: var(--ink-font, sans-serif);
+    font-family: var(--iooxa-font, sans-serif);
     font-weight: 300;
   }
   ol p, ul p {
