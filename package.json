@@ -18,14 +18,14 @@
   "scripts": {
     "test": "jest",
     "lint": "eslint src/**.ts -c .eslintrc.json",
-    "start": "webpack-dev-server --open --config webpack.dev.js",
+    "start": "npm run build-css; webpack-dev-server --open --config webpack.dev.js",
     "clean": "rm -rf dist || true; rm -f styles/index.css*;",
     "link": "npm link; npm link @iooxa/runtime;npm link @iooxa/components;npm link @iooxa/svg",
     "size": "npm run build && size-limit",
     "size-why": "webpack-bundle-analyzer stats.json -p 8005",
-    "copy-css": "cp node_modules/@iooxa/components/dist/iooxa.css styles/_components.scss;",
+    "copy-css": "mkdir -p dist; cp theme.css dist/theme.css; cp node_modules/@iooxa/components/dist/iooxa.css styles/_components.scss;",
     "watch-css": "npm run copy-css; sass --watch styles/index.scss dist/iooxa.css",
-    "build-css": "npm run copy-css; mkdir -p dist; sass styles/index.scss dist/iooxa.css; cp theme.css dist/theme.css",
+    "build-css": "npm run copy-css; sass styles/index.scss dist/iooxa.css;",
     "build-dev": "webpack --config webpack.dev.js",
     "build": "npm run build-css; webpack --config webpack.prod.js --profile --json > stats.json; tsc; rm -rf dist/src"
   },
