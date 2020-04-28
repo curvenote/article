@@ -1,10 +1,10 @@
 {
-  "name": "ink-components",
-  "version": "0.1.9",
+  "name": "@iooxa/article",
+  "version": "0.2.4",
   "description": "Scientific web components for interactive scientific writing, reactive documents and explorable explanations.",
-  "main": "dist/ink.js",
-  "unpkg": "dist/ink.min.js",
-  "module": "src/index.js",
+  "main": "dist/index.js",
+  "unpkg": "dist/iooxa.min.js",
+  "types": "dist/index.d.ts",
   "keywords": [
     "explorable explanations",
     "web components",
@@ -12,46 +12,78 @@
   ],
   "author": "rowanc1",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "lint": "eslint src/**.ts -c .eslintrc.json",
     "start": "webpack-dev-server --open --config webpack.dev.js",
-    "build-dev": "webpack --config webpack.dev.js && cp dist/ink.min.js dist/ink.js",
-    "build": "webpack --config webpack.prod.js"
+    "clean": "rm -rf dist || true; rm -f styles/index.css*;",
+    "link": "npm link; npm link @iooxa/runtime;npm link @iooxa/components;npm link @iooxa/svg",
+    "size": "npm run build && size-limit",
+    "size-why": "webpack-bundle-analyzer stats.json -p 8005",
+    "copy-css": "cp node_modules/@iooxa/components/dist/iooxa.css styles/_components.scss;",
+    "watch-css": "npm run copy-css; sass --watch styles/index.scss dist/iooxa.css",
+    "build-css": "npm run copy-css; mkdir -p dist; sass styles/index.scss dist/iooxa.css; cp theme.css dist/theme.css",
+    "build-dev": "webpack --config webpack.dev.js",
+    "build": "npm run build-css; webpack --config webpack.prod.js --profile --json > stats.json; tsc; rm -rf dist/src"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ink-components/ink-components.git"
+    "url": "https://github.com/iooxa/article.git"
   },
   "devDependencies": {
-    "clean-webpack-plugin": "^1.0.0",
-    "css-loader": "^2.1.0",
-    "file-loader": "^3.0.1",
-    "html-webpack-plugin": "^3.2.0",
-    "style-loader": "^0.23.1",
-    "webpack": "^4.28.3",
-    "webpack-cli": "^3.2.0",
-    "webpack-dev-server": "^3.1.14",
-    "webpack-merge": "^4.2.1"
+    "@size-limit/preset-app": "^4.4.5",
+    "@types/highlight.js": "^9.12.3",
+    "@types/jest": "^25.1.4",
+    "@types/katex": "^0.11.0",
+    "@typescript-eslint/eslint-plugin": "^2.28.0",
+    "@typescript-eslint/parser": "^2.28.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "css-loader": "^3.5.2",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-typescript": "^6.3.1",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-jest": "^23.8.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.19.0",
+    "eslint-plugin-react-hooks": "^2.5.1",
+    "express": "^4.17.1",
+    "html-webpack-plugin": "^4.0.4",
+    "jest": "^25.2.4",
+    "node-sass": "^4.13.1",
+    "sass-loader": "^8.0.2",
+    "size-limit": "^4.4.5",
+    "style-loader": "^1.1.3",
+    "ts-jest": "^25.3.0",
+    "ts-loader": "^6.2.2",
+    "typescript": "^3.8.3",
+    "webpack": "^4.42.1",
+    "webpack-bundle-analyzer": "^3.7.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3",
+    "webpack-merge": "^4.2.2"
   },
   "dependencies": {
-    "d3-array": "^2.0.3",
-    "d3-axis": "^1.0.12",
-    "d3-drag": "^1.2.3",
-    "d3-format": "^1.3.2",
-    "d3-scale": "^3.0.0",
-    "d3-scale-chromatic": "^1.3.3",
-    "d3-selection": "^1.4.0",
-    "d3-shape": "^1.3.5",
-    "date-and-time": "^0.6.3",
-    "highlight.js": "^9.13.1",
-    "katex": "^0.10.0",
-    "lit-element": "^2.1.0",
-    "lit-html": "^1.0.0",
-    "redux": "^4.0.1"
+    "@iooxa/components": "^0.2.4",
+    "@iooxa/svg": "^0.0.3",
+    "@iooxa/runtime": "^0.2.4",
+    "highlight.js": "^9.18.1",
+    "katex": "^0.11.1",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0",
+    "scroll-into-view-if-needed": "^2.2.24"
   },
   "bugs": {
-    "url": "https://github.com/ink-components/ink-components/issues"
+    "url": "https://github.com/iooxa/article/issues"
   },
-  "homepage": "https://components.ink",
-  "sideEffects": true
+  "homepage": "https://iooxa.dev/article",
+  "sideEffects": false,
+  "size-limit": [
+    {
+      "path": "dist/iooxa.min.js",
+      "limit": "10 KB"
+    }
+  ]
 }

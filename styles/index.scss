@@ -1,0 +1,12 @@
+// style.scss
+@use 'components';
+@use 'article';
+@use 'outline';
+@use 'nav';
+@use 'aside';
+@use 'callout';
+@use 'quote';
+
+r-var {
+  display: none;
+}

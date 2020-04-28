@@ -1,0 +1,20 @@
+article aside{
+  position: relative; // Necessary to float over the background.
+  float: right;
+  width: 230px;
+  margin-top: -30px;
+  margin-right: -250px;
+  background-color: #FFF;
+}
+article aside, article aside p {
+  font-size: 12px;
+  color: #aaa;
+  font-family: var(--ink-font, sans-serif);
+  text-align: left;
+}
+@media screen and (max-width: 600px) {
+  article aside{
+    width: 50%;
+    margin: 15px;
+  }
+}
