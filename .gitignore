@@ -1,3 +1,5 @@
 dist/
 node_modules/
 styles/index.css*
+styles/_components.scss
+stats.json

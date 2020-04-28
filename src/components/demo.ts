@@ -1,17 +1,32 @@
 import {
-  LitElement, html, css, property,
-} from 'lit-element';
+  BaseComponent, withRuntime, html, css,
+} from '@iooxa/components';
 
-// TODO: move over to ink
 
-class InkDemo extends LitElement {
-  @property({ type: String }) code = '';
+export const DemoSpec = {
+  name: 'demo',
+  description: 'Demo',
+  properties: {},
+  events: {},
+};
 
-  @property({ type: String }) language = 'html';
+const litProps = {
+  code: { type: String },
+  language: { type: String },
+  copy: { type: Boolean },
+  codeOnly: { type: Boolean, attribute: 'code-only', reflect: true },
+};
 
-  @property({ type: Boolean }) copy = true;
 
-  @property({ type: Boolean, attribute: 'code-only', reflect: true })codeOnly = false;
+@withRuntime(DemoSpec, litProps)
+class Demo extends BaseComponent<typeof DemoSpec> {
+  code = '';
+
+  language = 'html';
+
+  copy = true;
+
+  codeOnly = false;
 
   firstUpdated() {
     this.code = this.innerHTML;
@@ -23,7 +38,7 @@ class InkDemo extends LitElement {
   render() {
     return html`
       <div id="demo" ?hidden="${this.codeOnly}"><slot></slot></div>
-      <ink-code .code="${this.code}" language="${this.language}" ?copy="${this.copy}"></ink-code>
+      <r-code .code="${this.code}" language="${this.language}" ?copy="${this.copy}"></r-code>
     `;
   }
 
@@ -36,10 +51,12 @@ class InkDemo extends LitElement {
       }
       #demo{
         padding: 25px;
-        border-bottom: 1px solid #e0e0e0;
+      }
+      r-code {
+        border-top: 1px solid #e0e0e0;
       }
     `;
   }
 }
 
-export default InkDemo;
+export default Demo;

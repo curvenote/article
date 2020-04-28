@@ -1,13 +1,10 @@
-/* eslint-disable no-restricted-globals */
-import { throttle } from 'underscore';
 import {
-  BaseComponent, withInk, html, THROTTLE_SKIP,
-} from '@iooxa/ink-basic';
-import { css } from 'lit-element';
+  BaseComponent, withRuntime, html, css, throttle, THROTTLE_SKIP,
+} from '@iooxa/components';
 import scrollIntoView from 'scroll-into-view-if-needed';
 import { title2name } from './utils';
 
-export const InkOutlineSpec = {
+export const OutlineSpec = {
   name: 'outline',
   description: 'Outline',
   properties: {},
@@ -28,16 +25,16 @@ interface Header {
 
 const handleClick = (header: Header) => {
   if (!header.element) return;
-  if (history.replaceState) {
-    history.replaceState(null, header.title, `#${header.id}`);
+  if (window.history.replaceState) {
+    window.history.replaceState(null, header.title, `#${header.id}`);
   } else {
-    location.hash = `#${header.id}`;
+    window.location.hash = `#${header.id}`;
   }
   scrollIntoView(header.element, { behavior: 'smooth', block: 'center', inline: 'nearest' });
 };
 
-@withInk(InkOutlineSpec, litProps)
-class InkOutline extends BaseComponent<typeof InkOutlineSpec> {
+@withRuntime(OutlineSpec, litProps)
+class Outline extends BaseComponent<typeof OutlineSpec> {
   open = false;
 
   #headers: Header[] = [];
@@ -93,21 +90,25 @@ class InkOutline extends BaseComponent<typeof InkOutlineSpec> {
   }
 
   firstUpdated() {
-    const element = document.getElementById((this as any).for);
+    const element = document.getElementById((this as any).for) ?? document.querySelectorAll('article')?.[0];
     if (element == null) {
       // eslint-disable-next-line no-console
-      console.warn(`ink-outline: No element was found for ID="${(this as any).for}"`);
+      console.warn(`ink-outline: No <article>, or element was found for ID="${(this as any).for}"`);
       return;
     }
     this.#outlineTarget = element;
     const mutations = new MutationObserver(throttle(() => this.createOutline(), THROTTLE_SKIP));
     mutations.observe(element, { attributes: true, childList: true, subtree: true });
+    this.createOutline();
   }
 
   static get styles() {
     return css`
     :host {
       display: block;
+    }
+    :host:hover{
+      z-index: 100;
     }
     nav{
       width: 30px;
@@ -146,9 +147,6 @@ class InkOutline extends BaseComponent<typeof InkOutlineSpec> {
       color: var(--mdc-theme-primary, #46f);
       cursor: pointer;
     }
-    nav:hover{
-      z-index: 100;
-    }
     .open, nav:hover{
       width: 200px;
       background: linear-gradient(to right, white, transparent);
@@ -168,6 +166,7 @@ class InkOutline extends BaseComponent<typeof InkOutlineSpec> {
     if (this.getAttribute('open') === 'false') {
       this.open = false;
     }
+    if (this.#headers.length <= 1) return html``;
 
     const highlight = (header: Header) => {
       const onScreen = this.#onScreen.has(header.element);
@@ -175,8 +174,10 @@ class InkOutline extends BaseComponent<typeof InkOutlineSpec> {
       return onScreen || (this.#onScreen.size === 0 && lastSeen);
     };
 
+    const popOpen = this.#onScreen.has(this.#headers[0].element) || this.open;
+
     return html`
-      <nav class="${this.open ? 'open' : ''}">
+      <nav class="${popOpen ? 'open' : ''}">
         ${this.#headers.map((header, index) => html`
           <div
             class="header"
@@ -192,4 +193,4 @@ class InkOutline extends BaseComponent<typeof InkOutlineSpec> {
   }
 }
 
-export default InkOutline;
+export default Outline;

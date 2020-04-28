@@ -2,8 +2,16 @@ article {
   margin: auto;
   padding-left: 10px;
   padding-right: 250px;
+  padding-bottom: 200px;
   position: relative;
-  width: calc( max( min( 100vw , 790px ), 500px ) );
+  width: calc( max( min( 100vw , 780px ), 500px ) );
+}
+article.centered {
+  margin: auto;
+  padding-left: 10px;
+  padding-right: 10px;
+  position: relative;
+  width: calc( max( min( 100vw , 780px ), 500px ) );
 }
 @media screen and (max-width: 1050px) {
   article {
@@ -84,17 +92,15 @@ article {
     font-family: var(--ink-font, sans-serif);
     font-weight: 300;
   }
+  ol p, ul p {
+    margin: 0;
+    text-align: left;
+  }
   em {
     font-style: italic;
   }
   strong {
     color: black;
-  }
-  .ink-drag-horz{
-    cursor: col-resize;
-  }
-  .ink-drag-move{
-    cursor: move;
   }
   table{
     width: 100%;
@@ -110,5 +116,18 @@ article {
   }
   td{
     padding-left: 8px;
+  }
+  hr {
+    width: 200px;
+    margin: 30px 0;
+    margin-left: calc(50% - 100px);
+    border-top: 1px solid #B2B2B2;
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+    clear: both;
+  }
+  img{
+    max-width: 100%;
   }
 }

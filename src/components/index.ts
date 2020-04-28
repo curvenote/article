@@ -1,31 +1,22 @@
-import { actions, provider } from '@iooxa/runtime';
-import InkEquation from './equation';
-import InkCode from './code';
-import InkDemo from './demo';
-import InkOutline from './outline';
-
-
-function registerComponent(name: string, component: any) {
-  if (component.spec) {
-    provider.dispatch(actions.createSpec(
-      component.spec!.name,
-      component.spec!.properties,
-      component.spec!.events,
-    ));
-  }
-  customElements.define(name, component);
-}
+import { registerComponent } from '@iooxa/components';
+import Equation from './equation';
+import Code from './code';
+import Demo from './demo';
+import Outline from './outline';
+import Card from './card';
 
 export const register = () => {
-  registerComponent('ink-outline', InkOutline);
-  registerComponent('ink-equation', InkEquation);
-  registerComponent('ink-code', InkCode);
-  registerComponent('ink-demo', InkDemo);
+  registerComponent('r-card', Card);
+  registerComponent('r-outline', Outline);
+  registerComponent('r-equation', Equation);
+  registerComponent('r-code', Code);
+  registerComponent('r-demo', Demo);
 };
 
-export {
-  InkOutline,
-  InkEquation,
-  InkCode,
-  InkDemo,
+export default {
+  Card,
+  Outline,
+  Equation,
+  Code,
+  Demo,
 };

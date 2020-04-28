@@ -1,13 +1,12 @@
 import {
-  BaseComponent, withInk, html, unsafeHTML,
-} from '@iooxa/ink-basic';
+  BaseComponent, withRuntime, html, css, unsafeHTML,
+} from '@iooxa/components';
 import { types, provider } from '@iooxa/runtime';
 import katex from 'katex';
-import { css } from 'lit-element';
 
-const katexCSS = html`<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" integrity="sha256-V8SV2MO1FUb63Bwht5Wx9x6PVHNa02gv8BgH/uH3ung=" crossorigin="anonymous" />`;
+export const katexCSS = html`<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" integrity="sha256-V8SV2MO1FUb63Bwht5Wx9x6PVHNa02gv8BgH/uH3ung=" crossorigin="anonymous" />`;
 
-export const InkEquationSpec = {
+export const EquationSpec = {
   name: 'equation',
   description: 'Equation',
   properties: {
@@ -23,8 +22,8 @@ const litProps = {
   editing: { type: Boolean, reflect: true },
 };
 
-@withInk(InkEquationSpec, litProps)
-class InkEquation extends BaseComponent<typeof InkEquationSpec> {
+@withRuntime(EquationSpec, litProps)
+class Equation extends BaseComponent<typeof EquationSpec> {
   inline = false;
 
   aligned = false;
@@ -33,15 +32,15 @@ class InkEquation extends BaseComponent<typeof InkEquationSpec> {
 
   firstUpdated() {
     const text2Math = () => setTimeout(() => {
-      if (this.ink!.component == null) return;
-      const { math } = this.ink!.component.properties;
+      if (this.$runtime!.component == null) return;
+      const { math } = this.$runtime!.component.properties;
       const slot = this.shadowRoot!.querySelectorAll('slot')[0];
       slot.hidden = false;
       // innerText reads the *visible* content and plays with ink-display and ink-visible
       const text = this.innerText ?? '';
       slot.hidden = !this.editing;
       if (math.value === text) return;
-      this.ink!.set({ math: { value: text, func: math.func } });
+      this.$runtime!.set({ math: { value: text, func: math.func } });
     }, 20);
     if (this.textContent) {
       this.shadowRoot!.querySelectorAll('slot')[0].addEventListener('slotchange', text2Math);
@@ -65,7 +64,7 @@ class InkEquation extends BaseComponent<typeof InkEquationSpec> {
 
   render() {
     const element = document.createElement('div');
-    const { math } = this.ink!.state;
+    const { math } = this.$runtime!.state;
     const { inline, aligned, editing } = this;
     if (math) {
       try {
@@ -89,4 +88,4 @@ class InkEquation extends BaseComponent<typeof InkEquationSpec> {
   }
 }
 
-export default InkEquation;
+export default Equation;

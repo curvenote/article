@@ -1,6 +1,7 @@
-import { LitElement, html, css } from 'lit-element';
-import { unsafeHTML } from 'lit-html/directives/unsafe-html';
-import hljs from 'highlight.js';
+import {
+  BaseComponent, withRuntime, html, css, unsafeHTML,
+} from '@iooxa/components';
+import hljs from './codeHighlightjs';
 
 function trim(content: string) {
   const lines = content.split('\n');
@@ -25,18 +26,28 @@ function trim(content: string) {
   return lines.map((line) => line.slice(left)).slice(start, end + 1).join('\n');
 }
 
-// TODO: change over to ink
 
-class InkCode extends LitElement {
-  static get properties() {
-    return {
-      code: { type: String },
-      language: { type: String },
-      copy: { type: Boolean, reflect: true },
-      compact: { type: Boolean, reflect: true },
-    };
-  }
+function pad(content: string) {
+  return `\n${content}\n`;
+}
 
+export const CodeSpec = {
+  name: 'code',
+  description: 'Code',
+  properties: {},
+  events: {},
+};
+
+const litProps = {
+  code: { type: String },
+  language: { type: String },
+  copy: { type: Boolean, reflect: true },
+  compact: { type: Boolean, reflect: true },
+};
+
+
+@withRuntime(CodeSpec, litProps)
+class Code extends BaseComponent<typeof CodeSpec> {
   #copyText = 'copy';
 
   code = '';
@@ -87,8 +98,8 @@ class InkCode extends LitElement {
   render() {
     this.code = trim(this.code);
 
-    if (this.textContent !== this.code && this.code) {
-      this.textContent = this.code;
+    if (this.textContent !== pad(this.code) && this.code) {
+      this.textContent = pad(this.code);
     }
 
     const codeDom = document.createElement('code');
@@ -112,6 +123,9 @@ class InkCode extends LitElement {
 
   static get styles() {
     return css`
+      :host {
+        display: block;
+      }
       code {
         line-height: 1.2;
         border:none;
@@ -139,4 +153,4 @@ class InkCode extends LitElement {
   }
 }
 
-export default InkCode;
+export default Code;
