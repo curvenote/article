@@ -1,5 +1,7 @@
 import { renderHTML } from '@iooxa/components';
+import scrollIntoView from 'scroll-into-view-if-needed';
 import { katexCSS } from './equation';
+import { title2name } from './utils';
 
 const renderMathInElement = require('katex/contrib/auto-render/auto-render.js').default;
 
@@ -36,6 +38,20 @@ export function setupNav() {
   });
 }
 
+export function gotoHash() {
+  const headers = document.querySelectorAll('H1, H2, H3, H4, H5, H6');
+  const hash = window.location.hash.slice(1);
+  if (headers == null || headers.length <= 1 || hash.length === 0) return;
+
+  headers.forEach((header) => {
+    if (header.getAttribute('data-outline') === 'none') return;
+    const id = header.id || title2name(header.textContent ?? '');
+    if (id === hash) {
+      scrollIntoView(header, { behavior: 'smooth', block: 'center', inline: 'nearest' });
+    }
+  });
+}
+
 export default function setup() {
   const katexFragment = document.createDocumentFragment();
   renderHTML(katexCSS, katexFragment);
@@ -44,4 +60,6 @@ export default function setup() {
     document.querySelectorAll('article'),
   ).forEach((element) => renderMath(element));
   setupNav();
+  // This should give the code enough time to render
+  setTimeout(gotoHash, 250);
 }
