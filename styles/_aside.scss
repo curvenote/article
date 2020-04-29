@@ -1,9 +1,10 @@
 article aside{
   position: relative; // Necessary to float over the background.
   float: right;
-  width: 230px;
+  width: 210px;
+  padding-left: 20px;
   margin-top: -30px;
-  margin-right: -250px;
+  margin-right: -230px;
   background-color: #FFF;
 }
 article aside, article aside p {
@@ -12,10 +13,17 @@ article aside, article aside p {
   font-family: var(--iooxa-font, sans-serif);
   text-align: left;
 }
+article.centered aside {
+  float: right;
+  width: 33%;
+  margin: unset;
+  margin-left: 20px;
+}
 @media screen and (max-width: 800px) {
-  article aside{
+  article aside, article.centered aside{
     float: unset;
     width: unset;
     margin: unset;
+    border-left: 5px solid #eee;
   }
 }

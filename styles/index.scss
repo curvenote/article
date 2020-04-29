@@ -8,6 +8,11 @@
 @use 'callout';
 @use 'quote';
 
+body {
+  margin: 0;
+  padding: 0;
+}
+
 r-var {
   display: none;
 }
