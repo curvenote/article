@@ -7,7 +7,6 @@ function isLinkExternal(url: string) {
   return url && (url.startsWith('http') || url.startsWith('//'));
 }
 
-
 export const CardSpec = {
   name: 'card',
   description: 'Card',
@@ -18,7 +17,6 @@ export const CardSpec = {
 const litProps = {
   url: { type: String },
   imgSrc: { type: String, attribute: 'img-src' },
-  width: { type: String },
   author: { type: String },
   date: { type: String },
   description: { type: String },
@@ -31,8 +29,6 @@ class Card extends BaseComponent<typeof CardSpec> {
 
   imgSrc = '';
 
-  width = null;
-
   author = '';
 
   date = '';
@@ -43,12 +39,14 @@ class Card extends BaseComponent<typeof CardSpec> {
 
   render() {
     return html`
-      <a class="card" style="width: ${this.width || '240px'};" title="${this.title}" href="${this.url}" target="${isLinkExternal(this.url) ? '_blank' : '_self'}">
+      <div class="card">
+        <a title="${this.title}" href="${this.url}" target="${isLinkExternal(this.url) ? '_blank' : '_self'}">
           <div class="image" style="background-image: url('${this.imgSrc}'); background-size: ${this.contain ? 'contain' : 'cover'};"></div>
           <time>${this.date}</time>
           <div class="title">${this.title}</div>
           <div class="description">${this.description}</div>
-      </a>
+        </a>
+      </div>
     `;
   }
 
@@ -56,13 +54,14 @@ class Card extends BaseComponent<typeof CardSpec> {
     return css`
       :host{
         text-align: left;
-      }
-      .card{
         display: inline-block;
-        height: 0;
-        margin: 8px;
-        position: relative;
-        cursor: pointer;
+        padding: 8px;
+        width: 200px;
+        max-width: 400px;
+        margin: 5px;
+        flex: 1 auto;
+      }
+      a {
         text-decoration: none;
       }
       .image{
