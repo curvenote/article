@@ -17,11 +17,22 @@ export function renderMath(element: Element) {
   renderMathInElement(element, MATH_RENDER_OPTIONS);
 }
 
-export function setupOutline() {
+export function setupNav() {
   Array.from(
     document.querySelectorAll('nav .section div'),
   ).forEach((sec: Element) => {
     sec.addEventListener('click', () => sec.parentElement?.classList.toggle('open'));
+  });
+
+  const header = document.querySelectorAll('nav > div')?.[0];
+  header.addEventListener('click', () => {
+    if (window.innerWidth < 1500) {
+      header.parentElement?.classList.toggle('open');
+    }
+  });
+  const article = document.querySelectorAll('article')?.[0];
+  article.addEventListener('click', () => {
+    header.parentElement?.classList.remove('open');
   });
 }
 
@@ -32,5 +43,5 @@ export default function setup() {
   Array.from(
     document.querySelectorAll('article'),
   ).forEach((element) => renderMath(element));
-  setupOutline();
+  setupNav();
 }

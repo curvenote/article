@@ -1,9 +1,7 @@
 nav {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 200px;
   > div {
+    position: relative;
     font-family: var(--iooxa-font-headers);
   }
   ul {
@@ -70,7 +68,7 @@ nav {
     overflow: hidden;
   }
   ul li.section.open{
-    max-height: 100vh;
+    max-height: 150vh; // This is not awesome. :( cuts things off if the screen is short.
   }
   ul li.section ul{
     padding-top: 10px;
@@ -80,5 +78,73 @@ nav {
   }
   ul li.section.open ul{
     transform:scaleY(1);
+  }
+}
+
+nav.popout {
+  position: fixed;
+  top: 153px;
+  left: calc(50vw - 420px - 330px);
+}
+
+nav.popout > ul {
+  max-height: calc(100vh - 153px - 2em);
+  overflow-y: auto;
+}
+
+nav.popout.centered {
+  transform: translateX(130px);
+}
+
+@media screen and (max-width: 1500px) {
+  nav.popout.centered {
+    transform: unset;
+  }
+  nav.popout {
+    position: fixed;
+    top: 0px;
+    left: -200px;
+    z-index: 10;
+    transition: left 200ms;
+  }
+  nav.popout.open {
+    left: 0px;
+  }
+  nav.popout > div {
+    height: 1.4em;
+    padding: 15px;
+    margin-right: -20px;
+    border: 1px solid #AAA;
+    background-color: #FFF;
+    border-radius: 10px;
+  }
+  nav.popout > div:after {
+    content: " ";
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    right: 7px;
+    border-right: 2px solid #333;
+    border-top: 2px solid #333;
+    transform: translate(0, 6px) rotate(45deg);
+    transition: all 200ms;
+  }
+  nav.popout.open {
+    box-shadow: 20px 0px 20px rgba(0, 0, 0, 0.1);
+  }
+  nav.popout.open > div:after {
+    border-right: 2px solid #333;
+    border-top: 2px solid #333;
+    transform: translate(3px, 6px) rotate(-135deg);
+  }
+  nav.popout.open > div {
+    border: 1px solid transparent;
+  }
+  nav.popout > ul {
+    background-color: #FFF;
+    max-height: unset;
+    height: calc(100vh - 1.4em - 30px);
+    overflow-y: scroll;
+    overscroll-behavior-y: contain;
   }
 }
