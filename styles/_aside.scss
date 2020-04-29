@@ -12,9 +12,10 @@ article aside, article aside p {
   font-family: var(--iooxa-font, sans-serif);
   text-align: left;
 }
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 800px) {
   article aside{
-    width: 50%;
-    margin: 15px;
+    float: unset;
+    width: unset;
+    margin: unset;
   }
 }

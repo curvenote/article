@@ -2,7 +2,7 @@ article {
   margin: auto;
   padding-left: 10px;
   padding-right: 250px;
-  padding-bottom: 200px;
+  padding-bottom: 100px;
   position: relative;
   width: calc( max( min( 100vw , 780px ), 500px ) );
 }
@@ -14,12 +14,14 @@ article.centered {
   width: calc( max( min( 100vw , 780px ), 500px ) );
 }
 @media screen and (max-width: 1050px) {
-  article {
+  article, article.centered {
     width: calc(100vw - 250px);
   }
 }
-@media screen and (max-width: 600px) {
-  article {
+@media screen and (max-width: 800px) {
+  article, article.centered {
+    padding-left: 10px;
+    padding-right: 10px;
     width: calc(100vw - 30px);
   }
 }
@@ -80,6 +82,21 @@ article {
   dl dd{
     margin-left: 180px;
   }
+  @media screen and (max-width: 800px) {
+    dl dt {
+      float: unset;
+      width: unset;
+      overflow: unset;
+      clear: unset;
+      text-align: unset;
+      text-overflow: unset;
+      white-space: unset;
+    }
+    dl dd{
+      margin-left: 15px;
+    }
+  }
+
   p {
     display: block;
     text-align: justify;
@@ -92,6 +109,12 @@ article {
     font-family: var(--iooxa-font, sans-serif);
     font-weight: 300;
   }
+  @media screen and (max-width: 800px) {
+    p {
+      text-align: left;
+    }
+  }
+
   ol p, ul p {
     margin: 0;
     text-align: left;
