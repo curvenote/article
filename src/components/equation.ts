@@ -54,6 +54,7 @@ class Equation extends BaseComponent<typeof EquationSpec> {
   static get styles() {
     return css`
       :host{
+        position: relative;
         white-space: normal;
       }
       .katex-html{
