@@ -18,16 +18,16 @@
   "scripts": {
     "test": "jest",
     "lint": "eslint src/**.ts -c .eslintrc.json",
-    "start": "npm run build-css; webpack-dev-server --open --config webpack.dev.js",
+    "start": "yarn run build-css; webpack-dev-server --open --config webpack.dev.js",
     "clean": "rm -rf dist || true; rm -f styles/index.css*;",
-    "link": "npm link; npm link @iooxa/runtime;npm link @iooxa/components;npm link @iooxa/svg",
-    "size": "npm run build && size-limit",
+    "link": "yarn unlink; yarn link; yarn link @iooxa/runtime;yarn link @iooxa/components;yarn link @iooxa/svg",
+    "size": "yarn run build && size-limit",
     "size-why": "webpack-bundle-analyzer stats.json -p 8005",
     "copy-css": "mkdir -p dist; cp theme.css dist/theme.css; cp node_modules/@iooxa/components/dist/iooxa.css styles/_components.scss;",
-    "watch-css": "npm run copy-css; sass --watch styles/index.scss dist/iooxa.css",
-    "build-css": "npm run copy-css; sass styles/index.scss dist/iooxa.css;",
+    "watch-css": "yarn run copy-css; sass --watch styles/index.scss dist/iooxa.css",
+    "build-css": "yarn run copy-css; sass styles/index.scss dist/iooxa.css;",
     "build-dev": "webpack --config webpack.dev.js",
-    "build": "npm run build-css; webpack --config webpack.prod.js --profile --json > stats.json; tsc; rm -rf dist/src"
+    "build": "yarn run build-css; webpack --config webpack.prod.js --profile --json > stats.json; tsc; rm -rf dist/src"
   },
   "repository": {
     "type": "git",
