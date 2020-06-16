@@ -1,4 +1,3 @@
-
 function input2name(input: string, allowed: RegExp, join: string) {
   const name = `¶${input}`
     .toLowerCase()
@@ -13,5 +12,4 @@ function input2name(input: string, allowed: RegExp, join: string) {
   return name;
 }
 
-// eslint-disable-next-line import/prefer-default-export
 export const title2name = (title: string) => input2name(title.replace(/&/g, '¶and¶'), /^[a-z0-9-]/, '-').slice(0, 50);

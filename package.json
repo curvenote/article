@@ -17,7 +17,7 @@
   },
   "scripts": {
     "test": "jest",
-    "lint": "eslint src/**.ts -c .eslintrc.json",
+    "lint": "eslint \"src/**/*.ts\" -c .eslintrc.json",
     "start": "yarn run build-css; webpack-dev-server --open --config webpack.dev.js",
     "clean": "rm -rf dist || true; rm -f styles/index.css*;",
     "link": "yarn unlink; yarn link; yarn link @iooxa/runtime;yarn link @iooxa/components;yarn link @iooxa/svg",

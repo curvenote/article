@@ -2,7 +2,6 @@ import {
   BaseComponent, withRuntime, html, css,
 } from '@iooxa/components';
 
-
 export const DemoSpec = {
   name: 'demo',
   description: 'Demo',
@@ -16,7 +15,6 @@ const litProps = {
   copy: { type: Boolean },
   codeOnly: { type: Boolean, attribute: 'code-only', reflect: true },
 };
-
 
 @withRuntime(DemoSpec, litProps)
 class Demo extends BaseComponent<typeof DemoSpec> {

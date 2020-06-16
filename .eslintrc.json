@@ -21,7 +21,9 @@
     "plugins": [
         "@typescript-eslint"
     ],
-    "rules": {},
+    "rules": {
+        "import/prefer-default-export": "off"
+    },
     "settings": {
         "import/resolver": {
             "node": {

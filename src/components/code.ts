@@ -26,7 +26,6 @@ function trim(content: string) {
   return lines.map((line) => line.slice(left)).slice(start, end + 1).join('\n');
 }
 
-
 function pad(content: string) {
   return `\n${content}\n`;
 }
@@ -44,7 +43,6 @@ const litProps = {
   copy: { type: Boolean, reflect: true },
   compact: { type: Boolean, reflect: true },
 };
-
 
 @withRuntime(CodeSpec, litProps)
 class Code extends BaseComponent<typeof CodeSpec> {

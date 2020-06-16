@@ -6,7 +6,6 @@ import Demo from './demo';
 import Outline from './outline';
 import Card from './card';
 
-
 export const register = (store: types.Store) => {
   setup(store);
   registerComponent('r-card', Card);
