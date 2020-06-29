@@ -2,7 +2,7 @@ import { applyMiddleware, createStore, combineReducers } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import runtime, { types, actions, selectors } from '@iooxa/runtime';
 import { register as basicRegister } from '@iooxa/components';
-import { register as chartRegister } from '@iooxa/svg';
+import { register as svgRegister } from '@iooxa/svg';
 import * as components from './src/components';
 import setupArticle from './src/components/article';
 
@@ -41,6 +41,6 @@ window.iooxa = {
 } as Iooxa;
 
 basicRegister(window.iooxa.store);
-chartRegister(window.iooxa.store);
+svgRegister(window.iooxa.store);
 components.register(window.iooxa.store);
 setupArticle();
