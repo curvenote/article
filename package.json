@@ -1,6 +1,6 @@
 {
   "name": "@iooxa/article",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Scientific web components for interactive scientific writing, reactive documents and explorable explanations.",
   "main": "dist/index.js",
   "unpkg": "dist/iooxa.min.js",
@@ -66,9 +66,9 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
-    "@iooxa/components": "^0.2.4",
-    "@iooxa/svg": "^0.0.3",
-    "@iooxa/runtime": "^0.2.4",
+    "@iooxa/components": "^0.2.5",
+    "@iooxa/svg": "^0.0.5",
+    "@iooxa/runtime": "^0.2.5",
     "highlight.js": "^9.18.1",
     "katex": "^0.11.1",
     "redux": "^4.0.5",
