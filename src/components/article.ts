@@ -27,13 +27,13 @@ export function setupNav() {
   });
 
   const header = document.querySelectorAll('nav > div')?.[0];
-  header.addEventListener('click', () => {
+  header?.addEventListener('click', () => {
     if (window.innerWidth < 1500) {
       header.parentElement?.classList.toggle('open');
     }
   });
   const article = document.querySelectorAll('article')?.[0];
-  article.addEventListener('click', () => {
+  article?.addEventListener('click', () => {
     header.parentElement?.classList.remove('open');
   });
 }
