@@ -1,6 +1,6 @@
 {
   "name": "@iooxa/article",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Scientific web components for interactive scientific writing, reactive documents and explorable explanations.",
   "main": "dist/index.js",
   "unpkg": "dist/iooxa.min.js",
