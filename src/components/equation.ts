@@ -67,7 +67,7 @@ class Equation extends BaseComponent<typeof EquationSpec> {
     const element = document.createElement('div');
     const { math } = this.$runtime!.state;
     const { inline, aligned, editing } = this;
-    if (math) {
+    if (math.trim()) {
       try {
         katex.render(
           aligned ? `\\begin{aligned}${math}\\end{aligned}` : math,
