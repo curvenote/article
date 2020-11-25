@@ -69,7 +69,7 @@
     "@iooxa/components": "^0.2.5",
     "@iooxa/svg": "^0.0.5",
     "@iooxa/runtime": "^0.2.5",
-    "highlight.js": "^9.18.1",
+    "highlight.js": "^10.1.2",
     "katex": "^0.11.1",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
