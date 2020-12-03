@@ -1,5 +1,6 @@
 // style.scss
 @use 'components';
+@use 'layout';
 @use 'article';
 @use 'cards';
 @use 'outline';
@@ -7,6 +8,7 @@
 @use 'aside';
 @use 'callout';
 @use 'quote';
+@use 'equation';
 
 body {
   margin: 0;
