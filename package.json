@@ -27,7 +27,8 @@
     "watch-css": "yarn run copy-css; sass --watch styles/index.scss dist/iooxa.css",
     "build-css": "yarn run copy-css; sass styles/index.scss dist/iooxa.css;",
     "build-dev": "webpack --config webpack.dev.js",
-    "build": "yarn run build-css; webpack --config webpack.prod.js --profile --json > stats.json; tsc; rm -rf dist/src"
+    "build": "yarn run build-css; webpack --config webpack.prod.js --profile --json > stats.json; tsc; rm -rf dist/src",
+    "prepublishOnly": "yarn run clean; yarn run build;"
   },
   "repository": {
     "type": "git",
@@ -68,6 +69,7 @@
   "dependencies": {
     "@iooxa/components": "^0.2.5",
     "@iooxa/svg": "^0.0.5",
+    "copy-webpack-plugin": "^6.3.2",
     "@iooxa/runtime": "^0.2.5",
     "highlight.js": "^9.18.1",
     "katex": "^0.11.1",
