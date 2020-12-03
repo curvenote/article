@@ -67,7 +67,7 @@ class Equation extends BaseComponent<typeof EquationSpec> {
     const element = document.createElement('div');
     const { math } = this.$runtime!.state;
     const { inline, aligned, editing } = this;
-    if (math.trim()) {
+    if (math?.trim()) {
       try {
         katex.render(
           aligned ? `\\begin{aligned}${math}\\end{aligned}` : math,
@@ -83,7 +83,13 @@ class Equation extends BaseComponent<typeof EquationSpec> {
         element.innerText = error;
       }
     } else {
-      element.innerText = '$…$';
+      const placeholder = document.createElement('div');
+      placeholder.innerText = '$…$';
+      if (!inline) {
+        placeholder.style.textAlign = 'center';
+        placeholder.style.margin = '1rem';
+      }
+      element.append(placeholder);
     }
     return html`${katexCSS}${unsafeHTML(element.innerHTML)}<slot ?hidden=${!editing}></slot>`;
   }
