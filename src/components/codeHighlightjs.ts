@@ -1,4 +1,4 @@
-const hljs = require('highlight.js/lib/highlight');
+const hljs = require('highlight.js');
 
 // hljs.registerLanguage('1c', require('highlight.js/lib/languages/1c'));
 // hljs.registerLanguage('abnf', require('highlight.js/lib/languages/abnf'));
@@ -36,7 +36,7 @@ hljs.registerLanguage('cmake', require('highlight.js/lib/languages/cmake'));
 // hljs.registerLanguage('cos', require('highlight.js/lib/languages/cos'));
 // hljs.registerLanguage('crmsh', require('highlight.js/lib/languages/crmsh'));
 // hljs.registerLanguage('crystal', require('highlight.js/lib/languages/crystal'));
-hljs.registerLanguage('cs', require('highlight.js/lib/languages/cs'));
+// hljs.registerLanguage('cs', require('highlight.js/lib/languages/cs'));
 // hljs.registerLanguage('csp', require('highlight.js/lib/languages/csp'));
 hljs.registerLanguage('css', require('highlight.js/lib/languages/css'));
 // hljs.registerLanguage('d', require('highlight.js/lib/languages/d'));
@@ -169,7 +169,7 @@ hljs.registerLanguage('shell', require('highlight.js/lib/languages/shell'));
 hljs.registerLanguage('yaml', require('highlight.js/lib/languages/yaml'));
 // hljs.registerLanguage('tap', require('highlight.js/lib/languages/tap'));
 // hljs.registerLanguage('tcl', require('highlight.js/lib/languages/tcl'));
-hljs.registerLanguage('tex', require('highlight.js/lib/languages/tex'));
+hljs.registerLanguage('latex', require('highlight.js/lib/languages/latex'));
 // hljs.registerLanguage('thrift', require('highlight.js/lib/languages/thrift'));
 // hljs.registerLanguage('tp', require('highlight.js/lib/languages/tp'));
 // hljs.registerLanguage('twig', require('highlight.js/lib/languages/twig'));

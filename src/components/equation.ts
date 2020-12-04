@@ -69,8 +69,9 @@ class Equation extends BaseComponent<typeof EquationSpec> {
     const { inline, aligned, editing } = this;
     if (math?.trim()) {
       try {
+        const render = math.replace(/−/g, '-');
         katex.render(
-          aligned ? `\\begin{aligned}${math}\\end{aligned}` : math,
+          aligned ? `\\begin{aligned}${render}\\end{aligned}` : render,
           element,
           {
             displayMode: !inline,
