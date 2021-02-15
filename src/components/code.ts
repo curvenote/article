@@ -1,6 +1,6 @@
 import {
   BaseComponent, withRuntime, html, css, unsafeHTML,
-} from '@iooxa/components';
+} from '@curvenote/components';
 import hljs from './codeHighlightjs';
 
 function trim(content: string) {

@@ -1,6 +1,6 @@
 import {
   BaseComponent, withRuntime, html, css, throttle, THROTTLE_SKIP,
-} from '@iooxa/components';
+} from '@curvenote/components';
 import scrollIntoView from 'scroll-into-view-if-needed';
 import { title2name } from './utils';
 
@@ -79,9 +79,9 @@ class Outline extends BaseComponent<typeof OutlineSpec> {
         element: header,
       };
       headerData.push(data);
-      const func = () => handleClick(data);
-      header.addEventListener('click', func);
-      this.#headerUnsubscribe.push(() => header.removeEventListener('click', func));
+      // const func = () => handleClick(data);
+      // header.addEventListener('click', func);
+      // this.#headerUnsubscribe.push(() => header.removeEventListener('click', func));
     });
     // If there are not enough, don't show it.
     this.#headers = headerData.length <= 1 ? [] : headerData;
@@ -126,7 +126,7 @@ class Outline extends BaseComponent<typeof OutlineSpec> {
       width: 150px;
       text-overflow: ellipsis;
       overflow: hidden;
-      font-family: var(--iooxa-font, sans-serif);
+      font-family: var(--curvenote-font, sans-serif);
       white-space: nowrap;
       opacity: 0;
       transition: all 200ms;

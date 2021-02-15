@@ -1,6 +1,6 @@
 import {
   BaseComponent, withRuntime, html, css,
-} from '@iooxa/components';
+} from '@curvenote/components';
 
 export const DemoSpec = {
   name: 'demo',

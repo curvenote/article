@@ -1,7 +1,7 @@
 import {
   BaseComponent, withRuntime, html, css, unsafeHTML,
-} from '@iooxa/components';
-import { types, provider } from '@iooxa/runtime';
+} from '@curvenote/components';
+import { types, provider } from '@curvenote/runtime';
 import katex from 'katex';
 
 export const katexCSS = html`<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" integrity="sha256-V8SV2MO1FUb63Bwht5Wx9x6PVHNa02gv8BgH/uH3ung=" crossorigin="anonymous" />`;

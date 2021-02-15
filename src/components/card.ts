@@ -1,6 +1,6 @@
 import {
   withRuntime, BaseComponent, html, css,
-} from '@iooxa/components';
+} from '@curvenote/components';
 
 function isLinkExternal(url: string) {
   return url && (url.startsWith('http') || url.startsWith('//'));
