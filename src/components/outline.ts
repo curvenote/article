@@ -149,7 +149,6 @@ class Outline extends BaseComponent<typeof OutlineSpec> {
     }
     .open, nav:hover{
       width: 200px;
-      background: linear-gradient(to right, white, transparent);
       border-left: 4px solid var(--mdc-theme-primary, #46f);
     }
     .open .text, nav:hover .text{
