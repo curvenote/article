@@ -1,7 +1,7 @@
 import { renderHTML } from '@curvenote/components';
 import { katexCSS } from './equation';
 
-const renderMathInElement = require('katex/contrib/auto-render/auto-render.js').default;
+const renderMathInElement = require('katex/contrib/auto-render/auto-render').default;
 
 const MATH_RENDER_OPTIONS = {
   delimiters: [
