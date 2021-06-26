@@ -4,14 +4,14 @@ article {
   padding-right: 250px;
   padding-bottom: 100px;
   position: relative;
-  width: calc( max( min( 100vw , 760px ), 500px ) );
+  width: calc(max(min(100vw, 760px), 500px));
 }
 article.centered {
   margin: auto;
   padding-left: 20px;
   padding-right: 20px;
   position: relative;
-  width: calc( max( min( 100vw , 760px ), 500px ) );
+  width: calc(max(min(100vw, 760px), 500px));
 }
 @media screen and (max-width: 1050px) {
   article {
@@ -22,7 +22,8 @@ article.centered {
   }
 }
 @media screen and (max-width: 800px) {
-  article, article.centered {
+  article,
+  article.centered {
     padding-left: 20px;
     padding-right: 20px;
     width: calc(100vw - 40px);

@@ -18,9 +18,7 @@ export function renderMath(element: Element) {
 }
 
 export function setupNav() {
-  Array.from(
-    document.querySelectorAll('nav .section div'),
-  ).forEach((sec: Element) => {
+  Array.from(document.querySelectorAll('nav .section div')).forEach((sec: Element) => {
     sec.addEventListener('click', () => sec.parentElement?.classList.toggle('open'));
   });
 
@@ -40,8 +38,6 @@ export default function setup() {
   const katexFragment = document.createDocumentFragment();
   renderHTML(katexCSS, katexFragment);
   document.head.appendChild(katexFragment);
-  Array.from(
-    document.querySelectorAll('article'),
-  ).forEach((element) => renderMath(element));
+  Array.from(document.querySelectorAll('article')).forEach((element) => renderMath(element));
   setupNav();
 }

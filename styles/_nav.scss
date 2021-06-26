@@ -10,7 +10,7 @@ nav {
     padding: 0;
   }
   ul li {
-    list-style-type:none;
+    list-style-type: none;
   }
   a {
     display: block;
@@ -20,10 +20,11 @@ nav {
     text-decoration: none;
     font-weight: 500;
   }
-  a:hover, a.selected{
+  a:hover,
+  a.selected {
     color: var(--mdc-theme-primary);
     text-decoration: none;
-    background-color: #F1F3F4;
+    background-color: #f1f3f4;
     // border-radius: 0 15px 15px 0;
   }
   ul ul a {
@@ -37,11 +38,12 @@ nav {
     cursor: pointer;
     position: relative;
   }
-  ul li.section div:hover, ul li.section.selected div{
+  ul li.section div:hover,
+  ul li.section.selected div {
     color: var(--mdc-theme-primary);
   }
   ul li.section div:after {
-    content: " ";
+    content: ' ';
     position: absolute;
     right: 20px;
     width: 8px;
@@ -60,24 +62,24 @@ nav {
     border-bottom: 0 solid transparent;
     transform: translate(0, 7px) rotate(45deg);
   }
-  ul li.section{
+  ul li.section {
     padding: 0.6em 0;
     box-shadow: inset 0 0px 2px rgba(0, 0, 0, 0.1);
     transition: all 200ms;
     max-height: calc(1em + 2px);
     overflow: hidden;
   }
-  ul li.section.open{
+  ul li.section.open {
     max-height: 150vh; // This is not awesome. :( cuts things off if the screen is short.
   }
-  ul li.section ul{
+  ul li.section ul {
     padding-top: 10px;
     transition: all 200ms;
-    transform:scaleY(0);
-    transform-origin:top;
+    transform: scaleY(0);
+    transform-origin: top;
   }
-  ul li.section.open ul{
-    transform:scaleY(1);
+  ul li.section.open ul {
+    transform: scaleY(1);
   }
 }
 
@@ -114,12 +116,12 @@ nav.popout.centered {
     height: 1.4em;
     padding: 15px;
     margin-right: -20px;
-    border: 1px solid #AAA;
-    background-color: #FFF;
+    border: 1px solid #aaa;
+    background-color: #fff;
     border-radius: 10px;
   }
   nav.popout > div:after {
-    content: " ";
+    content: ' ';
     position: absolute;
     width: 7px;
     height: 7px;
@@ -141,7 +143,7 @@ nav.popout.centered {
     border: 1px solid transparent;
   }
   nav.popout > ul {
-    background-color: #FFF;
+    background-color: #fff;
     max-height: unset;
     height: calc(100vh - 1.4em - 30px);
     overflow-y: scroll;

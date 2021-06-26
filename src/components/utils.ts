@@ -12,4 +12,5 @@ function input2name(input: string, allowed: RegExp, join: string) {
   return name;
 }
 
-export const title2name = (title: string) => input2name(title.replace(/&/g, '¶and¶'), /^[a-z0-9-]/, '-').slice(0, 50);
+export const title2name = (title: string) =>
+  input2name(title.replace(/&/g, '¶and¶'), /^[a-z0-9-]/, '-').slice(0, 50);

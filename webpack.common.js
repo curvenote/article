@@ -18,9 +18,7 @@ module.exports = {
       template: 'index.html',
     }),
     new CopyPlugin({
-      patterns: [
-        { from: 'styles', to: 'styles' },
-      ],
+      patterns: [{ from: 'styles', to: 'styles' }],
     }),
   ],
   output: {
@@ -36,16 +34,11 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [
-          'style-loader',
-          'css-loader',
-        ],
+        use: ['style-loader', 'css-loader'],
       },
       {
         test: /\.(png|svg|jpg|gif)$/,
-        use: [
-          'file-loader',
-        ],
+        use: ['file-loader'],
       },
     ],
   },

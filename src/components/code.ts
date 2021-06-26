@@ -1,6 +1,4 @@
-import {
-  BaseComponent, withRuntime, html, css, unsafeHTML,
-} from '@curvenote/components';
+import { BaseComponent, withRuntime, html, css, unsafeHTML } from '@curvenote/components';
 import hljs from './codeHighlightjs';
 
 function trim(content: string) {
@@ -23,7 +21,10 @@ function trim(content: string) {
     }
     end = i;
   });
-  return lines.map((line) => line.slice(left)).slice(start, end + 1).join('\n');
+  return lines
+    .map((line) => line.slice(left))
+    .slice(start, end + 1)
+    .join('\n');
 }
 
 function pad(content: string) {
@@ -86,7 +87,10 @@ class Code extends BaseComponent<typeof CodeSpec> {
       this.#copyText = 'error';
     }
     // Return to the copy button after a second.
-    setTimeout(() => { this.#copyText = 'copy'; this.requestUpdate(); }, 1000);
+    setTimeout(() => {
+      this.#copyText = 'copy';
+      this.requestUpdate();
+    }, 1000);
 
     selection!.removeAllRanges();
     this.requestUpdate();
@@ -110,9 +114,14 @@ class Code extends BaseComponent<typeof CodeSpec> {
     }
 
     return html`
-      <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css">
+      <link
+        rel="stylesheet"
+        href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css"
+      />
       <div id="code-wrapper">
-        <button ?hidden="${!this.copy}" title="copy to clipboard" @click="${this.copyToClipboard}">${this.#copyText}</button>
+        <button ?hidden="${!this.copy}" title="copy to clipboard" @click="${this.copyToClipboard}">
+          ${this.#copyText}
+        </button>
         <pre><code class="hljs ${this.language}">${unsafeHTML(codeDom.innerHTML)}</code></pre>
       </div>
       <slot hidden></slot>
@@ -126,15 +135,15 @@ class Code extends BaseComponent<typeof CodeSpec> {
       }
       code {
         line-height: 1.2;
-        border:none;
+        border: none;
         margin: 10px 0;
       }
-      #code-wrapper{
+      #code-wrapper {
         position: relative;
         padding: 0;
         overflow: hidden;
       }
-      button{
+      button {
         position: absolute;
         top: 0;
         right: 0;
@@ -145,9 +154,10 @@ class Code extends BaseComponent<typeof CodeSpec> {
         outline: none;
         user-select: none;
       }
-      pre{
+      pre {
         margin: 0;
-      }`;
+      }
+    `;
   }
 }
 

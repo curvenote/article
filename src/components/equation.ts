@@ -1,10 +1,13 @@
-import {
-  BaseComponent, withRuntime, html, css, unsafeHTML,
-} from '@curvenote/components';
+import { BaseComponent, withRuntime, html, css, unsafeHTML } from '@curvenote/components';
 import { types, provider } from '@curvenote/runtime';
 import katex from 'katex';
 
-export const katexCSS = html`<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" integrity="sha256-V8SV2MO1FUb63Bwht5Wx9x6PVHNa02gv8BgH/uH3ung=" crossorigin="anonymous" />`;
+export const katexCSS = html`<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@0.13.11/dist/katex.min.css"
+  integrity="sha384-Um5gpz1odJg5Z4HAmzPtgZKdTBHZdw8S29IecapCSB31ligYPhHQZMIlWLYQGVoc"
+  crossorigin="anonymous"
+/>`;
 
 export const EquationSpec = {
   name: 'equation',
@@ -31,17 +34,18 @@ class Equation extends BaseComponent<typeof EquationSpec> {
   editing = false;
 
   firstUpdated() {
-    const text2Math = () => setTimeout(() => {
-      if (this.$runtime!.component == null) return;
-      const { math } = this.$runtime!.component.properties;
-      const slot = this.shadowRoot!.querySelectorAll('slot')[0];
-      slot.hidden = false;
-      // innerText reads the *visible* content and plays with r-display and r-visible
-      const text = this.innerText ?? '';
-      slot.hidden = !this.editing;
-      if (math.value === text) return;
-      this.$runtime!.set({ math: { value: text, func: math.func } });
-    }, 20);
+    const text2Math = () =>
+      setTimeout(() => {
+        if (this.$runtime!.component == null) return;
+        const { math } = this.$runtime!.component.properties;
+        const slot = this.shadowRoot!.querySelectorAll('slot')[0];
+        slot.hidden = false;
+        // innerText reads the *visible* content and plays with r-display and r-visible
+        const text = this.innerText ?? '';
+        slot.hidden = !this.editing;
+        if (math.value === text) return;
+        this.$runtime!.set({ math: { value: text, func: math.func } });
+      }, 20);
     if (this.textContent) {
       this.shadowRoot!.querySelectorAll('slot')[0].addEventListener('slotchange', text2Math);
       text2Math();
@@ -53,11 +57,11 @@ class Equation extends BaseComponent<typeof EquationSpec> {
 
   static get styles() {
     return css`
-      :host{
+      :host {
         position: relative;
         white-space: normal;
       }
-      .katex-html{
+      .katex-html {
         user-select: none;
       }
     `;
@@ -70,16 +74,12 @@ class Equation extends BaseComponent<typeof EquationSpec> {
     if (math?.trim()) {
       try {
         const render = math.replace(/−/g, '-');
-        katex.render(
-          aligned ? `\\begin{aligned}${render}\\end{aligned}` : render,
-          element,
-          {
-            displayMode: !inline,
-            macros: {
-              '\\boldsymbol': '\\mathbf',
-            },
+        katex.render(aligned ? `\\begin{aligned}${render}\\end{aligned}` : render, element, {
+          displayMode: !inline,
+          macros: {
+            '\\boldsymbol': '\\mathbf',
           },
-        );
+        });
       } catch (error) {
         element.innerText = error;
       }
