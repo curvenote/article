@@ -46,7 +46,7 @@
   "dependencies": {
     "@curvenote/components": "^0.3.0",
     "@curvenote/runtime": "^0.2.8",
-    "@curvenote/svg": "^0.0.7",
+    "@curvenote/svg": "^0.0.8",
     "copy-webpack-plugin": "^9.0.1",
     "highlight.js": "^10.6.0",
     "katex": "^0.13.11",
