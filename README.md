@@ -10,7 +10,7 @@ The goal of `@curvenote/article` is to provide web-components for interactive sc
 
 The [curvenote/article](https://curvenote.dev/article) project is heavily inspired by [tangle.js](http://worrydream.com/Tangle/guide.html), re-imagined to use [web-components](https://www.webcomponents.org/)!
 This means you can declaratively write your variables and how to display them in `html` markup.
-To get an idea of what that looks like, let's take the canonical example of *Tangled Cookies* - a simple reactive document.
+To get an idea of what that looks like, let's take the canonical example of _Tangled Cookies_ - a simple reactive document.
 
 ![How many calories in that cookie?](images/tangle.gif)
 
@@ -23,8 +23,8 @@ To get an idea of what that looks like, let's take the canonical example of *Tan
 <r-var name="dailyPercent" :value="calories / dailyCalories" format=".0%"></r-var>
 
 <p>
-  When you eat <r-dynamic bind="cookies" min="2" max="100">cookies</r-dynamic>,
-  you consume <r-display bind="calories"></r-display> calories.<br>
+  When you eat <r-dynamic bind="cookies" min="2" max="100">cookies</r-dynamic>, you consume
+  <r-display bind="calories"></r-display> calories.<br />
   That's <r-display bind="dailyPercent"></r-display> of your recommended daily calories.
 </p>
 ```
@@ -35,7 +35,7 @@ To get an idea of what that looks like, let's take the canonical example of *Tan
 To get started, copy the built javascript file to the head of your page:
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/@curvenote/article/dist/curvenote.css">
+<link rel="stylesheet" href="https://unpkg.com/@curvenote/article/dist/curvenote.css" />
 <script async src="https://unpkg.com/@curvenote/article"></script>
 ```
 

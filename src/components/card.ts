@@ -1,6 +1,4 @@
-import {
-  withRuntime, BaseComponent, html, css,
-} from '@curvenote/components';
+import { withRuntime, BaseComponent, html, css } from '@curvenote/components';
 
 function isLinkExternal(url: string) {
   return url && (url.startsWith('http') || url.startsWith('//'));
@@ -39,8 +37,17 @@ class Card extends BaseComponent<typeof CardSpec> {
   render() {
     return html`
       <div class="card">
-        <a title="${this.title}" href="${this.url}" target="${isLinkExternal(this.url) ? '_blank' : '_self'}">
-          <div class="image" style="background-image: url('${this.imgSrc}'); background-size: ${this.contain ? 'contain' : 'cover'};"></div>
+        <a
+          title="${this.title}"
+          href="${this.url}"
+          target="${isLinkExternal(this.url) ? '_blank' : '_self'}"
+        >
+          <div
+            class="image"
+            style="background-image: url('${this.imgSrc}'); background-size: ${this.contain
+              ? 'contain'
+              : 'cover'};"
+          ></div>
           <time>${this.date}</time>
           <div class="title">${this.title}</div>
           <div class="description">${this.description}</div>
@@ -51,7 +58,7 @@ class Card extends BaseComponent<typeof CardSpec> {
 
   static get styles() {
     return css`
-      :host{
+      :host {
         text-align: left;
         display: inline-block;
         padding: 8px;
@@ -63,16 +70,16 @@ class Card extends BaseComponent<typeof CardSpec> {
       a {
         text-decoration: none;
       }
-      .image{
+      .image {
         background-position: center;
         background-repeat: no-repeat;
         width: 100%;
         height: 0;
         padding-bottom: 50%;
-        border: 1px solid #CCCCCC;
+        border: 1px solid #cccccc;
         border-radius: 2px;
       }
-      .title{
+      .title {
         font-family: 'Roboto', sans-serif;
         color: #333333;
         font-size: 14px;
@@ -81,13 +88,13 @@ class Card extends BaseComponent<typeof CardSpec> {
         text-overflow: ellipsis;
         white-space: nowrap;
       }
-      .card:hover .image{
-        border: 1px solid #1E88E5;
+      .card:hover .image {
+        border: 1px solid #1e88e5;
       }
-      .card:hover .title{
+      .card:hover .title {
         text-decoration: underline;
       }
-      .description{
+      .description {
         font-family: 'Roboto', sans-serif;
         font-size: 10px;
         height: 18px;
@@ -96,7 +103,7 @@ class Card extends BaseComponent<typeof CardSpec> {
         white-space: nowrap;
         text-overflow: ellipsis;
       }
-      time{
+      time {
         font-size: 12px;
         line-height: 24px;
         color: #aaa;

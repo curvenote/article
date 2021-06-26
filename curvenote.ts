@@ -20,11 +20,7 @@ declare global {
 
 const store = createStore(
   combineReducers({ runtime: runtime.reducer }),
-  applyMiddleware(
-    thunkMiddleware,
-    runtime.triggerEvaluate,
-    runtime.dangerousEvaluatation,
-  ),
+  applyMiddleware(thunkMiddleware, runtime.triggerEvaluate, runtime.dangerousEvaluatation),
 ) as types.Store;
 
 function getVariableByName(name: string) {
