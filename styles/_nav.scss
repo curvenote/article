@@ -22,7 +22,7 @@ nav {
   }
   a:hover,
   a.selected {
-    color: var(--mdc-theme-primary);
+    color: var(--theme-primary);
     text-decoration: none;
     background-color: #f1f3f4;
     // border-radius: 0 15px 15px 0;
@@ -40,7 +40,7 @@ nav {
   }
   ul li.section div:hover,
   ul li.section.selected div {
-    color: var(--mdc-theme-primary);
+    color: var(--theme-primary);
   }
   ul li.section div:after {
     content: ' ';

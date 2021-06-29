@@ -1,6 +1,6 @@
 body {
   --curvenote-font: 'Roboto', sans-serif;
   --curvenote-font-headers: 'Noto Sans', serif;
-  --mdc-theme-primary: #ee9127;
-  --mdc-theme-secondary: #46f;
+  --theme-primary: #ee9127;
+  --theme-secondary: #46f;
 }

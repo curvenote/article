@@ -151,16 +151,16 @@ class Outline extends BaseComponent<typeof OutlineSpec> {
         transition: all 200ms;
       }
       .tick.highlight {
-        border-bottom: 2px solid var(--mdc-theme-primary, #46f);
+        border-bottom: 2px solid var(--theme-primary, #46f);
       }
       .header:hover {
-        color: var(--mdc-theme-primary, #46f);
+        color: var(--theme-primary, #46f);
         cursor: pointer;
       }
       .open,
       nav:hover {
         width: 200px;
-        border-left: 4px solid var(--mdc-theme-primary, #46f);
+        border-left: 4px solid var(--theme-primary, #46f);
       }
       .open .text,
       nav:hover .text {
