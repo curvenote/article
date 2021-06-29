@@ -340,6 +340,22 @@
     redux-thunk "^2.3.0"
     uuid "^8.3.2"
 
+"@curvenote/components@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@curvenote/components/-/components-0.3.1.tgz#772a9a56d75238a02d1b6cab255e1b6f4cc702ef"
+  integrity sha512-epTQPT6fJsKihPsXkDu5dVQ34tDb0OqEJWnByytRffAREjrn7Zk78Pa0vznRMdmHWNXIevdYddI1p83Iqv/WIQ==
+  dependencies:
+    "@curvenote/runtime" "^0.2.8"
+    d3-drag "^3.0.0"
+    d3-format "^3.0.1"
+    d3-selection "^3.0.0"
+    lit-element "^2.5.1"
+    lit-html "^1.4.1"
+    lodash.throttle "^4.1.1"
+    redux "^4.1.0"
+    redux-thunk "^2.3.0"
+    uuid "^8.3.2"
+
 "@curvenote/runtime@^0.2.7", "@curvenote/runtime@^0.2.8":
   version "0.2.8"
   resolved "https://registry.yarnpkg.com/@curvenote/runtime/-/runtime-0.2.8.tgz#1bab6ba8051d2aeb05ebbe6a7f6ec46a73be93c5"

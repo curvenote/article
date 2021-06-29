@@ -44,7 +44,7 @@
     "prepublishOnly": "yarn run clean; yarn run build;"
   },
   "dependencies": {
-    "@curvenote/components": "^0.3.0",
+    "@curvenote/components": "^0.3.1",
     "@curvenote/runtime": "^0.2.8",
     "@curvenote/svg": "^0.0.8",
     "copy-webpack-plugin": "^9.0.1",
