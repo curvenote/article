@@ -366,10 +366,10 @@
     redux-thunk "^2.3.0"
     uuid "^8.3.2"
 
-"@curvenote/svg@^0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@curvenote/svg/-/svg-0.0.8.tgz#e6814b177afd964545342643d95e49b898a0d8fb"
-  integrity sha512-x9fBnZorBDKypG+zGexN2pU/Yef/fNKnhYFUKfhQYxw9W3EqMTbJQYzxN4/skxdv+DW7LinhA5dgOxi8fcZsnw==
+"@curvenote/svg@^0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@curvenote/svg/-/svg-0.0.9.tgz#a98e2da6371bef4feb9480fa2a425f693335cece"
+  integrity sha512-q3Osx9jgXXPdgjuEy/e3yunMccnh9j/Zt6cUUqI+oprpfJ6zpmoNKiAeNoDGwVmLBTg3gLRlDvgypm0DNbB3Fg==
   dependencies:
     "@curvenote/components" "^0.3.0"
     "@curvenote/runtime" "^0.2.8"
