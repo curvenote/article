@@ -1,6 +1,6 @@
 {
   "name": "@curvenote/article",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Scientific web components for interactive scientific writing, reactive documents and explorable explanations.",
   "main": "dist/index.js",
   "unpkg": "dist/curvenote.min.js",
