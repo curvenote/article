@@ -75,7 +75,7 @@
     "express": "^4.17.1",
     "html-webpack-plugin": "^5.3.2",
     "jest": "^27.0.5",
-    "node-sass": "^6.0.1",
+    "node-sass": "^7.0.0",
     "prettier": "^2.3.2",
     "sass-loader": "^12.1.0",
     "size-limit": "^5.0.0",
