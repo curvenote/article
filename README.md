@@ -1,5 +1,3 @@
-<p align="center"><a href="https://curvenote.dev"><img src="https://curvenote.dev/images/logo.png" alt="curvenote.dev" width="150"></a></p>
-
 # @curvenote/article
 
 [![curvenote/article on npm](https://img.shields.io/npm/v/@curvenote/article.svg)](https://www.npmjs.com/package/@curvenote/article)
@@ -55,4 +53,4 @@ Note that the npm module does not setup the [@curvenote/runtime](https://github.
 
 ## Documentation
 
-See https://curvenote.dev for full documentation.
+See https://old.curvenote.dev for full documentation.
